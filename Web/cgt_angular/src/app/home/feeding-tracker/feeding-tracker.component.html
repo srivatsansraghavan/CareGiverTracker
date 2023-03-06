@@ -1,0 +1,155 @@
+<div class="feeding-container">
+  <button class="btn btn-primary btn-add-feed" (click)="addFeed(addFeedModal)">
+    Start Feed
+  </button>
+
+  <ul class="feed-timeline">
+    <li class="feed-point" *ngFor="let trackFeed of trackedFeeds | keyvalue">
+      {{ trackFeed.key }} <br />
+      {{ trackFeed.value }}
+    </li>
+  </ul>
+
+  <!-- Modal for adding feed starts -->
+  <ng-template #addFeedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">
+        Feed given to {{ careTakenDetails.name }}
+      </h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-2">
+          <p>Feed Type:</p>
+        </div>
+        <div class="col-md-10 d-flex flex-row">
+          <div *ngFor="let feedType of feedTypes; let i = index">
+            <input
+              type="radio"
+              name="feedingType"
+              value="{{ feedType }}"
+              [(ngModel)]="chosenFeedType"
+              class="form-check-input d-inline-block p-2"
+              id="feedingType{{ i }}"
+              (click)="onFeedTypeClicked($event)"
+            />
+            <label
+              for="feedingType{{ i }}"
+              class="form-check-label d-inline-block p-2"
+            >
+              {{ feedType }}</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="chosenFeedType" [ngSwitch]="chosenFeedType">
+        <div class="col-md-2">
+          <p *ngSwitchCase="'Breastfeeding - Pump'">Breast feed mode:</p>
+          <p *ngSwitchCase="'Drips'"></p>
+          <p *ngSwitchCase="'Breastfeeding - Non Pump'"></p>
+          <p *ngSwitchDefault>Feed mode:</p>
+        </div>
+        <div class="col-md-10 d-flex flex-row">
+          <div *ngFor="let feedMode of feedModes; let i = index">
+            <input
+              type="radio"
+              name="feedingMode"
+              value="{{ feedMode }}"
+              [(ngModel)]="chosenFeedMode"
+              class="form-check-input d-inline-block p-2"
+              id="feedingMode{{ i }}"
+              (click)="onFeedModeClicked($event)"
+            />
+            <label
+              for="feedingMode{{ i }}"
+              class="form-check-label d-inline-block p-2"
+            >
+              {{ feedMode }}</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="chosenFeedType">
+        <div class="col-md-2" [ngSwitch]="chosenFeedType">
+          <p *ngSwitchCase="'Breastfeeding - Pump'">Breast side:</p>
+          <p *ngSwitchCase="'Breastfeeding - Non Pump'">Breast side:</p>
+          <p *ngSwitchDefault></p>
+        </div>
+        <div class="col-md-10 d-flex flex-row">
+          <div *ngFor="let feedSide of feedSides; let i = index">
+            <input
+              type="radio"
+              name="feedingSide"
+              value="{{ feedSide }}"
+              [(ngModel)]="chosenFeedSide"
+              class="form-check-input d-inline-block p-2"
+              id="feedingSide{{ i }}"
+              (click)="onFeedSideClicked($event)"
+            />
+            <label
+              for="feedingSide{{ i }}"
+              class="form-check-label d-inline-block p-2"
+            >
+              {{ feedSide }}</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <button
+            class="btn btn-primary btn-start-tracking"
+            (click)="trackFeedTime()"
+            [disabled]="disableTracking"
+            *ngIf="trackState !== 'Restart'"
+          >
+            {{ trackState }} Tracking
+          </button>
+        </div>
+        <div class="col-md-6">
+          <span *ngIf="chosenFeedType == 'Breastfeeding - Pump'">
+            Pumping Time(hh:mm:ss)
+          </span>
+          <span *ngIf="chosenFeedType != 'Breastfeeding - Pump'">
+            Feeding Time(hh:mm:ss)
+          </span>
+          <app-timer></app-timer>
+        </div>
+      </div>
+
+      <div class="row mt-2" *ngIf="needQuantity && trackState === 'Restart'">
+        <div class="col-md-2">
+          <label for="feedQuantity">Feed Quantity</label>
+        </div>
+        <div class="col-md-4">
+          <input
+            type="number"
+            class="form-control mx-auto"
+            id="feedQuantity"
+            [(ngModel)]="feedQuantity"
+            placeholder="0.00"
+            step="0.1"
+          />
+          <span class="form-text">ml</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="saveTrackedFeed()"
+        [disabled]="disableTracking"
+        *ngIf="trackState === 'Restart'"
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelTrackingFeed()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- modal for adding feed ends -->
+</div>

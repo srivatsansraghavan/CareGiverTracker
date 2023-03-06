@@ -1,0 +1,5 @@
+[user]
+    name = Srivatsan S
+    email = srivatsan.ssr@gmail.com
+[remote "cgtremote"]
+    url = https://github.com/srivatsansraghavan/CareGiverTracker.git

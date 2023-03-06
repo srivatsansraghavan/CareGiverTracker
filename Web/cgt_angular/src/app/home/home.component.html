@@ -1,0 +1,26 @@
+<app-first-login *ngIf="isFirstLogin; else showTabs"></app-first-login>
+<ng-template #showTabs>
+  <h1 class="home-header">Caregiver Tracker</h1>
+  <button class="btn btn-primary float-end" (click)="doLogout()">Logout</button>
+  <ul ngbNav #nav="ngbNav" class="nav-tabs">
+    <li [ngbNavItem]="1">
+      <a ngbNavLink> Feeding </a>
+      <ng-template ngbNavContent>
+        <app-feeding-tracker></app-feeding-tracker>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2">
+      <a ngbNavLink> Excretions </a>
+      <ng-template ngbNavContent>
+        <app-excretion-tracker></app-excretion-tracker>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="3">
+      <a ngbNavLink> Medicines </a>
+      <ng-template ngbNavContent>
+        <app-medicine-tracker></app-medicine-tracker>
+      </ng-template>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</ng-template>

@@ -1,0 +1,97 @@
+<ng-template #firstloginmodal>
+  <div class="modal-header">
+    <h3 class="modal-title">First time user?</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-of"> I take care of </label>
+      </div>
+      <div class="col-md-6">
+        <select
+          class="form-select-sm w-auto"
+          id="care-taken-of"
+          [(ngModel)]="careTakenOf"
+        >
+          <option value="child">Child</option>
+          <option value="spouse">Spouse</option>
+          <option value="parent">Parent</option>
+          <option value="friend">Friend</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-name"> Their Name </label>
+      </div>
+      <div class="col-md-6">
+        <input
+          class="form-control w-auto"
+          type="text"
+          id="care-taken-name"
+          [(ngModel)]="careTakenName"
+        />
+      </div>
+    </div>
+
+    <div class="row mb-3 row-cols-sm-auto">
+      <div class="col-md-3">
+        <label for="care-taken-dob">Their Date of Birth </label>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <input
+            class="form-control w-10"
+            ngbDatepicker
+            id="care-taken-dob"
+            [(ngModel)]="careTakenDOB"
+            #d="ngbDatepicker"
+          />
+          <button
+            class="btn btn-outline-secondary bi bi-calendar3"
+            (click)="d.toggle()"
+            type="button"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-age">Their Gender </label>
+      </div>
+      <div class="col-md-6">
+        <select
+          class="form-select-sm w-auto"
+          id="care-taken-gender"
+          [(ngModel)]="careTakenGender"
+        >
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Transgender">Transgender</option>
+          <option value="NonBinary">Non Binary</option>
+          <option value="NoResponse">Prefer not to respond</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="
+        !careTakenOf || !careTakenName || !careTakenDOB || !careTakenGender
+      "
+      (click)="assignRoles()"
+    >
+      Save
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeModalLogOut()"
+    >
+      Later
+    </button>
+  </div>
+</ng-template>

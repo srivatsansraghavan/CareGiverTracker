@@ -1,0 +1,9 @@
+<ngb-toast
+  *ngFor="let toast of toastService.toasts"
+  [header]="toast.headertext"
+  [class]="toast.classname"
+  [autohide]="toast.autohide"
+  (animation)="(true)"
+>
+  {{ toast.displaytext }}
+</ngb-toast>

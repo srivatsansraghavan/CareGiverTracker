@@ -1,0 +1,22 @@
+label {
+    display: inline-block;
+    max-width: 50%;
+    padding: 2%;
+}
+
+input {
+    display: inline-block;
+    width: 50%;
+    max-width: 50%;
+    margin: 2%;
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+.login-form-error {
+    display: block;
+    padding-left: 5%;
+    color: red;
+}
