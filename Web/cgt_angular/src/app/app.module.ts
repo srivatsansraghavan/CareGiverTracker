@@ -18,6 +18,7 @@ import { FeedingTrackerComponent } from './home/feeding-tracker/feeding-tracker.
 import { ExcretionTrackerComponent } from './home/excretion-tracker/excretion-tracker.component';
 import { MedicineTrackerComponent } from './home/medicine-tracker/medicine-tracker.component';
 import { TimerComponent } from './shared/timer/timer.component';
+import { TrackItemsPipe } from './shared/pipes/track-items.pipe';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { TimerComponent } from './shared/timer/timer.component';
     ExcretionTrackerComponent,
     MedicineTrackerComponent,
     TimerComponent,
+    TrackItemsPipe,
   ],
   imports: [
     BrowserModule,

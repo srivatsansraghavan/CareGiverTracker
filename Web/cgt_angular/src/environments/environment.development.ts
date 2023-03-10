@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  expressURL: 'http://34.229.137.199:3000',
+  expressURL: 'http://54.204.248.179:3000',
   //expressURL: 'http://localhost:3000',
 };
 

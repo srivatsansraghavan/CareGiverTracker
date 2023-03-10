@@ -1,9 +1,14 @@
 .feeding-container {
+    display: block;
+    margin-top: 2%;
     margin-left: 5%;
-    margin-top: 5%;
-    width: 100%;
-    height: 500px;
+    margin-bottom: 3%;
+    min-width: 800px;
+    min-height: 600px;
+    width: 60%;
+    height: 90%;
     background-color: lavender;
+    overflow: hidden;
 }
 
 .btn-add-feed {
@@ -14,4 +19,26 @@
 
 .modal-footer {
     justify-content: center;
+}
+
+li.feed-per-date {
+    list-style-type: none;
+    padding-bottom: 1%;
+    display: block;
+}
+
+li.tracked-feed-timeline {
+    list-style-type: none;
+    padding-bottom: 1%;
+}
+
+li.pumped-feed-timeline {
+    list-style-type: none;
+    padding-left: 5%;
+}
+
+.btn-edit-tracked-feed, .btn-delete-tracked-feed {
+    background-color: transparent;
+    border: 0 transparent;
+    display: inline-block;
 }

@@ -1,0 +1,16 @@
+{
+  "name": "selenium_js_cucumber",
+  "version": "1.0.0",
+  "description": "Automation framework with Selenium, Javascript and Cucumber",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js features/ --require features/support/env.js --require features/stepdefs/**/*.js --publish-quiet"
+  },
+  "author": "Srivatsan S",
+  "license": "ISC",
+  "dependencies": {
+    "@cucumber/cucumber": "^9.0.0",
+    "chai": "^4.3.7",
+    "selenium-webdriver": "^4.8.1"
+  }
+}

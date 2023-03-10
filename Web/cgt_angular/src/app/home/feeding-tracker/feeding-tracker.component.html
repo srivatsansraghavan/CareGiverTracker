@@ -4,9 +4,64 @@
   </button>
 
   <ul class="feed-timeline">
-    <li class="feed-point" *ngFor="let trackFeed of trackedFeeds | keyvalue">
-      {{ trackFeed.key }} <br />
-      {{ trackFeed.value }}
+    <li
+      class="feed-per-date"
+      *ngFor="let trackFeed of trackedFeeds | trackItems : 'getKeyValue'"
+    >
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      {{ trackFeed[0].key }}
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <ul
+        class="feed-date-timeline"
+        *ngFor="
+          let eachFeed of trackFeed[0].value | trackItems : 'getValueArray'
+        "
+      >
+        <li
+          *ngIf="eachFeed.hasOwnProperty('mode')"
+          class="tracked-feed-timeline"
+        >
+          Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -
+          {{ eachFeed.quantity }} ml ({{ eachFeed.startTime }} -
+          {{ eachFeed.endTime }})
+          <button
+            class="bi bi-pencil btn-edit-tracked-feed"
+            (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
+          ></button>
+          <button
+            class="bi bi-trash btn-delete-tracked-feed"
+            (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
+          ></button>
+        </li>
+        <li
+          *ngIf="eachFeed.hasOwnProperty('pumpedMode')"
+          [ngClass]="{
+            'pumped-feed-timeline': eachFeed.hasOwnProperty('mode'),
+            'tracked-feed-timeline': !eachFeed.hasOwnProperty('mode')
+          }"
+        >
+          Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedQuantity }} ml
+          ({{ eachFeed.pumpedStartTime }} - {{ eachFeed.pumpedEndTime }})
+          <i
+            *ngIf="
+              eachFeed.hasOwnProperty('mode') &&
+              eachFeed.endDate !== eachFeed.pumpedEndDate
+            "
+          >
+            Pumped on {{ eachFeed.pumpedEndDate }}</i
+          >
+          <span *ngIf="!eachFeed.hasOwnProperty('mode')">
+            <button
+              class="bi bi-pencil btn-edit-tracked-feed"
+              (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
+            ></button>
+            <button
+              class="bi bi-trash btn-delete-tracked-feed"
+              (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
+            ></button>
+          </span>
+        </li>
+      </ul>
     </li>
   </ul>
 
@@ -22,79 +77,88 @@
         <div class="col-md-2">
           <p>Feed Type:</p>
         </div>
-        <div class="col-md-10 d-flex flex-row">
-          <div *ngFor="let feedType of feedTypes; let i = index">
-            <input
-              type="radio"
-              name="feedingType"
-              value="{{ feedType }}"
-              [(ngModel)]="chosenFeedType"
-              class="form-check-input d-inline-block p-2"
-              id="feedingType{{ i }}"
-              (click)="onFeedTypeClicked($event)"
-            />
-            <label
-              for="feedingType{{ i }}"
-              class="form-check-label d-inline-block p-2"
-            >
-              {{ feedType }}</label
-            >
-          </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="feedingType"
+            [(ngModel)]="chosenFeedType"
+            (change)="onFeedTypeChosen($event)"
+          >
+            <option *ngFor="let feedType of feedTypes" [value]="feedType">
+              {{ feedType }}
+            </option>
+          </select>
         </div>
       </div>
 
       <div class="row" *ngIf="chosenFeedType" [ngSwitch]="chosenFeedType">
         <div class="col-md-2">
-          <p *ngSwitchCase="'Breastfeeding - Pump'">Breast feed mode:</p>
+          <p *ngSwitchCase="'Breast Pump'">Breast pump mode:</p>
           <p *ngSwitchCase="'Drips'"></p>
-          <p *ngSwitchCase="'Breastfeeding - Non Pump'"></p>
           <p *ngSwitchDefault>Feed mode:</p>
         </div>
-        <div class="col-md-10 d-flex flex-row">
-          <div *ngFor="let feedMode of feedModes; let i = index">
-            <input
-              type="radio"
-              name="feedingMode"
-              value="{{ feedMode }}"
-              [(ngModel)]="chosenFeedMode"
-              class="form-check-input d-inline-block p-2"
-              id="feedingMode{{ i }}"
-              (click)="onFeedModeClicked($event)"
-            />
-            <label
-              for="feedingMode{{ i }}"
-              class="form-check-label d-inline-block p-2"
-            >
-              {{ feedMode }}</label
-            >
-          </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="feedingMode"
+            [(ngModel)]="chosenFeedMode"
+            (change)="onFeedModeChosen($event)"
+          >
+            <option *ngFor="let feedMode of feedModes" [value]="feedMode">
+              {{ feedMode }}
+            </option>
+          </select>
         </div>
       </div>
 
       <div class="row" *ngIf="chosenFeedType">
         <div class="col-md-2" [ngSwitch]="chosenFeedType">
-          <p *ngSwitchCase="'Breastfeeding - Pump'">Breast side:</p>
-          <p *ngSwitchCase="'Breastfeeding - Non Pump'">Breast side:</p>
+          <p *ngSwitchCase="'Breast Pump'">Breast side:</p>
+          <p *ngSwitchCase="'Breast Milk'">
+            <span *ngIf="chosenFeedMode === 'Pumped Milk'; else showSide"
+              >Choose pumped feed:
+            </span>
+            <ng-template #showSide> Breast side: </ng-template>
+          </p>
           <p *ngSwitchDefault></p>
         </div>
-        <div class="col-md-10 d-flex flex-row">
-          <div *ngFor="let feedSide of feedSides; let i = index">
-            <input
-              type="radio"
-              name="feedingSide"
-              value="{{ feedSide }}"
-              [(ngModel)]="chosenFeedSide"
-              class="form-check-input d-inline-block p-2"
-              id="feedingSide{{ i }}"
-              (click)="onFeedSideClicked($event)"
-            />
-            <label
-              for="feedingSide{{ i }}"
-              class="form-check-label d-inline-block p-2"
+        <div class="col-md-8">
+          <span *ngIf="chosenFeedMode === 'Pumped Milk'">
+            <select
+              id="preparedFeed"
+              class="form-control-md w-auto"
+              [(ngModel)]="chosenPumpedFeed"
             >
-              {{ feedSide }}</label
-            >
-          </div>
+              <option
+                *ngFor="let pumpedFeed of pumpedFeeds"
+                [value]="pumpedFeed.id"
+              >
+                {{ pumpedFeed.startDate }}
+                {{ pumpedFeed.startTime }} - {{ pumpedFeed.endDate }}
+                {{ pumpedFeed.endTime }}
+              </option>
+            </select>
+          </span>
+          <span
+            *ngIf="
+              chosenFeedMode === 'Direct Feed' ||
+              chosenFeedMode === 'Manual Pump' ||
+              chosenFeedMode === 'Electrical Pump'
+            "
+          >
+            <div class="col-md-8">
+              <select
+                class="form-control-md w-auto"
+                id="feedingSide"
+                [(ngModel)]="chosenFeedSide"
+                (change)="onFeedSideChosen($event)"
+              >
+                <option *ngFor="let feedSide of feedSides" [value]="feedSide">
+                  {{ feedSide }}
+                </option>
+              </select>
+            </div>
+          </span>
         </div>
       </div>
 
@@ -110,12 +174,10 @@
           </button>
         </div>
         <div class="col-md-6">
-          <span *ngIf="chosenFeedType == 'Breastfeeding - Pump'">
+          <span *ngIf="chosenFeedType === 'Breast Pump'; else feedingTime">
             Pumping Time(hh:mm:ss)
           </span>
-          <span *ngIf="chosenFeedType != 'Breastfeeding - Pump'">
-            Feeding Time(hh:mm:ss)
-          </span>
+          <ng-template #feedingTime> Feeding Time(hh:mm:ss) </ng-template>
           <app-timer></app-timer>
         </div>
       </div>
@@ -124,23 +186,30 @@
         <div class="col-md-2">
           <label for="feedQuantity">Feed Quantity</label>
         </div>
-        <div class="col-md-4">
-          <input
-            type="number"
-            class="form-control mx-auto"
-            id="feedQuantity"
-            [(ngModel)]="feedQuantity"
-            placeholder="0.00"
-            step="0.1"
-          />
-          <span class="form-text">ml</span>
+        <div class="col-md-2">
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control mx-auto"
+              id="feedQuantity"
+              [(ngModel)]="feedQuantity"
+              placeholder="0"
+              min="0"
+              step="1"
+            />
+            <span class="form-text"> ml</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button
         class="btn btn-primary p-3"
-        (click)="saveTrackedFeed()"
+        (click)="
+          chosenFeedType === 'Breast Pump'
+            ? savePumpedFeed()
+            : saveTrackedFeed()
+        "
         [disabled]="disableTracking"
         *ngIf="trackState === 'Restart'"
       >
@@ -152,4 +221,136 @@
     </div>
   </ng-template>
   <!-- modal for adding feed ends -->
+
+  <!-- Modal for deleting feed starts -->
+  <ng-template #deleteFeedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Delete Feed</h3>
+    </div>
+    <div class="modal-body">Are you sure you want to delete this feed?</div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="deleteTrackedFeed(deleteFeedId)"
+      >
+        Delete
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelDeleteTrackedFeed()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for deleting feed ends -->
+
+  <!-- Modal for editing feed starts -->
+  <ng-template #editFeedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Edit Feed</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">Feeding Type:</div>
+        <div class="col-md-4">
+          {{ editFeedData.type }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">Feeding Mode:</div>
+        <div class="col-md-4">
+          {{ editFeedData.mode }}
+        </div>
+      </div>
+
+      <div class="row" *ngIf="editFeedData.hasOwnProperty('side')">
+        <div class="col-md-4">Feeding Side:</div>
+        <div class="col-md-4">
+          {{ editFeedData.side }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">Feeding Quantity:</div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control mx-auto"
+              id="feedQuantity"
+              [(ngModel)]="editFeedData.quantity"
+              step="1"
+            />
+            <span class="form-text"> ml</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-3">Feeding Start:</div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <input
+              class="form-control w-10"
+              ngbDatepicker
+              id="edit-feed-start-date"
+              [(ngModel)]="editFeedData.startDate"
+              #d="ngbDatepicker"
+            />
+            <button
+              class="btn btn-outline-secondary bi bi-calendar3"
+              (click)="d.toggle()"
+              type="button"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ngb-timepicker
+            [(ngModel)]="editFeedData.startTime"
+            [spinners]="false"
+            [seconds]="true"
+          ></ngb-timepicker>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-md-3">Feeding End:</div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <input
+              class="form-control w-10"
+              ngbDatepicker
+              id="edit-feed-end-date"
+              [(ngModel)]="editFeedData.endDate"
+              #d="ngbDatepicker"
+            />
+            <button
+              class="btn btn-outline-secondary bi bi-calendar3"
+              (click)="d.toggle()"
+              type="button"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <ngb-timepicker
+            [(ngModel)]="editFeedData.endTime"
+            [spinners]="false"
+            [seconds]="true"
+          ></ngb-timepicker>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="editTrackedFeed(editFeedData)"
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelEditTrackedFeed()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for editing feed ends -->
 </div>

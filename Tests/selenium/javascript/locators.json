@@ -1,0 +1,24 @@
+{
+    "signup": {
+        "Email": {
+            "name": "signUpEmail",
+            "error": "signUpEmailError"
+        },
+        "Password": {
+            "name": "signUpPassword",
+            "error": "signUpPasswordError"
+        },
+        "Repeat Password": {
+            "name": "signUpRepeatPassword",
+            "error": "signUpRepeatPasswordError"
+        },
+        "Full Name": {
+            "name": "signUpFullName",
+            "error": "signUpFullNameError"
+        },
+        "Add Verify": {
+            "name": "signUpAddVerify",
+            "error": "signUpAddVerifyError"
+        }
+    }
+}

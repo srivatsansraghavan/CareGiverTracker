@@ -1,1 +1,244 @@
-<p>excretion-tracker works!</p>
+<div class="container">
+  <button
+    class="btn btn-primary btn-add-excretion"
+    (click)="addExcretion(addExcModal)"
+  >
+    Track Excretion
+  </button>
+
+  <ul class="excretion-timeline">
+    <li
+      class="excretion-per-date"
+      *ngFor="
+        let trackExcretion of trackedExcretions | trackItems : 'getKeyValue'
+      "
+    >
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      {{ trackExcretion[0].key }}
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <ul
+        class="excretion-date-timeline"
+        *ngFor="
+          let eachExcretion of trackExcretion[0].value
+            | trackItems : 'getValueArray'
+        "
+      >
+        <li
+          *ngIf="eachExcretion.hasOwnProperty('excretionType')"
+          class="tracked-excretion-timeline"
+        >
+          {{ eachExcretion.excretionType }}: {{ eachExcretion.napkinType }} ({{
+            eachExcretion.endTime
+          }}) -
+          <span *ngIf="eachExcretion.napkinType === 'Diaper'">
+            {{ eachExcretion.diaperCount }}
+            {{ eachExcretion.diaperBrand }} Diapers used.
+          </span>
+          <button
+            class="bi bi-pencil btn-edit-tracked-excretion"
+            (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
+          ></button>
+          <button
+            class="bi bi-trash btn-delete-tracked-excretion"
+            (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
+          ></button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- Modal for adding excretion starts -->
+  <ng-template #addExcModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">
+        Excretion by {{ careTakenDetails.name }}
+      </h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-2">
+          <p>Excretion Type:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="excType"
+            [(ngModel)]="chosenExcretionType"
+          >
+            <option
+              *ngFor="let excretionType of excretionTypes"
+              [value]="excretionType"
+            >
+              {{ excretionType }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <p>Napkin Type:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="napkType"
+            [(ngModel)]="chosenNapkinType"
+          >
+            <option *ngFor="let napkinType of napkinTypes" [value]="napkinType">
+              {{ napkinType }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="chosenNapkinType === 'Diaper'">
+        <div class="col-md-2">
+          <p>Diaper Count:</p>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="number"
+            class="form-control mx-auto"
+            id="diapCount"
+            [(ngModel)]="diaperCount"
+            placeholder="0"
+            min="0"
+            step="1"
+          />
+        </div>
+      </div>
+      <!-- 
+      <div class="row" *ngIf="diaperCount > 0">
+        <div class="col-md-2">
+          <p>Diaper Brand:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="diaperBrand"
+            [(ngModel)]="chosenDiaperBrand"
+          >
+            <option
+              *ngFor="let diaperBrand of diaperBrands"
+              [value]="diaperBrand"
+            >
+              {{ diaperBrand }}
+            </option>
+          </select>
+        </div>
+      </div> -->
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="saveTrackingExcretion()"
+        [disabled]="chosenExcretionType === '' && chosenNapkinType === ''"
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelTrackingExcretion()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for adding tracked excretion ends -->
+
+  <!-- Modal for deleting tracked excretion starts -->
+  <ng-template #deleteExcModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Delete Tracked Excretion</h3>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to delete this tracked excretion?
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="deleteTrackedExc(deleteExcId)"
+      >
+        Delete
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelDeleteTrackedExc()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for deleting tracked excretion ends -->
+
+  <!-- Modal for editing tracked excretion starts -->
+  <ng-template #editExcModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Edit Tracked Excretion</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">Excretion Type:</div>
+        <div class="col-md-4">
+          {{ editTrackedExcData.excretionType }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">Napkin Type:</div>
+        <div class="col-md-4">
+          {{ editTrackedExcData.napkinType }}
+        </div>
+      </div>
+
+      <div class="row" *ngIf="editTrackedExcData.napkinType === 'Diaper'">
+        <div class="col-md-4">Diaper Count:</div>
+        <div class="col-md-4">
+          {{ editTrackedExcData.diaperCount }}
+        </div>
+      </div>
+
+      <div class="row" *ngIf="editTrackedExcData.napkinType === 'Diaper'">
+        <div class="col-md-4">Diaper Brand:</div>
+        <div class="col-md-4">
+          {{ editTrackedExcData.diaperBrand }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-3">Excretion Time:</div>
+      <div class="col-md-4">
+        <div class="input-group">
+          <input
+            class="form-control w-10"
+            ngbDatepicker
+            id="edit-feed-start-date"
+            [(ngModel)]="editTrackedExcData.excretionDate"
+            #d="ngbDatepicker"
+          />
+          <button
+            class="btn btn-outline-secondary bi bi-calendar3"
+            (click)="d.toggle()"
+            type="button"
+          ></button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ngb-timepicker
+          [(ngModel)]="editTrackedExcData.excretionTime"
+          [spinners]="false"
+          [seconds]="true"
+        ></ngb-timepicker>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="editTrackedExc(editTrackedExcData)"
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelEditTrackedExc()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for editing tracked excretion starts -->
+</div>
