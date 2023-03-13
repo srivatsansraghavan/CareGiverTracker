@@ -88,6 +88,7 @@ export class ExcretionTrackerComponent implements OnInit {
             'bg-success text-light',
             true
           );
+          this.modal.dismissAll();
           this.getTrackedExcretions();
         },
         error: (response: any) => {
@@ -97,6 +98,7 @@ export class ExcretionTrackerComponent implements OnInit {
             'bg-danger text-light',
             true
           );
+          this.modal.dismissAll();
         },
       });
   }

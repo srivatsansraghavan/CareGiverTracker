@@ -6,7 +6,7 @@
         "passed": true
       }
     ],
-    "duration": 16193
+    "duration": 17045
   },
   {
     "description": "validate first time user modal of Caregiver Tracker landing page should display first time user modal dialog when Sign me Up! button is clicked, Later is clicked which logs out and login again to add role",
@@ -15,6 +15,6 @@
         "passed": true
       }
     ],
-    "duration": 21407
+    "duration": 22626
   }
 ]

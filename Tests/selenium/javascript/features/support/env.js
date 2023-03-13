@@ -7,7 +7,7 @@ Before(function() {
 });
 
 After(async function(scenario) {
-    if(scenario.result.status === 'FAILED') driver.quit();
+    driver.quit();
 });
 
 exports.By = By;

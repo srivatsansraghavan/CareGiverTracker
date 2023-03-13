@@ -9,5 +9,6 @@ module.exports = defineConfig({
     supportFile: "support/e2e.js",
     testIsolation: false,
     experimentalStudio: true,
+    reporter: 'mochawesome',
   },
 });

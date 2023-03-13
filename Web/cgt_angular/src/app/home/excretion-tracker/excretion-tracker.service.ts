@@ -31,9 +31,9 @@ export class ExcretionTrackerService {
             responseDetails['napkinType'] = responseItem.napkin_type;
             responseDetails['diaperCount'] = responseItem.diaper_count;
             responseDetails['diaperBrand'] = responseItem.diaper_brand;
-            endDate = responseItem.excretion_time.split(' ')[1];
+            endDate = responseItem.excretion_time.split(' ')[0];
             responseDetails['excretionDate'] =
-              responseItem.excretion_date.split(' ')[0];
+              responseItem.excretion_time.split(' ')[1];
             responseDetails['excretionTime'] = endDate;
             if (!excretionGrouped.hasOwnProperty(endDate)) {
               excretionGrouped[endDate] = [];

@@ -1,3 +1,5 @@
+var reporter = require('protractor-jasmine2-html-reporter');
+
 exports.config = {
     framework: 'jasmine',
     seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -8,10 +10,12 @@ exports.config = {
     },
     baseUrl: 'http://localhost:4200/',
     resultJsonOutputFile: './results.json',
-}
-
-onPrepare: () => {
-    //let faker = require('@faker-js/faker');
-
-
+    onPrepare: () => {
+        jasmine.getEnv().addReporter(
+            new reporter({
+                savePath: '../screenshots',
+                takeScreenshots: false
+            })
+        )
+    }
 }

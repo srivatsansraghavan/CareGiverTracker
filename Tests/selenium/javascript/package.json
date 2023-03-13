@@ -4,7 +4,7 @@
   "description": "Automation framework with Selenium, Javascript and Cucumber",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js features/ --require features/support/env.js --require features/stepdefs/**/*.js --publish-quiet"
+    "test": "cucumber-js features/ --require features/support/env.js --require features/stepdefs/**/*.js --publish-quiet --format progress-bar --format json:cucumber-report.json --format html:cucumber-report.html"
   },
   "author": "Srivatsan S",
   "license": "ISC",

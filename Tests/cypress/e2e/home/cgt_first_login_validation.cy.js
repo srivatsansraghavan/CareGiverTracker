@@ -41,7 +41,7 @@ it('verify whether first time user modal dialog is displayed when Sign me up! bu
     
     cy.get('.modal-body').within(() => {
       
-      cy.get('#care-taken-of').select('Child')
+      cy.get('#care-taken-of').select('Infant')
       cy.get('#care-taken-name').type('Tvishi')
       cy.get('#care-taken-dob').type('2022-12-08')
       cy.get('#care-taken-gender').select('Female')
@@ -93,7 +93,7 @@ it('verify whether first time user modal dialog is displayed when Sign me up! bu
   
   cy.get('.modal-body').within(() => {
     
-    cy.get('#care-taken-of').select('Child')
+    cy.get('#care-taken-of').select('Infant')
     cy.get('#care-taken-name').type('Tvishi')
     cy.get('#care-taken-dob').type('2022-12-08')
     cy.get('#care-taken-gender').select('Female')

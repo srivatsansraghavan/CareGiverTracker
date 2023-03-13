@@ -20,5 +20,15 @@
             "name": "signUpAddVerify",
             "error": "signUpAddVerifyError"
         }
+    },
+    "login": {
+        "Email": {
+            "name": "loginEmail",
+            "error": "loginEmailError"
+        },
+        "Password": {
+            "name": "loginPassword",
+            "error": "loginPasswordError"
+        }
     }
 }

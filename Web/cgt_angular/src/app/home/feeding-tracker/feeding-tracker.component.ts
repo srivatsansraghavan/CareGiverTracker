@@ -29,13 +29,23 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   chosenFeedSide: string;
   chosenPumpedFeed: Object;
   totalFeedTypes: feedTypeOptions = {
-    child: [
+    infant: [
       'Breast Pump',
       'Breast Milk',
       'Formula feeding',
       'Mashed food',
       'Juices',
       'Water',
+    ],
+    child: [
+      'Breast Pump',
+      'Breast Milk',
+      'Formula feeding',
+      'Normal food',
+      'Mashed food',
+      'Juices',
+      'Water',
+      'Drips',
     ],
     spouse: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
     parent: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
@@ -188,6 +198,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
             'bg-danger text-light',
             true
           );
+          this.modal.dismissAll();
         },
       });
   }
@@ -235,6 +246,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
             'bg-danger text-light',
             true
           );
+          this.modal.dismissAll();
         },
       });
   }

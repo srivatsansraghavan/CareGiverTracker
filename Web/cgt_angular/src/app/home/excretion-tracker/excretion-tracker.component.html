@@ -1,14 +1,14 @@
 <div class="container">
   <button
-    class="btn btn-primary btn-add-excretion"
+    class="btn btn-primary btn-add-exc"
     (click)="addExcretion(addExcModal)"
   >
     Track Excretion
   </button>
 
-  <ul class="excretion-timeline">
+  <ul class="exc-timeline">
     <li
-      class="excretion-per-date"
+      class="exc-per-date"
       *ngFor="
         let trackExcretion of trackedExcretions | trackItems : 'getKeyValue'
       "
@@ -17,7 +17,7 @@
       {{ trackExcretion[0].key }}
       <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
       <ul
-        class="excretion-date-timeline"
+        class="exc-date-timeline"
         *ngFor="
           let eachExcretion of trackExcretion[0].value
             | trackItems : 'getValueArray'
@@ -25,21 +25,21 @@
       >
         <li
           *ngIf="eachExcretion.hasOwnProperty('excretionType')"
-          class="tracked-excretion-timeline"
+          class="tracked-exc-timeline"
         >
           {{ eachExcretion.excretionType }}: {{ eachExcretion.napkinType }} ({{
-            eachExcretion.endTime
+            eachExcretion.excretionTime
           }}) -
           <span *ngIf="eachExcretion.napkinType === 'Diaper'">
             {{ eachExcretion.diaperCount }}
             {{ eachExcretion.diaperBrand }} Diapers used.
           </span>
           <button
-            class="bi bi-pencil btn-edit-tracked-excretion"
+            class="bi bi-pencil btn-edit-tracked-exc"
             (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
           ></button>
           <button
-            class="bi bi-trash btn-delete-tracked-excretion"
+            class="bi bi-trash btn-delete-tracked-exc"
             (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
           ></button>
         </li>

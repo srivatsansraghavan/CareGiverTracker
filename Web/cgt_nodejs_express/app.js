@@ -321,13 +321,45 @@ app.get('/get-excretion-details', async (req, res) => {
         await client.connect();
         const db = client.db("caregiver_tracker");
         const collection = db.collection("cgt_excretion");
-        const getTrackedExcretion = await collection.find( { care_giver: req.query.care_giver, care_taken_of_id: req.query.care_taken_id }).sort({ _id: -1 }).toArray();
+        const getTrackedExcretion = await collection.find( { care_giver: req.query.careGiver, care_taken_of_id: req.query.careTakenId }).sort({ _id: -1 }).toArray();
         if(getTrackedExcretion && getTrackedExcretion.length > 0){
             res.status(200).json(getTrackedExcretion);
         } else {
             res.status(404).json({ message: 'No tracked excretions found' });
         }
     } catch (err) {
+        console.log(err);
+    }
+});
+
+app.delete('/delete-exc/:excId', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("caregiver_tracker");
+        const collection = db.collection("cgt_excretion");
+        const deleteExc = await collection.deleteOne( { "_id": ObjectId(req.params.excId) } );
+        if(deleteExc.acknowledged && deleteExc.deletedCount === 1){
+            res.status(200).json({ message: 'Tracked excretion deleted successfully'} );
+        } else {
+            res.status(404).json({ message: 'Unable to delete tracked excretion. Please try again later!' });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+app.get('/get-exc-for-id/:excId', async(req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("caregiver_tracker");
+        const collection = await db.collection("cgt_excretion");
+        const getExcForId = await collection.findOne({ "_id": ObjectId(req.params.excId)});
+        if(getExcForId && Object.keys(getExcForId).length > 0) {
+            res.status(200).json(getExcForId);
+        } else {
+            res.status(404).json({ message: 'Unable to get tracked excretion. Please try again later!' });
+        }
+    } catch(err) {
         console.log(err);
     }
 });

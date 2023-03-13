@@ -27,7 +27,7 @@ describe('validate first time user modal of Caregiver Tracker landing page', fun
         let modalFooterElem = await element(by.css('.modal-footer'));
         expect(await modalFooterElem.element(by.buttonText('Save')).isEnabled()).toBe(false);
         let modalBodyElem = await element(by.css('.modal-body'));
-        await modalBodyElem.element(by.id('care-taken-of')).element(by.cssContainingText('option', 'Child')).click();
+        await modalBodyElem.element(by.id('care-taken-of')).element(by.cssContainingText('option', 'Infant')).click();
         await modalBodyElem.element(by.id('care-taken-name')).sendKeys('Tvishi');
         await modalBodyElem.element(by.id('care-taken-dob')).sendKeys('2022-12-08');
         await modalBodyElem.element(by.id('care-taken-gender')).element(by.cssContainingText('option', 'Female')).click();
@@ -63,7 +63,7 @@ describe('validate first time user modal of Caregiver Tracker landing page', fun
         await element(by.css('input[name="loginPassword"]')).sendKeys('Abc1234@');
         await element(by.buttonText('Log me In!')).click();
         let modalBodyElem = await element(by.css('.modal-body'));
-        await modalBodyElem.element(by.id('care-taken-of')).element(by.cssContainingText('option', 'Child')).click();
+        await modalBodyElem.element(by.id('care-taken-of')).element(by.cssContainingText('option', 'Infant')).click();
         await modalBodyElem.element(by.id('care-taken-name')).sendKeys('Tvishi');
         await modalBodyElem.element(by.id('care-taken-dob')).sendKeys('2022-12-08');
         await modalBodyElem.element(by.id('care-taken-gender')).element(by.cssContainingText('option', 'Female')).click();

@@ -11,6 +11,7 @@ export interface careTakenDetail {
   type: string;
 }
 export interface feedTypeOptions {
+  infant: string[];
   child: string[];
   spouse: string[];
   parent: string[];

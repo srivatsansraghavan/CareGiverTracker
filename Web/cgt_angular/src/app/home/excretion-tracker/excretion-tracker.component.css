@@ -10,3 +10,30 @@
     background-color: rgb(195, 191, 93);
     overflow: hidden;
 }
+
+.btn-add-exc {
+    text-align: center;
+    align-self: center;
+    margin: 3%;
+}
+
+.modal-footer {
+    justify-content: center;
+}
+
+li.exc-per-date {
+    list-style-type: none;
+    padding-bottom: 1%;
+    display: block;
+}
+
+li.tracked-exc-timeline {
+    list-style-type: none;
+    padding-bottom: 1%;
+}
+
+.btn-edit-tracked-exc, .btn-delete-tracked-exc {
+    background-color: transparent;
+    border: 0 transparent;
+    display: inline-block;
+}

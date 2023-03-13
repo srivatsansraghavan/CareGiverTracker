@@ -35,24 +35,25 @@ describe('validate signup form of Caregiver Tracker landing page', function() {
     });
 
     it('should throw error message for improper password', async function() {
+        let passwordError = 'Password should have atleast one uppercase, lowercase, number and special character';
         await element(by.name('signUpPassword')).sendKeys('abcd');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('abcd123');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('ABCD123');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('ABCDabcd');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('123');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('ABcd123');
         expect(await element(by.id('signUpPasswordError')).getText())
-        .toEqual('Password should have atleast one uppercase, lowercase, number and special character');
+        .toEqual(passwordError);
         await element(by.name('signUpPassword')).clear().sendKeys('ABcd123@');
         expect(await element(by.id('signUpPasswordError')).isPresent())
         .toEqual(false);
