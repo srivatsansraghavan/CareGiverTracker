@@ -36,6 +36,7 @@ describe('validate first time user modal of Caregiver Tracker landing page', fun
         //await browser.wait(protractor.ExpectedConditions.visibilityOf(element(by.cssContainingText('.role-addition-toast', 'Role Addition'))), 10000);
         //await element(by.css('.role-addition-toast')).element(by.className('btn-close')).click();
         //await browser.waitForAngularEnabled(true);
+        expect(await element(by.buttonText('Start Feed')).isDisplayed()).toBe(true);
         await browser.wait(protractor.ExpectedConditions.visibilityOf(element(by.buttonText('Logout'))), 5000);
         await element(by.buttonText('Logout')).click();
         expect(await element(by.css('input[name="signUpEmail"]')).isDisplayed()).toBe(true);
@@ -73,6 +74,8 @@ describe('validate first time user modal of Caregiver Tracker landing page', fun
         //await element(by.css('.role-addition-toast')).element(by.className('btn-close')).click();
         //await browser.waitForAngularEnabled(true);
         await browser.wait(protractor.ExpectedConditions.visibilityOf(element(by.buttonText('Start Feed'))), 5000);
-        await element(by.buttonText('Start Feed')).click();
+        expect(await element(by.buttonText('Start Feed')).isDisplayed()).toBe(true);
+        await browser.wait(protractor.ExpectedConditions.visibilityOf(element(by.buttonText('Logout'))), 5000);
+        await element(by.buttonText('Logout')).click();
     });
 });

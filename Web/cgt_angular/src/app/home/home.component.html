@@ -26,6 +26,12 @@
         <app-medicine-tracker></app-medicine-tracker>
       </ng-template>
     </li>
+    <li [ngbNavItem]="4">
+      <a ngbNavLink> Inventory </a>
+      <ng-template ngbNavContent>
+        <app-inventory-tracker></app-inventory-tracker>
+      </ng-template>
+    </li>
   </ul>
   <div [ngbNavOutlet]="nav" class="mt-2"></div>
 </ng-template>

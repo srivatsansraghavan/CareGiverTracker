@@ -31,8 +31,7 @@
             eachExcretion.excretionTime
           }}) -
           <span *ngIf="eachExcretion.napkinType === 'Diaper'">
-            {{ eachExcretion.diaperCount }}
-            {{ eachExcretion.diaperBrand }} Diapers used.
+            {{ eachExcretion.diaperCount }} Diapers used.
           </span>
           <button
             class="bi bi-pencil btn-edit-tracked-exc"
@@ -105,11 +104,12 @@
             placeholder="0"
             min="0"
             step="1"
+            size="4"
           />
         </div>
       </div>
-      <!-- 
-      <div class="row" *ngIf="diaperCount > 0">
+
+      <div class="row" *ngIf="chosenNapkinType === 'Diaper'">
         <div class="col-md-2">
           <p>Diaper Brand:</p>
         </div>
@@ -121,13 +121,14 @@
           >
             <option
               *ngFor="let diaperBrand of diaperBrands"
-              [value]="diaperBrand"
+              [value]="diaperBrand._id"
             >
-              {{ diaperBrand }}
+              {{ diaperBrand.inventory_brand }} (Added on
+              {{ diaperBrand.added_time }})
             </option>
           </select>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="modal-footer">
       <button
@@ -193,12 +194,12 @@
         </div>
       </div>
 
-      <div class="row" *ngIf="editTrackedExcData.napkinType === 'Diaper'">
+      <!-- <div class="row" *ngIf="editTrackedExcData.napkinType === 'Diaper'">
         <div class="col-md-4">Diaper Brand:</div>
         <div class="col-md-4">
           {{ editTrackedExcData.diaperBrand }}
         </div>
-      </div>
+      </div> -->
     </div>
 
     <div class="row mt-2">

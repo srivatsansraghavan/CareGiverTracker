@@ -55,6 +55,7 @@ it('verify whether first time user modal dialog is displayed when Sign me up! bu
     // cy.get('.toast-header').contains('Role Addition').within(() => {
     //     cy.get('.btn-close').should('be.visible').click()
     // })
+    cy.get('button').contains('Start Feed').should('be.visible')
 
     cy.get('button').contains('Logout').should('be.visible').click()
   })
@@ -104,5 +105,6 @@ it('verify whether first time user modal dialog is displayed when Sign me up! bu
     cy.get('button').contains('Save').click()
   })
   cy.get('button').contains('Start Feed').should('be.visible')
+  cy.get('button').contains('Logout').should('be.visible').click()
 })
 })

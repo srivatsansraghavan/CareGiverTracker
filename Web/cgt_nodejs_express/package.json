@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:local": "set NODE_ENV=local && nodemon app.js",
-    "start:dev": "set NODE_ENV=dev && node app.js",
+    "start:dev": "export NODE_ENV=dev && node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Srivatsan S",

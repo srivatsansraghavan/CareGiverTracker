@@ -4,13 +4,18 @@
   "description": "Automation framework with Selenium, Javascript and Cucumber",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js features/ --require features/support/env.js --require features/stepdefs/**/*.js --publish-quiet --format progress-bar --format json:cucumber-report.json --format html:cucumber-report.html"
+    "test:local": "set NODE_ENV=local && cucumber-js --config cucumber.json",
+    "test:dev": "export NODE_ENV=dev && cucumber-js --config cucumber.json",
+    "debug": "set NODE_ENV=local && node --inspect-brk ./node_modules/@cucumber/cucumber/bin/cucumber-js --config cucumber.json"
   },
   "author": "Srivatsan S",
   "license": "ISC",
   "dependencies": {
     "@cucumber/cucumber": "^9.0.0",
+    "@faker-js/faker": "^7.6.0",
+    "axios": "^1.3.4",
     "chai": "^4.3.7",
+    "mongodb": "^5.1.0",
     "selenium-webdriver": "^4.8.1"
   }
 }

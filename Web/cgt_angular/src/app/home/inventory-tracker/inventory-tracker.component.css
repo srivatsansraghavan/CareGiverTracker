@@ -1,0 +1,33 @@
+.inventory-container {
+    display: block;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    min-width: 800px;
+    min-height: 600px;
+    width: 60%;
+    height: 90%;
+    background-color: rgb(149, 211, 180);
+    overflow: hidden;
+}
+
+.btn-add-inventory {
+    text-align: center;
+    align-self: center;
+    margin: 3%;
+}
+
+.modal-footer {
+    justify-content: center;
+}
+
+li.inv-per-date {
+    list-style-type: none;
+    padding-bottom: 1%;
+    display: block;
+}
+
+li.tracked-inv-timeline {
+    list-style-type: none;
+    padding-bottom: 1%;
+}

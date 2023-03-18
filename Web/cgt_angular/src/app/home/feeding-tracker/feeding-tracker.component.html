@@ -19,6 +19,7 @@
       >
         <li
           *ngIf="eachFeed.hasOwnProperty('mode')"
+          id="eachFeed.id"
           class="tracked-feed-timeline"
         >
           Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -
@@ -35,6 +36,7 @@
         </li>
         <li
           *ngIf="eachFeed.hasOwnProperty('pumpedMode')"
+          id="eachFeed.id"
           [ngClass]="{
             'pumped-feed-timeline': eachFeed.hasOwnProperty('mode'),
             'tracked-feed-timeline': !eachFeed.hasOwnProperty('mode')
@@ -80,7 +82,7 @@
         <div class="col-md-8">
           <select
             class="form-control-md w-auto"
-            id="feedingType"
+            name="feedingType"
             [(ngModel)]="chosenFeedType"
             (change)="onFeedTypeChosen($event)"
           >
@@ -100,7 +102,7 @@
         <div class="col-md-8">
           <select
             class="form-control-md w-auto"
-            id="feedingMode"
+            name="feedingMode"
             [(ngModel)]="chosenFeedMode"
             (change)="onFeedModeChosen($event)"
           >
@@ -125,7 +127,7 @@
         <div class="col-md-8">
           <span *ngIf="chosenFeedMode === 'Pumped Milk'">
             <select
-              id="preparedFeed"
+              name="preparedFeed"
               class="form-control-md w-auto"
               [(ngModel)]="chosenPumpedFeed"
             >
@@ -133,9 +135,10 @@
                 *ngFor="let pumpedFeed of pumpedFeeds"
                 [value]="pumpedFeed.id"
               >
+                {{ pumpedFeed.pumpedSide }} - {{ pumpedFeed.pumpedMode }} (
                 {{ pumpedFeed.startDate }}
                 {{ pumpedFeed.startTime }} - {{ pumpedFeed.endDate }}
-                {{ pumpedFeed.endTime }}
+                {{ pumpedFeed.endTime }})
               </option>
             </select>
           </span>
@@ -149,7 +152,7 @@
             <div class="col-md-8">
               <select
                 class="form-control-md w-auto"
-                id="feedingSide"
+                name="feedingSide"
                 [(ngModel)]="chosenFeedSide"
                 (change)="onFeedSideChosen($event)"
               >
@@ -165,6 +168,7 @@
       <div class="row">
         <div class="col-md-3">
           <button
+            name="btnStartTracking"
             class="btn btn-primary btn-start-tracking"
             (click)="trackFeedTime()"
             [disabled]="disableTracking"
@@ -191,6 +195,7 @@
             <input
               type="number"
               class="form-control mx-auto"
+              name="feedQuantity"
               id="feedQuantity"
               [(ngModel)]="feedQuantity"
               placeholder="0"
@@ -204,6 +209,7 @@
     </div>
     <div class="modal-footer">
       <button
+        name="btnSaveFeed"
         class="btn btn-primary p-3"
         (click)="
           chosenFeedType === 'Breast Pump'
@@ -215,7 +221,11 @@
       >
         Save & Close
       </button>
-      <button class="btn btn-secondary p-3" (click)="cancelTrackingFeed()">
+      <button
+        class="btn btn-secondary p-3"
+        name="btnCloseFeed"
+        (click)="cancelTrackingFeed()"
+      >
         Close
       </button>
     </div>

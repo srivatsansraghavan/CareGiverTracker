@@ -74,7 +74,7 @@
               ]
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -86,7 +86,7 @@
               "browserTarget": "cgt_angular:build:development"
             },
             "local": {
-              "browserTarget": "cgt_angular:build:local"
+              "browserTarget": "cgt_angular:build"
             }
           },
           "defaultConfiguration": "local"

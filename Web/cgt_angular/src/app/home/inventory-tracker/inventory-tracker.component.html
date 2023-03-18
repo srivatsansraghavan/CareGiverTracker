@@ -1,0 +1,141 @@
+<div class="inventory-container">
+  <button
+    class="btn btn-primary btn-add-inventory"
+    (click)="addInventory(addInvModal)"
+  >
+    Add Inventory
+  </button>
+
+  <ul class="inv-timeline">
+    <li
+      class="inv-per-date"
+      *ngFor="let inventory of inventories | trackItems : 'getKeyValue'"
+    >
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      {{ inventory[0].key }}
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <ul
+        class="inv-date-timeline"
+        *ngFor="
+          let eachInventory of inventory[0].value | trackItems : 'getValueArray'
+        "
+      >
+        <li
+          *ngIf="eachInventory.hasOwnProperty('inventoryType')"
+          class="tracked-inv-timeline"
+        >
+          {{ eachInventory.inventoryType }}:
+          {{ eachInventory.inventoryBrand }} -
+          {{ eachInventory.inventoryRemaining }} remaining out of
+          {{ eachInventory.inventoryTotal }}. (Added on
+          {{ eachInventory.addedTime }})
+          <!-- <button
+            class="bi bi-pencil btn-edit-tracked-exc"
+            (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
+          ></button>
+          <button
+            class="bi bi-trash btn-delete-tracked-exc"
+            (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
+          ></button> -->
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- Modal for adding inventory starts -->
+  <ng-template #addInvModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">
+        Inventory for {{ careTakenDetails.name }}
+      </h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-2">
+          <p>Inventory Type:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="invType"
+            [(ngModel)]="chosenInventoryType"
+          >
+            <option
+              *ngFor="let inventoryType of inventoryTypes"
+              [value]="inventoryType"
+            >
+              {{ inventoryType }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <p>Inventory Brand:</p>
+        </div>
+        <div class="col-md-8">
+          <input
+            class="form-control-md w-auto"
+            id="invBrand"
+            type="text"
+            [(ngModel)]="enteredInventoryBrand"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <p>Inventory Count:</p>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="number"
+            class="form-control mx-auto"
+            name="invCount"
+            id="invCount"
+            [(ngModel)]="enteredInventoryCount"
+            min="0"
+            step="1"
+          />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <p>Inventory Each Contains:</p>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="number"
+            class="form-control mx-auto"
+            name="invEachContains"
+            id="invEachContains"
+            [(ngModel)]="enteredInventoryEachContains"
+            min="0"
+            step="5"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="saveInventory()"
+        [disabled]="
+          chosenInventoryType === '' ||
+          enteredInventoryBrand === '' ||
+          enteredInventoryCount === 0 ||
+          enteredInventoryEachContains === 0
+        "
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelSaveInventory()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for adding inventory ends -->
+</div>

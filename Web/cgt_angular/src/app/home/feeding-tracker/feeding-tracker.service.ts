@@ -136,8 +136,8 @@ export class FeedingTrackerService {
           for (let responseItem of response.body) {
             let responseFeeds = {};
             responseFeeds['id'] = responseItem._id;
-            responseFeeds['mode'] = responseItem.pumped_mode;
-            responseFeeds['side'] = responseItem.pumped_side;
+            responseFeeds['pumpedMode'] = responseItem.pumped_mode;
+            responseFeeds['pumpedSide'] = responseItem.pumped_side;
             responseFeeds['quantity'] = responseItem.pumped_quantity;
             responseFeeds['startDate'] =
               responseItem.pump_start_time.split(' ')[0];

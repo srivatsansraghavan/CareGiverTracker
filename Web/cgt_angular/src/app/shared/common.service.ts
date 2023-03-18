@@ -76,6 +76,16 @@ export interface trackedExcretionData {
   excretionTime: string;
 }
 
+export interface inventoryData {
+  id: Object;
+  inventoryType: string;
+  inventoryBrand: string;
+  inventoryTotal: number;
+  inventoryRemaining: number;
+  boughtDate: string;
+  boughtTime: string;
+}
+
 @Injectable()
 export class CommonService {
   constructor(private httpClient: HttpClient) {}

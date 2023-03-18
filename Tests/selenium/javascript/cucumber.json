@@ -1,0 +1,16 @@
+{
+    "default": {
+        "format": [
+            "html:cucumber-report.html",
+            "json:cucumber-report.json"
+        ],
+        "paths": [
+            "features/home/cgt_feeding_tracker_infant.feature"
+        ],
+        "require":[
+            "features/support/env.js",
+            "features/stepdefs/**/*.js"
+        ],
+        "publishQuiet": true
+    }
+}

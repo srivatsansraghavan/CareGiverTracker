@@ -24,7 +24,7 @@ export class ExcretionTrackerComponent implements OnInit {
   trackedExcretions: trackedExcretionData;
   excretionTypes: string[] = ['Urine', 'Stools', 'Urine and Stools', 'None'];
   napkinTypes: string[] = ['Diaper', 'Others'];
-  diaperBrands: string[];
+  diaperBrands: any;
   chosenExcretionType: string;
   chosenNapkinType: string;
   chosenDiaperBrand: string;
@@ -58,6 +58,15 @@ export class ExcretionTrackerComponent implements OnInit {
           )
           .subscribe((excretionDetailsResponse) => {
             this.trackedExcretions = excretionDetailsResponse;
+          });
+        this.etService
+          .getAvailableInventory(
+            this.careGiverEmail,
+            this.careTakenDetails.id,
+            'Diaper'
+          )
+          .subscribe((availableDiapersResp) => {
+            this.diaperBrands = availableDiapersResp.body;
           });
       });
   }

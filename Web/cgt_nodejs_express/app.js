@@ -307,6 +307,7 @@ app.post('/save-tracked-excretion', async (req, res) => {
         }
         const saveTrackedExc = await collection.insertOne(insertQuery);
         if(saveTrackedExc.acknowledged){
+            await db.collection("cgt_inventory").updateOne({ _id: ObjectId(req.body.diaperBrand) }, { "$inc": { inventory_used: req.body.diaperCount } }); 
             res.status(200).json({ message: `Excretion of ${req.body.careTakenOf.name} noted!` });
         } else {
             res.status(404).json({ message: 'Unable to add tracked excretion. Please try later!' });
@@ -337,6 +338,12 @@ app.delete('/delete-exc/:excId', async (req, res) => {
         await client.connect();
         const db = client.db("caregiver_tracker");
         const collection = db.collection("cgt_excretion");
+        const getDiaperDetails = await db.collection("cgt_excretion").find({ "_id": ObjectId(req.params.excId)}).toArray();
+        if(getDiaperDetails[0].napkin_type === 'Diaper'){
+        const diaperCount = getDiaperDetails[0].diaper_count;
+        const diaperBrand = getDiaperDetails[0].diaper_brand;
+        await db.collection("cgt_inventory").updateOne({ _id: ObjectId(diaperBrand) }, { "$inc": { inventory_used: -diaperCount } }); 
+        }
         const deleteExc = await collection.deleteOne( { "_id": ObjectId(req.params.excId) } );
         if(deleteExc.acknowledged && deleteExc.deletedCount === 1){
             res.status(200).json({ message: 'Tracked excretion deleted successfully'} );
@@ -360,6 +367,66 @@ app.get('/get-exc-for-id/:excId', async(req, res) => {
             res.status(404).json({ message: 'Unable to get tracked excretion. Please try again later!' });
         }
     } catch(err) {
+        console.log(err);
+    }
+});
+
+app.post('/add-to-inventory', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("caregiver_tracker");
+        const collection = await db.collection("cgt_inventory");
+        let addedTime = moment().format('DD/MM/YYYY HH:mm:ss');
+        const inventoryTotal = req.body.inventoryCount * req.body.inventoryEachContains;
+        const insertQuery = {
+            care_giver: req.body.careGiver,
+            care_taken_of_name: req.body.careTakenOf.name,
+            care_taken_of_id: req.body.careTakenOf.id,
+            inventory_type: req.body.inventoryType,
+            inventory_brand: req.body.inventoryBrand,
+            added_time: addedTime,
+            inventory_total: inventoryTotal,
+            inventory_used: 0
+        }
+        const saveInventory = await collection.insertOne(insertQuery);
+        if(saveInventory.acknowledged){
+            res.status(200).json({ message: `Inventory of ${req.body.careTakenOf.name} noted!` });
+        } else {
+            res.status(404).json({ message: 'Unable to add inventory. Please try later!' });
+        }
+    } catch(err) {
+        console.log(err);
+    }
+});
+
+app.get('/get-inventories', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("caregiver_tracker");
+        const collection = db.collection("cgt_inventory");
+        const getInventories = await collection.find( { care_giver: req.query.careGiver, care_taken_of_id: req.query.careTakenId }).sort({ _id: -1 }).toArray();
+        if(getInventories && getInventories.length > 0){
+            res.status(200).json(getInventories);
+        } else {
+            res.status(404).json({ message: 'No inventories found' });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+app.get('/get-available-inventory', async (req, res) => {
+    try {
+        await client.connect();
+        const db = client.db("caregiver_tracker");
+        const collection = db.collection("cgt_inventory");
+        const getAvlInventory = await collection.find( { care_giver: req.query.careGiver, care_taken_of_id: req.query.careTakenId, inventory_type: req.query.inventoryType, $expr :{ $gt: ["$inventory_total", "$inventory_used"] } }).sort({ _id: -1 }).toArray();
+        if(getAvlInventory && getAvlInventory.length > 0){
+            res.status(200).json(getAvlInventory);
+        } else {
+            res.status(404).json({ message: 'No inventory found' });
+        }
+    } catch (err) {
         console.log(err);
     }
 });

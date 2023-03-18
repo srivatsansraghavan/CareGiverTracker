@@ -23,7 +23,7 @@ When(/^I get label text of '(.*)' field in 'signup' form and enter '(.*)'$/, asy
         case 'Add Verify':
             const splitAddElement = attrValue.split('+');
             const leftSide = parseInt(splitAddElement[0].trim());
-            const rightSide = parseInt(splitAddElement[1].trim());
+            const rightSide = parseInt(splitAddElement[1].replace('=').trim());
             sumSide = leftSide + rightSide;
             break;
         default:

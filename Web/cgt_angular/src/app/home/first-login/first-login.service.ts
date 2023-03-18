@@ -36,6 +36,7 @@ export class FirstLoginService {
       .subscribe((responseAddRole: any) => {
         if (responseAddRole.status === 200) {
           this.router.navigate(['/home']);
+          localStorage.setItem('login_email', care_giver);
           this.toastService.show(
             'Role Addition',
             responseAddRole.body.message,

@@ -30,5 +30,51 @@
             "name": "loginPassword",
             "error": "loginPasswordError"
         }
+    },
+    "firstlogin": {
+        "Care Taken Of": {
+            "name": "care-taken-of"
+        },
+        "Care Taken Name": {
+            "name": "care-taken-name"
+        },
+        "Care Taken DOB": {
+            "name": "care-taken-dob"
+        },
+        "Care Taken Gender": {
+            "name": "care-taken-gender"
+        }
+    },
+    "feeding tracker": {
+        "Feed Type": {
+            "name": "feedingType"
+        },
+        "Breast Pump Mode": {
+            "name": "feedingMode"
+        },
+        "Feed Mode": {
+            "name": "feedingMode"
+        },
+        "Breast side": {
+            "name": "feedingSide"
+        },
+        "Choose pumped feed": {
+            "name": "preparedFeed"
+        },
+        "Start Tracking": {
+            "name": "btnStartTracking"
+        },
+        "Stop Tracking": {
+            "name": "btnStartTracking"
+        },
+        "Feed Quantity": {
+            "name": "feedQuantity"
+        },
+        "Save & Close": {
+            "name": "btnSaveFeed"
+        },
+        "Close": {
+            "name": "btnCloseFeed"
+        }
     }
 }

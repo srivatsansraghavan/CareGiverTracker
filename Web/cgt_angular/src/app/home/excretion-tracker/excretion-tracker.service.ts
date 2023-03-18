@@ -32,9 +32,9 @@ export class ExcretionTrackerService {
             responseDetails['diaperCount'] = responseItem.diaper_count;
             responseDetails['diaperBrand'] = responseItem.diaper_brand;
             endDate = responseItem.excretion_time.split(' ')[0];
-            responseDetails['excretionDate'] =
+            responseDetails['excretionTime'] =
               responseItem.excretion_time.split(' ')[1];
-            responseDetails['excretionTime'] = endDate;
+            responseDetails['excretionDate'] = endDate;
             if (!excretionGrouped.hasOwnProperty(endDate)) {
               excretionGrouped[endDate] = [];
             }
@@ -44,6 +44,17 @@ export class ExcretionTrackerService {
           return excretionGrouped;
         })
       );
+  }
+
+  getAvailableInventory(
+    care_giver: string,
+    care_taken_of: Object,
+    inventory_type: string
+  ): Observable<any> {
+    return this.httpClient.get(
+      `${environment.expressURL}/get-available-inventory?careGiver=${care_giver}&careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
+      { observe: 'response' }
+    );
   }
 
   saveTrackedExcretion(
