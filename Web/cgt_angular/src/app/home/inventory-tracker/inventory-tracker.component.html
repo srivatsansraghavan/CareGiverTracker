@@ -70,6 +70,26 @@
         </div>
       </div>
 
+      <div class="row" *ngIf="chosenInventoryType === 'Medicine'">
+        <div class="col-md-2">
+          <p>Inventory Form:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="invType"
+            [(ngModel)]="chosenInventoryForm"
+          >
+            <option
+              *ngFor="let inventoryForm of inventoryForms"
+              [value]="inventoryForm"
+            >
+              {{ inventoryForm }}
+            </option>
+          </select>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-md-2">
           <p>Inventory Brand:</p>

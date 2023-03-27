@@ -1,0 +1,207 @@
+<div class="container">
+  <button
+    class="btn btn-primary btn-add-med"
+    (click)="addMedication(addMedModal)"
+  >
+    Track Medication
+  </button>
+
+  <ul class="med-timeline">
+    <li
+      class="med-per-date"
+      *ngFor="
+        let trackMedication of trackedMedications | trackItems : 'getKeyValue'
+      "
+    >
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      {{ trackMedication[0].key }}
+      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <ul
+        class="med-date-timeline"
+        *ngFor="
+          let eachMedication of trackMedication[0].value
+            | trackItems : 'getValueArray'
+        "
+      >
+        <li
+          *ngIf="eachMedication.hasOwnProperty('medicineName')"
+          class="tracked-med-timeline"
+        >
+          {{ eachMedication.medicineName }} -
+          {{ eachMedication.medicineQuantity }}
+          <span
+            *ngIf="
+              eachMedication.medicineForm === 'Drops' ||
+              eachMedication.medicineForm === 'Syrup'
+            "
+            >ml</span
+          >
+          ({{ eachMedication.medicationTime }})
+          <button
+            class="bi bi-pencil btn-edit-tracked-med"
+            (click)="editTrackedMedModal(editMedModal, eachMedication.id)"
+          ></button>
+          <button
+            class="bi bi-trash btn-delete-tracked-med"
+            (click)="deleteTrackedMedModal(deleteMedModal, eachMedication.id)"
+          ></button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <!-- Modal for adding medication starts -->
+  <ng-template #addMedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">
+        Medication to {{ careTakenDetails.name }}
+      </h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-2">
+          <p>Medicine Name:</p>
+        </div>
+        <div class="col-md-8">
+          <select
+            class="form-control-md w-auto"
+            id="medName"
+            [(ngModel)]="chosenMedicineName"
+            (change)="medicineChosen($event)"
+          >
+            <option
+              *ngFor="let medicineName of medicineNames"
+              [value]="medicineName._id"
+            >
+              {{ medicineName.inventory_brand }} (Added on
+              {{ medicineName.added_time }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-2">
+          <p>Medicine Quantity:</p>
+        </div>
+        <div class="col-md-3">
+          <div class="input-group">
+            <input
+              type="number"
+              class="form-control mx-auto"
+              id="medQuantity"
+              [(ngModel)]="medicineQuantity"
+              placeholder="0"
+              min="0"
+              step="1"
+              size="4"
+            />
+            <span *ngIf="medicineForm === 'Drops' || medicineForm === 'Syrup'"
+              >ml</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="saveTrackingMedication()"
+        [disabled]="chosenMedicineName === '' && medicineQuantity === 0"
+      >
+        Save & Close
+      </button>
+      <button
+        class="btn btn-secondary p-3"
+        (click)="cancelTrackingMedication()"
+      >
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for adding tracked medication ends -->
+
+  <!-- Modal for deleting tracked medication starts -->
+  <ng-template #deleteMedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Delete Tracked Medication</h3>
+    </div>
+    <div class="modal-body">
+      Are you sure you want to delete this tracked medication?
+    </div>
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="deleteTrackedMed(deleteMedId)"
+      >
+        Delete
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelDeleteTrackedMed()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for deleting tracked medication ends -->
+
+  <!-- Modal for editing tracked medication starts -->
+  <ng-template #editMedModal>
+    <div class="modal-header">
+      <h3 class="modal-title centre">Edit Tracked Medication</h3>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-4">Medicine Name:</div>
+        <div class="col-md-4">
+          {{ editTrackedMedData.medicineName }}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">Medicine Quantity:</div>
+        <div class="col-md-4">
+          {{ editTrackedMedData.medicineQuantity }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-2">
+      <div class="col-md-3">Medication Time:</div>
+      <div class="col-md-4">
+        <div class="input-group">
+          <input
+            class="form-control w-10"
+            ngbDatepicker
+            id="edit-feed-start-date"
+            [(ngModel)]="editTrackedMedData.medicationDate"
+            #d="ngbDatepicker"
+          />
+          <button
+            class="btn btn-outline-secondary bi bi-calendar3"
+            (click)="d.toggle()"
+            type="button"
+          ></button>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <ngb-timepicker
+          [(ngModel)]="editTrackedMedData.medicationTime"
+          [spinners]="false"
+          [seconds]="true"
+        ></ngb-timepicker>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        class="btn btn-primary p-3"
+        (click)="editTrackedMed(editTrackedMedData)"
+      >
+        Save & Close
+      </button>
+      <button class="btn btn-secondary p-3" (click)="cancelEditTrackedMed()">
+        Close
+      </button>
+    </div>
+  </ng-template>
+  <!-- Modal for editing tracked medication starts -->
+</div>

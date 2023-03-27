@@ -28,7 +28,7 @@ export class FeedingTrackerService {
     pumpedFeedId: string
   ): Observable<Object> {
     return this.httpClient.post(
-      `${environment.expressURL}/save-tracking-feed`,
+      `${environment.expressURL}/feed/save-tracking-feed`,
       {
         feedGiver,
         feedTaker,
@@ -53,7 +53,7 @@ export class FeedingTrackerService {
     feedQuantity: number
   ): Observable<Object> {
     return this.httpClient.post(
-      `${environment.expressURL}/save-pumping-feed`,
+      `${environment.expressURL}/feed/save-pumping-feed`,
       {
         feedGiver,
         feedTaker,
@@ -74,7 +74,7 @@ export class FeedingTrackerService {
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/get-feed-details?feed_giver=${feedGiver}&feed_taker=${feedTaker}&feed_count=${feedCount}`,
+        `${environment.expressURL}/feed/get-feed-details?feed_giver=${feedGiver}&feed_taker=${feedTaker}&feed_count=${feedCount}`,
         { observe: 'response' }
       )
       .pipe(
@@ -127,7 +127,7 @@ export class FeedingTrackerService {
   fetchPumpedFeeds(feedGiver: string, feedTaker: Object): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/get-pumped-feeds?feed_giver=${feedGiver}&feed_taker=${feedTaker}`,
+        `${environment.expressURL}/feed/get-pumped-feeds?feed_giver=${feedGiver}&feed_taker=${feedTaker}`,
         { observe: 'response' }
       )
       .pipe(

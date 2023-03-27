@@ -1,0 +1,39 @@
+.container {
+    display: block;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    min-width: 800px;
+    min-height: 600px;
+    width: 60%;
+    height: 90%;
+    background-color: rgb(200, 142, 84);
+    overflow: hidden;
+}
+
+.btn-add-med {
+    text-align: center;
+    align-self: center;
+    margin: 3%;
+}
+
+.modal-footer {
+    justify-content: center;
+}
+
+li.med-per-date {
+    list-style-type: none;
+    padding-bottom: 1%;
+    display: block;
+}
+
+li.tracked-med-timeline {
+    list-style-type: none;
+    padding-bottom: 1%;
+}
+
+.btn-edit-tracked-med, .btn-delete-tracked-med {
+    background-color: transparent;
+    border: 0 transparent;
+    display: inline-block;
+}

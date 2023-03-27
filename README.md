@@ -7,10 +7,7 @@ The website related files are available in Web folder and the automated tests ar
 ### Steps to start the website
 
 - Clone the repository and navigate to cgt_angular folder inside Web folder.
-- In VS Code terminal, run 'npm run build:local'
+- In VS Code terminal, run 'npm run start:local'
 - In another VS Code terminal, navigate to cgt_nodejs_express folder and run 'npm run start'
-- Ensure that MongoDB is installed and the following collections are created:
-  ** cgt_users
-  ** cgt_roles
-  \*\* cgt_feeding
+- Ensure that MongoDB is installed
 - Open 'http://localhost:4200' and Sign up for the first time.

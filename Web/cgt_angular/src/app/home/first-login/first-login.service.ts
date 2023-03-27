@@ -23,7 +23,7 @@ export class FirstLoginService {
   ) {
     this.httpClient
       .post(
-        `${environment.expressURL}/add-role`,
+        `${environment.expressURL}/role/add-role`,
         {
           care_giver,
           care_taken_of,

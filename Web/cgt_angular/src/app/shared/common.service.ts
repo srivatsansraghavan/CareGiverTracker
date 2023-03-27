@@ -76,6 +76,14 @@ export interface trackedExcretionData {
   excretionTime: string;
 }
 
+export interface trackedMedicationData {
+  id: Object;
+  medicineName: string;
+  medicineQuantity: number;
+  medicationDate: string;
+  medicationTime: string;
+}
+
 export interface inventoryData {
   id: Object;
   inventoryType: string;
@@ -93,7 +101,7 @@ export class CommonService {
   getCareTakenOfDetails(giver_email: string): Observable<careTakenDetail> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/get-role-details?giver_email=${giver_email}`,
+        `${environment.expressURL}/role/get-role-details?giver_email=${giver_email}`,
         { observe: 'response' }
       )
       .pipe(
@@ -107,5 +115,16 @@ export class CommonService {
           };
         })
       );
+  }
+
+  getAvailableInventory(
+    care_giver: string,
+    care_taken_of: Object,
+    inventory_type: string
+  ): Observable<any> {
+    return this.httpClient.get(
+      `${environment.expressURL}/inventory/get-available-inventory?careGiver=${care_giver}&careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
+      { observe: 'response' }
+    );
   }
 }

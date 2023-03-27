@@ -1,29 +1,28 @@
-const { Before, After, BeforeAll, AfterAll } = require('@cucumber/cucumber');
-const { Builder, By, until } = require('selenium-webdriver');
-const { assert } = require('chai');
-const { MongoClient } = require('mongodb');
-const axios = require('axios');
+const { BeforeAll, AfterAll } = require("@cucumber/cucumber");
+const { Builder, By, until } = require("selenium-webdriver");
+const { assert } = require("chai");
+const axios = require("axios");
 
-BeforeAll(async function() {
-    const mongoUrl = (process.env.NODE_ENV == 'dev') ? '' : 'mongodb://localhost:27017';
-    global.client = new MongoClient(mongoUrl);
-    await client.connect();
-    await client.db('caregiver_tracker').collection('cgt_users').deleteMany();
-    await client.db('caregiver_tracker').collection('cgt_roles').deleteMany();
-    await client.db('caregiver_tracker').collection('cgt_feeding').deleteMany();
-    await client.db('caregiver_tracker').collection('cgt_excretion').deleteMany();
-    global.driver = new Builder().forBrowser('chrome').build();
+BeforeAll(async function () {
+  try {
+    global.driver = new Builder().forBrowser("chrome").build();
     global.axiosInstance = axios.create({
-        baseURL: (process.env.NODE_ENV == 'dev') ? '' : 'http://localhost:3000',
-        timeout: 3000,
-        headers: { 'Content-Type': 'application/json' }
+      baseURL:
+        process.env.NODE_ENV == "local"
+          ? "http://localhost:3000"
+          : "http://srivatsanssr.com:3000",
+      timeout: 3000,
+      headers: { "Content-Type": "application/json" },
     });
+    await axiosInstance.get("/clean-env-db/test");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 AfterAll(async function () {
-    driver.quit();
-    await client.close();
-})
+  driver.quit();
+});
 
 exports.By = By;
 exports.until = until;

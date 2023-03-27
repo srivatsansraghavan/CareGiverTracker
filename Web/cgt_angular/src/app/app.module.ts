@@ -16,7 +16,7 @@ import { ToastComponent } from './shared/toast/toast.component';
 import { FirstLoginComponent } from './home/first-login/first-login.component';
 import { FeedingTrackerComponent } from './home/feeding-tracker/feeding-tracker.component';
 import { ExcretionTrackerComponent } from './home/excretion-tracker/excretion-tracker.component';
-import { MedicineTrackerComponent } from './home/medicine-tracker/medicine-tracker.component';
+import { MedicationTrackerComponent } from './home/medication-tracker/medication-tracker.component';
 import { TimerComponent } from './shared/timer/timer.component';
 import { TrackItemsPipe } from './shared/pipes/track-items.pipe';
 import { InventoryTrackerComponent } from './home/inventory-tracker/inventory-tracker.component';
@@ -32,7 +32,7 @@ import { InventoryTrackerComponent } from './home/inventory-tracker/inventory-tr
     FirstLoginComponent,
     FeedingTrackerComponent,
     ExcretionTrackerComponent,
-    MedicineTrackerComponent,
+    MedicationTrackerComponent,
     TimerComponent,
     TrackItemsPipe,
     InventoryTrackerComponent,

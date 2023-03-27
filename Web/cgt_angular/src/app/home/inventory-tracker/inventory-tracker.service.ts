@@ -16,7 +16,7 @@ export class InventoryTrackerService {
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/get-inventories?careGiver=${care_giver}&careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
+        `${environment.expressURL}/inventory/get-inventories?careGiver=${care_giver}&careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
         { observe: 'response' }
       )
       .pipe(
@@ -28,6 +28,7 @@ export class InventoryTrackerService {
             responseDetails['id'] = responseItem._id;
             responseDetails['inventoryType'] = responseItem.inventory_type;
             responseDetails['inventoryBrand'] = responseItem.inventory_brand;
+            responseDetails['inventoryForm'] = responseItem.inventory_form;
             responseDetails['inventoryTotal'] = responseItem.inventory_total;
             responseDetails['inventoryUsed'] = responseItem.inventory_used;
             responseDetails['inventoryRemaining'] =
@@ -51,16 +52,18 @@ export class InventoryTrackerService {
     careGiver: string,
     careTakenOf: object,
     inventoryType: string,
+    inventoryForm: string,
     inventoryBrand: string,
     inventoryCount: number,
     inventoryEachContains: number
   ): Observable<any> {
     return this.httpClient.post(
-      `${environment.expressURL}/add-to-inventory`,
+      `${environment.expressURL}/inventory/add-to-inventory`,
       {
         careGiver,
         careTakenOf,
         inventoryType,
+        inventoryForm,
         inventoryBrand,
         inventoryCount,
         inventoryEachContains,

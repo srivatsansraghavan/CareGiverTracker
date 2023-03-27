@@ -22,7 +22,9 @@ export class InventoryTrackerComponent implements OnInit {
   subscription: Subscription;
   inventories: inventoryData;
   inventoryTypes: string[] = ['Diaper', 'Wet Wipes', 'Medicine'];
+  inventoryForms: string[] = ['Drops', 'Syrup', 'Pill', 'Tablet'];
   chosenInventoryType: string = '';
+  chosenInventoryForm: string = '';
   enteredInventoryBrand: string = '';
   enteredInventoryCount: number = 0;
   enteredInventoryEachContains: number = 0;
@@ -70,6 +72,7 @@ export class InventoryTrackerComponent implements OnInit {
         this.careGiverEmail,
         this.careTakenDetails,
         this.chosenInventoryType,
+        this.chosenInventoryForm,
         this.enteredInventoryBrand,
         this.enteredInventoryCount,
         this.enteredInventoryEachContains

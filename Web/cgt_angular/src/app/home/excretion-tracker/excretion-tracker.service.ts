@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { trackedExcretionData } from 'src/app/shared/common.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -17,7 +16,7 @@ export class ExcretionTrackerService {
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/get-excretion-details?careGiver=${care_giver}&careTakenId=${care_taken_id}&excretionCount=${excretion_count}`,
+        `${environment.expressURL}/excretion/get-excretion-details?careGiver=${care_giver}&careTakenId=${care_taken_id}&excretionCount=${excretion_count}`,
         { observe: 'response' }
       )
       .pipe(
@@ -46,17 +45,6 @@ export class ExcretionTrackerService {
       );
   }
 
-  getAvailableInventory(
-    care_giver: string,
-    care_taken_of: Object,
-    inventory_type: string
-  ): Observable<any> {
-    return this.httpClient.get(
-      `${environment.expressURL}/get-available-inventory?careGiver=${care_giver}&careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
-      { observe: 'response' }
-    );
-  }
-
   saveTrackedExcretion(
     careGiver: string,
     careTakenOf: Object,
@@ -66,7 +54,7 @@ export class ExcretionTrackerService {
     diaperBrand: string
   ): Observable<Object> {
     return this.httpClient.post(
-      `${environment.expressURL}/save-tracked-excretion`,
+      `${environment.expressURL}/excretion/save-tracked-excretion`,
       {
         careGiver,
         careTakenOf,
@@ -81,7 +69,7 @@ export class ExcretionTrackerService {
 
   getExcForId(excId: string) {
     return this.httpClient
-      .get(`${environment.expressURL}/get-exc-for-id/${excId}`, {
+      .get(`${environment.expressURL}/excretion/get-exc-for-id/${excId}`, {
         observe: 'response',
       })
       .pipe(
@@ -111,7 +99,7 @@ export class ExcretionTrackerService {
 
   saveEditedTrackedExc(excId: Object, excDate: Date): Observable<Object> {
     return this.httpClient.post(
-      `${environment.expressURL}/save-edited-exc`,
+      `${environment.expressURL}/excretion/save-edited-exc`,
       {
         excId,
         excDate,
@@ -122,7 +110,7 @@ export class ExcretionTrackerService {
 
   deleteExc(excId: string) {
     return this.httpClient.delete(
-      `${environment.expressURL}/delete-exc/${excId}`
+      `${environment.expressURL}/excretion/delete-exc/${excId}`
     );
   }
 }

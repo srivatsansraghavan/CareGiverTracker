@@ -2,7 +2,10 @@
 <ng-template #showTabs>
   <h1 class="home-header">Caregiver Tracker</h1>
   <nav class="navbar navbar-dark bg-primary">
-    <a class="navbar-brand ml-2" [routerLink]="['/home']">Home</a>
+    <a class="navbar-brand ml-2" href="http://srivatsanssr.com/index.html"
+      >Portfolio Home</a
+    >
+    <a class="navbar-brand ml-2" [routerLink]="['/home']">Caregiver Tracker</a>
     <button type="button" class="mr-sm-2 btn btn-primary" (click)="doLogout()">
       Logout
     </button>
@@ -21,9 +24,9 @@
       </ng-template>
     </li>
     <li [ngbNavItem]="3">
-      <a ngbNavLink> Medicines </a>
+      <a ngbNavLink> Medications </a>
       <ng-template ngbNavContent>
-        <app-medicine-tracker></app-medicine-tracker>
+        <app-medication-tracker></app-medication-tracker>
       </ng-template>
     </li>
     <li [ngbNavItem]="4">

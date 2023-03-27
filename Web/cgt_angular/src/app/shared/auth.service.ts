@@ -23,7 +23,7 @@ export class AuthService {
   signUpUser(email_id: string, pass_word: string, full_name: string) {
     this.httpClient
       .post(
-        `${environment.expressURL}/add-users`,
+        `${environment.expressURL}/user/add-users`,
         { email: email_id, password: pass_word, fullname: full_name },
         { observe: 'response' }
       )
@@ -32,7 +32,7 @@ export class AuthService {
           if (response.status === 200) {
             localStorage.setItem('access_token', response.body.access_token);
             localStorage.setItem('login_email', email_id);
-            this.router.navigate(['/home']);
+            this.router.navigate(['home']);
             this.toastService.show(
               'Sign up message',
               response.body.message,
@@ -55,7 +55,7 @@ export class AuthService {
   loginUser(email_id: string, pass_word: string) {
     this.httpClient
       .post(
-        `${environment.expressURL}/login-user`,
+        `${environment.expressURL}/user/login-user`,
         {
           email: email_id,
           password: pass_word,
@@ -67,7 +67,7 @@ export class AuthService {
           if (response.status === 200) {
             localStorage.setItem('access_token', response.body.access_token);
             localStorage.setItem('login_email', email_id);
-            this.router.navigate(['/home']);
+            this.router.navigate(['home']);
             this.toastService.show(
               'Login message',
               response.body.message,
@@ -94,7 +94,7 @@ export class AuthService {
 
   isFirstLogin(loginEmail: string): Observable<boolean> {
     this.httpClient
-      .get(`${environment.expressURL}/is-first-login?email=${loginEmail}`)
+      .get(`${environment.expressURL}/role/is-first-login?email=${loginEmail}`)
       .subscribe((firstLogin: any) => {
         this.firstLogin.next(firstLogin);
       });

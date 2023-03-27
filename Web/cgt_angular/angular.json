@@ -51,6 +51,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "baseHref": "/cgtangular/",
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -65,7 +66,7 @@
               ]
             },
             "local": {
-              "sourceMap": true,
+              "baseHref": "/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -86,7 +87,7 @@
               "browserTarget": "cgt_angular:build:development"
             },
             "local": {
-              "browserTarget": "cgt_angular:build"
+              "browserTarget": "cgt_angular:build:local"
             }
           },
           "defaultConfiguration": "local"
