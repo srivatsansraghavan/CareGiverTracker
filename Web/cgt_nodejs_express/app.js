@@ -10,7 +10,7 @@ const feed = require("./routes/feed");
 const excretion = require("./routes/excretion");
 const inventory = require("./routes/inventory");
 const medication = require("./routes/medication");
-const test = require("./routes/test");
+const base = require("./routes/base");
 
 app.use("/user", user);
 app.use("/role", role);
@@ -18,7 +18,7 @@ app.use("/feed", feed);
 app.use("/excretion", excretion);
 app.use("/inventory", inventory);
 app.use("/medication", medication);
-app.use("/test", test);
+app.use("/base", base);
 
 app.listen(3000, () => {
   console.log(`Caregiver tracker listening on port 3000!`);

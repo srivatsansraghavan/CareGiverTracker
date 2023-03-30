@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  expressURL: 'http://srivatsanssr:3000',
+  expressURL: 'http://srivatsanssr.com:3000',
 };
 
 /*

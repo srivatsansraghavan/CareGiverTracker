@@ -14,7 +14,7 @@ BeforeAll(async function () {
       timeout: 3000,
       headers: { "Content-Type": "application/json" },
     });
-    await axiosInstance.get("/clean-env-db/test");
+    await axiosInstance.get("base/clean-env-db/test");
   } catch (err) {
     console.log(err);
   }
