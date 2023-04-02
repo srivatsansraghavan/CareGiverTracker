@@ -1,6 +1,7 @@
 const { assert, By, until } = require("../features/support/env");
 
 async function verifyFirstTimeUserModal() {
+  await driver.sleep(3000);
   assert.equal(
     await driver.findElement(By.css(".modal-dialog")).isDisplayed(),
     true
@@ -23,30 +24,31 @@ async function verifyFeedTrackingModal() {
   );
 }
 
-async function getTopFeedRow() {
-  const trackedFeeds = await driver.findElements(
-    By.css(".tracked-feed-timeline")
-  );
-  for (let elemFeed of await driver.findElements(
-    By.css(".tracked-feed-timeline")
-  )) {
-    console.log("elemFeed", await elemFeed.getText());
-  }
-  console.log("trackedFeeds", await trackedFeeds);
+async function getTopPumpedRow() {
   const pumpedFeeds = await driver.findElements(
     By.css(".pumped-feed-timeline")
   );
-  if (pumpedFeeds.length > 0) {
-    for (const elemPump of pumpedFeeds) {
-      console.log("elemPump", await elemPump.getText());
+  const pumpedFeedRow = await pumpedFeeds[0].getText();
+  return pumpedFeedRow;
+}
+
+async function getTopFeedRow(feedText) {
+  await driver.sleep(2000);
+  const trackedFeeds = await driver.findElements(
+    By.css(".tracked-feed-timeline")
+  );
+  let trackedFeedRow;
+  for (let i = 0; i < trackedFeeds.length; i++) {
+    let trackedFeedText = await trackedFeeds[i].getText();
+    if (trackedFeedText.indexOf(feedText) > -1) {
+      trackedFeedRow = trackedFeedText;
+      break;
     }
   }
-
-  console.log("pumpedFeeds", await pumpedFeeds);
-  const trackedFeedRow = await trackedFeeds[0].getText();
   return trackedFeedRow;
 }
 
 exports.verifyFirstTimeUserModal = verifyFirstTimeUserModal;
 exports.verifyFeedTrackingModal = verifyFeedTrackingModal;
+exports.getTopPumpedRow = getTopPumpedRow;
 exports.getTopFeedRow = getTopFeedRow;

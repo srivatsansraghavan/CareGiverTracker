@@ -4,9 +4,9 @@
   "description": "Backend for caregiver tracker",
   "main": "index.js",
   "scripts": {
-    "start:local": "set NODE_ENV=local&& set MONGO_DB_URI=localhost&& nodemon app.js",
-    "start:dev": "export NODE_ENV=dev&& node app.js",
-    "start:test": "export NODE_ENV=test&& node app.js",
+    "start:local": "set NODE_ENV=local&& set NODE_PORT=3000&& set MONGO_DB_URI=localhost&& nodemon app.js",
+    "start:dev": "export NODE_ENV=dev&& export NODE_PORT=3001&& node app.js",
+    "start:test": "export NODE_ENV=test&& export NODE_PORT=3002&& node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Srivatsan S",

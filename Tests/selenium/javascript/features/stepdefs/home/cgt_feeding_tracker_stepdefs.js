@@ -10,9 +10,17 @@ Then(
 );
 
 Then(
+  /^I should see the pumped feed available in 'Homepage' as '(.*)'$/,
+  async (pumpedLine) => {
+    let timelineRows = await homePage.getTopPumpedRow();
+    assert.include(timelineRows, pumpedLine);
+  }
+);
+
+Then(
   /^I should see the tracked feed available in 'Homepage' as '(.*)'$/,
   async (feedLine) => {
-    let timelineRows = await homePage.getTopFeedRow();
+    let timelineRows = await homePage.getTopFeedRow(feedLine);
     assert.include(timelineRows, feedLine);
   }
 );

@@ -12,6 +12,7 @@ export interface careTakenDetail {
 }
 export interface feedTypeOptions {
   infant: string[];
+  toddler: string[];
   child: string[];
   spouse: string[];
   parent: string[];
@@ -94,7 +95,7 @@ export interface inventoryData {
   boughtTime: string;
 }
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CommonService {
   constructor(private httpClient: HttpClient) {}
 
@@ -126,5 +127,9 @@ export class CommonService {
       `${environment.expressURL}/inventory/get-available-inventory?careGiver=${care_giver}&careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
       { observe: 'response' }
     );
+  }
+
+  getEnvironment() {
+    return environment.name;
   }
 }

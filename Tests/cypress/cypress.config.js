@@ -9,6 +9,20 @@ module.exports = defineConfig({
     supportFile: "support/e2e.js",
     testIsolation: false,
     experimentalStudio: true,
-    reporter: 'mochawesome',
+    reporter: "mochawesome",
+    env: {
+      local: {
+        testURL: "http://localhost:4200/",
+        apiURL: "http://localhost:3000",
+      },
+      usersCreated: {
+        infant: [],
+        toddler: [],
+        child: [],
+        spouse: [],
+        friend: [],
+        parent: [],
+      },
+    },
   },
 });

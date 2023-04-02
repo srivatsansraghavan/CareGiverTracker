@@ -5,7 +5,7 @@
             "json:cucumber-report.json"
         ],
         "paths": [
-            "features/home/cgt_feeding_tracker_infant.feature"
+            "features/home/infant/*.feature"
         ],
         "require":[
             "features/support/env.js",

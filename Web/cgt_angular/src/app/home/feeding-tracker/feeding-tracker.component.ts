@@ -36,10 +36,19 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
       'Mashed food',
       'Juices',
       'Water',
+      'Drips',
     ],
-    child: [
+    toddler: [
       'Breast Pump',
       'Breast Milk',
+      'Formula feeding',
+      'Normal food',
+      'Mashed food',
+      'Juices',
+      'Water',
+      'Drips',
+    ],
+    child: [
       'Formula feeding',
       'Normal food',
       'Mashed food',
@@ -118,6 +127,12 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   onFeedTypeChosen(event: any) {
     this.chosenFeedType = event.target.value;
     this.feedModes = this.totalFeedModes[this.chosenFeedType];
+    if (
+      this.chosenFeedType === 'Mashed food' &&
+      this.careTakenDetails.type === 'infant'
+    ) {
+      this.feedModes = this.feedModes.filter((item) => item !== 'Self-feeding');
+    }
     this.feedSides = this.totalFeedSides[this.chosenFeedType];
     if (this.chosenFeedType === 'Drips') {
       this.disableTracking = false;
@@ -142,11 +157,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
     }
     if (this.chosenFeedType === 'Breast Pump') {
       this.disableTracking = true;
-      if (this.chosenFeedMode !== 'Breast Milk') {
-        this.needQuantity = true;
-      } else {
-        this.needQuantity = false;
-      }
+      this.needQuantity = true;
     } else {
       this.disableTracking = false;
       this.needQuantity = true;

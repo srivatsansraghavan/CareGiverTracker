@@ -30,6 +30,7 @@
           },
           "configurations": {
             "production": {
+              "baseHref": "/cgtangular/",
               "budgets": [
                 {
                   "type": "initial",
@@ -51,7 +52,7 @@
               "outputHashing": "all"
             },
             "development": {
-              "baseHref": "/cgtangular/",
+              "baseHref": "/cgtangulardev/",
               "buildOptimizer": false,
               "optimization": false,
               "vendorChunk": true,
@@ -62,6 +63,15 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "test": {
+              "baseHref": "/cgtangulartest/",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
                 }
               ]
             },
@@ -85,6 +95,9 @@
             },
             "development": {
               "browserTarget": "cgt_angular:build:development"
+            },
+            "test": {
+              "browserTarget": "cgt_angular:build:test"
             },
             "local": {
               "browserTarget": "cgt_angular:build:local"

@@ -20,6 +20,6 @@ app.use("/inventory", inventory);
 app.use("/medication", medication);
 app.use("/base", base);
 
-app.listen(3000, () => {
-  console.log(`Caregiver tracker listening on port 3000!`);
+app.listen(process.env.NODE_PORT, () => {
+  console.log(`Caregiver tracker listening on port ${process.env.NODE_PORT}!`);
 });

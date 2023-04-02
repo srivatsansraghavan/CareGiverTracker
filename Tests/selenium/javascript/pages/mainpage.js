@@ -6,6 +6,7 @@ const baseUrl =
 
 async function openCGT() {
   await driver.get(baseUrl);
+  await driver.manage().window().maximize();
 }
 
 async function verifyTitle() {

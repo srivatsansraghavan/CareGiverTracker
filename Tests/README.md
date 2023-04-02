@@ -32,6 +32,12 @@
 - Signup and login pages - Completed.
 - First time user modal dialog - Completed.
 - Feeding tracker - In Progress.
+  Report: Cucumber Reports
+
+#### Java
+
+- Signup and login pages - Completed.
+- First time user modal dialog - Completed.
 
 ### Watir
 
@@ -43,10 +49,10 @@
 
 - Run 'npm start' in 'Web/cgt_angular' and 'Web/cgt_nodejs_express'.
 - Protractor: Run 'npm run test' in 'Tests/protractor' for running specs against localhost.
-- Cypress: Run 'npx cypress open' in 'Tests/cypress' for running specs against localhost.
+- Cypress: Run 'npm run openTest' in 'Tests/cypress' for running specs against localhost.
 - Selenium:
-  ... Javascript: Run 'npm run test' in 'Tests/selenium/javascript' for running specs against localhost.
+  - Javascript: Run 'npm run test' in 'Tests/selenium/javascript' for running specs against localhost.
 - Robot Framework:
-  ... Python: Run 'robot \*.robot -d reports/' for running specs against localhost.
+  - Python: Run 'robot \*.robot -d reports/' for running specs against localhost.
 - Watir:
-  ... Ruby: Run 'rspec \*.rb' for running specs against localhost.
+  - Ruby: Run 'rspec \*.rb' for running specs against localhost.

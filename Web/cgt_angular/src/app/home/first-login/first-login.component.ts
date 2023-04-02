@@ -17,6 +17,14 @@ export class FirstLoginComponent implements OnInit {
   careTakenDOB: Date;
   careTakenGender: string;
   careGiver: string;
+  roles: string[] = [
+    'infant',
+    'toddler',
+    'child',
+    'spouse',
+    'parent',
+    'friend',
+  ];
 
   constructor(
     private modal: NgbModal,

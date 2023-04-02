@@ -3,16 +3,16 @@
 ### Pages implemented
 
 - Main
-  ... Signup
-  ... Login
+  - Signup
+  - Login
 - Home
-  ... Feeding Tracker
-  ... Excretion Tracker
-  ... Medication Tracker
-  ... Inventory Tracker
+  - Feeding Tracker
+  - Excretion Tracker
+  - Medication Tracker
+  - Inventory Tracker
 
 ### Pages to be implemented
 
 - Home
-  ... Vaccination Tracker
-  ... Doctor Visit Notes
+  - Vaccination Tracker
+  - Doctor Visit Notes
