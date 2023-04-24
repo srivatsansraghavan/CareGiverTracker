@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   name: 'dev',
-  expressURL: 'http://srivatsanssr.com:3001',
+  expressURL: 'http://srivatsanssr.com/apidev',
 };
 
 /*

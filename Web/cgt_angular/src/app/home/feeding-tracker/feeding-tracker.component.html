@@ -22,8 +22,11 @@
           id="eachFeed.id"
           class="tracked-feed-timeline"
         >
-          Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -
-          <span *ngIf="eachFeed.side !== null"> {{ eachFeed.side }} - </span>
+          Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -<span
+            *ngIf="eachFeed.side !== null"
+          >
+            {{ eachFeed.side }} -</span
+          >
           {{ eachFeed.quantity }} ml ({{ eachFeed.startTime }} -
           {{ eachFeed.endTime }})
           <button
@@ -39,8 +42,7 @@
           *ngIf="eachFeed.hasOwnProperty('pumpedMode')"
           id="eachFeed.id"
           [ngClass]="{
-            'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode'),
-            'tracked-feed-timeline': eachFeed.hasOwnProperty('mode')
+            'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
           }"
         >
           Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
