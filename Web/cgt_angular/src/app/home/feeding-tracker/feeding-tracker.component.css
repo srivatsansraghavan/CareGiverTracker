@@ -42,3 +42,11 @@ li.pumped-feed-timeline {
     border: 0 transparent;
     display: inline-block;
 }
+
+.feed-per-date {
+    border: 1px 0 dashed black;
+}
+
+#spinner {
+    margin: 20 auto;
+}

@@ -1,6 +1,6 @@
-const express = require("express");
-const router = express.Router();
-const dbConfig = require("../config");
+import { Router } from "express";
+const router = Router();
+import { connectToMongoDB, cgtdbEnv } from "../config.js";
 
 router.get("/", (req, res) => {
   res
@@ -8,25 +8,23 @@ router.get("/", (req, res) => {
     .json({ message: "Caregiver Tracker Express server running!" });
 });
 
-router.get("/clean-env-db/:env", async (req, res) => {
+router.get("/clean-env-db/:env", async (req, res, next) => {
   try {
     if (req.params.env === "dev") {
       res.status(401).json({ message: "Not allowed to perform DB clean" });
     } else {
-      const db = await dbConfig.connectToMongoDB(
-        dbConfig.cgtdbEnv[req.params.env]
-      );
-      await db.collection("tbl_users").deleteMany();
-      await db.collection("tbl_roles").deleteMany();
-      await db.collection("tbl_feeding").deleteMany();
-      await db.collection("tbl_excretion").deleteMany();
-      await db.collection("tbl_inventory").deleteMany();
-      await db.collection("tbl_medication").deleteMany();
+      const db = await connectToMongoDB(cgtdbEnv[req.params.env]);
+      db.collection("tbl_users").deleteMany();
+      db.collection("tbl_roles").deleteMany();
+      db.collection("tbl_feeding").deleteMany();
+      db.collection("tbl_excretion").deleteMany();
+      db.collection("tbl_inventory").deleteMany();
+      db.collection("tbl_medication").deleteMany();
       res.sendStatus(200);
     }
   } catch (err) {
-    console.log(err);
+    return next(err);
   }
 });
 
-module.exports = router;
+export default router;

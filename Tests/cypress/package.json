@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "export CYPRESS_CURRENT_ENV=test&& npx cypress run",
+    "test": "set CYPRESS_CURRENT_ENV=test&& npx cypress run",
     "test:local": "set CYPRESS_CURRENT_ENV=local&& npx cypress run",
     "testOpen": "set CYPRESS_CURRENT_ENV=local&& npx cypress open --browser chrome"
   },

@@ -89,6 +89,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   editFeedData: trackedFeedsData;
   deleteFeedId: string;
   subscription: Subscription;
+  showSpinner: boolean = false;
 
   constructor(
     private modal: NgbModal,
@@ -98,6 +99,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.showSpinner = true;
     this.careGiverEmail = localStorage.getItem('login_email');
     this.getFeeds();
   }
@@ -109,8 +111,14 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
         this.careTakenDetails = response;
         this.ftService
           .getFeedDetails(this.careGiverEmail, this.careTakenDetails.id, 10)
-          .subscribe((feedDetailsResponse) => {
-            this.trackedFeeds = feedDetailsResponse;
+          .subscribe({
+            next: (feedDetailsResponse) => {
+              this.trackedFeeds = feedDetailsResponse;
+              this.showSpinner = false;
+            },
+            error: (error) => {
+              this.showSpinner = false;
+            },
           });
       });
   }

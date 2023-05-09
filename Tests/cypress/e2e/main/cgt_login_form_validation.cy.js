@@ -1,6 +1,7 @@
 describe("Validate login form of Caregiver tracker", () => {
   before(() => {
-    cy.visit("http://localhost:4200/");
+    cy.clearAllLocalStorage();
+    cy.visit(Cypress.env(currentEnv).testURL);
     cy.viewport(1280, 720);
   });
 

@@ -1,154 +1,17 @@
-const express = require("express");
-const router = express.Router();
-const dbConfig = require("../config");
-const moment = require("moment");
-const ObjectId = require("mongodb").ObjectId;
+import { Router } from "express";
+const router = Router();
+import {
+  saveTrackedMedications,
+  getMedicationDetails,
+  deleteMedication,
+  getMedForId,
+  getMedForm,
+} from "../controllers/medicationController.js";
 
-router.post("/save-tracked-medication", async (req, res) => {
-  try {
-    const collection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const invCollection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
-    let medTime = moment().format("DD/MM/YYYY HH:mm:ss");
-    const invMedDetails = await invCollection.findOne({
-      _id: new ObjectId(req.body.medicineId),
-    });
-    const insertQuery = {
-      care_giver: req.body.careGiver,
-      care_taken_of_name: req.body.careTakenOf.name,
-      care_taken_of_id: req.body.careTakenOf.id,
-      medicine_name: invMedDetails.inventory_brand,
-      medicine_form: invMedDetails.inventory_form,
-      medicine_quantity: req.body.medicineQuantity,
-      medicine_id: req.body.medicineId,
-      medication_time: medTime,
-    };
-    const saveTrackedMed = await collection.insertOne(insertQuery);
-    if (saveTrackedMed.acknowledged) {
-      await invCollection.updateOne(
-        { _id: ObjectId(req.body.medicineId) },
-        { $inc: { inventory_used: req.body.medicineQuantity } }
-      );
-      res
-        .status(200)
-        .json({ message: `Medication of ${req.body.careTakenOf.name} noted!` });
-    } else {
-      res.status(404).json({
-        message: "Unable to add tracked medication. Please try later!",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
+router.post("/save-tracked-medication", saveTrackedMedications);
+router.get("/get-medication-details", getMedicationDetails);
+router.delete("/delete-med/:medId", deleteMedication);
+router.get("/get-med-for-id/:medId", getMedForId);
+router.get("/get-med-form/:medId", getMedForm);
 
-router.get("/get-medication-details", async (req, res) => {
-  try {
-    const collection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getTrackedMedication = await collection
-      .find({
-        care_giver: req.query.careGiver,
-        care_taken_of_id: req.query.careTakenId,
-      })
-      .sort({ _id: -1 })
-      .toArray();
-    if (getTrackedMedication && getTrackedMedication.length > 0) {
-      res.status(200).json(getTrackedMedication);
-    } else {
-      res.status(404).json({ message: "No tracked medication found" });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.delete("/delete-med/:medId", async (req, res) => {
-  try {
-    const collection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getMedDetails = await db
-      .collection("tbl_medication")
-      .find({ _id: ObjectId(req.params.medId) })
-      .toArray();
-    if (getMedDetails.length > 0) {
-      const medQuantity = getMedDetails[0].medicine_quantity;
-      const medId = getMedDetails[0].medicine_id;
-      const invCollection = await dbConfig.connectToMongoDBGetTable(
-        dbConfig.cgtdbEnv[process.env.NODE_ENV],
-        "tbl_inventory"
-      );
-      await invCollection.updateOne(
-        { _id: ObjectId(medId) },
-        { $inc: { inventory_used: -medQuantity } }
-      );
-    }
-    const deleteMed = await collection.deleteOne({
-      _id: ObjectId(req.params.medId),
-    });
-    if (deleteMed.acknowledged && deleteMed.deletedCount === 1) {
-      res
-        .status(200)
-        .json({ message: "Tracked medication deleted successfully" });
-    } else {
-      res.status(404).json({
-        message: "Unable to delete tracked medication. Please try again later!",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.get("/get-med-for-id/:medId", async (req, res) => {
-  try {
-    const collection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getMedForId = await collection.findOne({
-      _id: ObjectId(req.params.medId),
-    });
-    if (getMedForId && Object.keys(getMedForId).length > 0) {
-      res.status(200).json(getMedForId);
-    } else {
-      res.status(404).json({
-        message: "Unable to get tracked medication. Please try again later!",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-router.get("/get-med-form/:medId", async (req, res) => {
-  try {
-    const collection = await dbConfig.connectToMongoDBGetTable(
-      dbConfig.cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
-    const getMedForId = await collection.findOne({
-      _id: ObjectId(req.params.medId),
-    });
-    if (getMedForId && Object.keys(getMedForId).length > 0) {
-      res.status(200).send(getMedForId.inventory_form);
-    } else {
-      res.status(404).send({
-        message: "Unable to get medicine form. Please try again later!",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-module.exports = router;
+export default router;

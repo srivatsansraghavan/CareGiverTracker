@@ -155,13 +155,13 @@ export class FeedingTrackerService {
 
   deleteFeed(feedId: string) {
     return this.httpClient.delete(
-      `${environment.expressURL}/delete-feed/${feedId}`
+      `${environment.expressURL}/feed/delete-feed/${feedId}`
     );
   }
 
   getFeedForId(feedId: string) {
     return this.httpClient
-      .get(`${environment.expressURL}/get-feed-for-id/${feedId}`, {
+      .get(`${environment.expressURL}/feed/get-feed-for-id/${feedId}`, {
         observe: 'response',
       })
       .pipe(
@@ -213,7 +213,7 @@ export class FeedingTrackerService {
     feedQuantity: number
   ): Observable<Object> {
     return this.httpClient.post(
-      `${environment.expressURL}/save-edited-feed`,
+      `${environment.expressURL}/feed/save-edited-feed`,
       {
         feedId,
         feedStart,

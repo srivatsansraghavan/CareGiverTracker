@@ -1,16 +1,17 @@
-const express = require("express");
+import express from "express";
 const app = express();
-const cors = require("cors");
-const bodyParser = require("body-parser");
-app.use(cors()).use(bodyParser.json());
+import cors from "cors";
+import pkg from "body-parser";
+const { json } = pkg;
+app.use(cors()).use(json());
 
-const user = require("./routes/user");
-const role = require("./routes/role");
-const feed = require("./routes/feed");
-const excretion = require("./routes/excretion");
-const inventory = require("./routes/inventory");
-const medication = require("./routes/medication");
-const base = require("./routes/base");
+import user from "./routes/user.js";
+import role from "./routes/role.js";
+import feed from "./routes/feed.js";
+import excretion from "./routes/excretion.js";
+import inventory from "./routes/inventory.js";
+import medication from "./routes/medication.js";
+import base from "./routes/base.js";
 
 app.use("/user", user);
 app.use("/role", role);

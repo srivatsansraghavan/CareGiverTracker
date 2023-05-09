@@ -2,15 +2,18 @@
   <button class="btn btn-primary btn-add-feed" (click)="addFeed(addFeedModal)">
     Start Feed
   </button>
-
+  <span
+    *ngIf="showSpinner"
+    id="spinner"
+    class="spinner-grow"
+    role="status"
+  ></span>
   <ul class="feed-timeline">
     <li
       class="feed-per-date"
       *ngFor="let trackFeed of trackedFeeds | trackItems : 'getKeyValue'"
     >
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
       {{ trackFeed[0].key }}
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
       <ul
         class="feed-date-timeline"
         *ngFor="
