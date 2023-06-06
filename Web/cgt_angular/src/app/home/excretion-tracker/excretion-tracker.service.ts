@@ -31,9 +31,10 @@ export class ExcretionTrackerService {
             responseDetails['diaperCount'] = responseItem.diaper_count;
             responseDetails['diaperBrand'] = responseItem.diaper_brand;
             endDate = responseItem.excretion_time.split(' ')[0];
-            responseDetails['excretionTime'] =
-              responseItem.excretion_time.split(' ')[1];
-            responseDetails['excretionDate'] = endDate;
+            responseDetails['excretionTime'] = new Date(
+              responseItem.excretion_time
+            ).toLocaleString();
+            //responseDetails['excretionDate'] = endDate;
             if (!excretionGrouped.hasOwnProperty(endDate)) {
               excretionGrouped[endDate] = [];
             }

@@ -23,7 +23,7 @@ export class AuthService {
   signUpUser(email_id: string, pass_word: string, full_name: string) {
     this.httpClient
       .post(
-        `${environment.expressURL}/user/add-users`,
+        `${environment.expressURL}/user/add-user`,
         { email: email_id, password: pass_word, fullname: full_name },
         { observe: 'response' }
       )
@@ -89,12 +89,22 @@ export class AuthService {
 
   shouldAllow(): boolean {
     const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+      return false;
+    }
     return !this.jwtHelper.isTokenExpired(accessToken);
+  }
+
+  getLoginEmail(): string {
+    const loginEmail = localStorage.getItem('login_email');
+    return loginEmail;
   }
 
   isFirstLogin(loginEmail: string): Observable<boolean> {
     this.httpClient
-      .get(`${environment.expressURL}/role/is-first-login?email=${loginEmail}`)
+      .get(
+        `${environment.expressURL}/role/is-first-login?giver_email=${loginEmail}`
+      )
       .subscribe((firstLogin: any) => {
         this.firstLogin.next(firstLogin);
       });

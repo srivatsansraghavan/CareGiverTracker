@@ -1,35 +1,34 @@
-import { connectToMongoDBGetTable, cgtdbEnv } from "../config.js";
 import moment from "moment";
-import { ObjectId } from "mongodb";
+import {
+  saveTrackedMedModel,
+  getMedicationModel,
+  deleteMedicationModel,
+} from "../models/medicationModel.js";
+import {
+  getInventoriesModel,
+  updateInventoryModel,
+} from "../models/inventoryModel.js";
 
 export async function saveTrackedMedications(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const invCollection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
     let medTime = moment().format("DD/MM/YYYY HH:mm:ss");
-    const invMedDetails = await invCollection.findOne({
-      _id: new ObjectId(req.body.medicineId),
+    const invMedDetails = await getInventoriesModel({
+      _id: req.body.medicineId,
     });
     const insertQuery = {
       care_giver: req.body.careGiver,
       care_taken_of_name: req.body.careTakenOf.name,
       care_taken_of_id: req.body.careTakenOf.id,
-      medicine_name: invMedDetails.inventory_brand,
-      medicine_form: invMedDetails.inventory_form,
+      medicine_name: invMedDetails[0].inventory_brand,
+      medicine_form: invMedDetails[0].inventory_form,
       medicine_quantity: req.body.medicineQuantity,
       medicine_id: req.body.medicineId,
       medication_time: medTime,
     };
-    const saveTrackedMed = await collection.insertOne(insertQuery);
-    if (saveTrackedMed.acknowledged) {
-      await invCollection.updateOne(
-        { _id: ObjectId(req.body.medicineId) },
+    const saveTrackedMed = await saveTrackedMedModel(insertQuery);
+    if (saveTrackedMed.hasOwnProperty("_id")) {
+      await updateInventoryModel(
+        { _id: req.body.medicineId },
         { $inc: { inventory_used: req.body.medicineQuantity } }
       );
       res
@@ -47,18 +46,11 @@ export async function saveTrackedMedications(req, res, next) {
 
 export async function getMedicationDetails(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getTrackedMedication = await collection
-      .find({
-        care_giver: req.query.careGiver,
-        care_taken_of_id: req.query.careTakenId,
-      })
-      .sort({ _id: -1 })
-      .toArray();
-    if (getTrackedMedication && getTrackedMedication.length > 0) {
+    const getTrackedMedication = await getMedicationModel({
+      care_giver: req.query.careGiver,
+      care_taken_of_id: req.query.careTakenId,
+    });
+    if (getTrackedMedication && Object.keys(getTrackedMedication).length > 0) {
       res.status(200).json(getTrackedMedication);
     } else {
       res.status(404).json({ message: "No tracked medication found" });
@@ -70,28 +62,17 @@ export async function getMedicationDetails(req, res, next) {
 
 export async function deleteMedication(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getMedDetails = await db
-      .collection("tbl_medication")
-      .find({ _id: ObjectId(req.params.medId) })
-      .toArray();
-    if (getMedDetails.length > 0) {
-      const medQuantity = getMedDetails[0].medicine_quantity;
-      const medId = getMedDetails[0].medicine_id;
-      const invCollection = await connectToMongoDBGetTable(
-        cgtdbEnv[process.env.NODE_ENV],
-        "tbl_inventory"
-      );
-      await invCollection.updateOne(
-        { _id: ObjectId(medId) },
+    const getMedDetails = await getMedicationModel({ _id: req.params.medId });
+    if (Object.keys(getMedDetails).length > 0) {
+      const medQuantity = getMedDetails.medicine_quantity;
+      const medId = getMedDetails.medicine_id;
+      await updateInventoryModel(
+        { _id: medId },
         { $inc: { inventory_used: -medQuantity } }
       );
     }
-    const deleteMed = await collection.deleteOne({
-      _id: ObjectId(req.params.medId),
+    const deleteMed = await deleteMedicationModel({
+      _id: req.params.medId,
     });
     if (deleteMed.acknowledged && deleteMed.deletedCount === 1) {
       res
@@ -109,12 +90,8 @@ export async function deleteMedication(req, res, next) {
 
 export async function getMedForId(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_medication"
-    );
-    const getMedForId = await collection.findOne({
-      _id: ObjectId(req.params.medId),
+    const getMedForId = await getMedicationModel({
+      _id: req.params.medId,
     });
     if (getMedForId && Object.keys(getMedForId).length > 0) {
       res.status(200).json(getMedForId);
@@ -130,15 +107,11 @@ export async function getMedForId(req, res, next) {
 
 export async function getMedForm(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
-    const getMedForId = await collection.findOne({
-      _id: ObjectId(req.params.medId),
+    const getInvForMed = await getMedicationModel({
+      _id: req.params.medId,
     });
-    if (getMedForId && Object.keys(getMedForId).length > 0) {
-      res.status(200).send(getMedForId.inventory_form);
+    if (getInvForMed && Object.keys(getInvForMed).length > 0) {
+      res.status(200).send(getInvForMed.medicine_form);
     } else {
       res.status(404).send({
         message: "Unable to get medicine form. Please try again later!",

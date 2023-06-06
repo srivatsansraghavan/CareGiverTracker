@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ToastService } from './shared/toast/toast.service';
 
 @Component({
@@ -7,6 +7,11 @@ import { ToastService } from './shared/toast/toast.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
+  // @HostListener('window:beforeunload', ['$event'])
+  // clearLocalStorage() {
+  //   console.log('Clear local storage');
+  //   localStorage.clear();
+  // }
   constructor(public toastService: ToastService) {}
 
   ngOnInit() {}

@@ -1,31 +1,42 @@
 import {
+  AfterContentChecked,
+  ChangeDetectorRef,
   Component,
   OnInit,
-  ChangeDetectorRef,
-  AfterContentChecked,
+  TemplateRef,
 } from '@angular/core';
+import { CommonService } from '../common.service';
+import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../shared/auth.service';
+import { AuthService } from '../auth.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  selector: 'app-menubar',
+  templateUrl: 'menubar.component.html',
+  styleUrls: ['menubar.component.css'],
 })
-export class SignupComponent implements OnInit, AfterContentChecked {
+export class MenubarComponent implements OnInit, AfterContentChecked {
+  envName: string;
   signUpForm: FormGroup;
+  loginForm: FormGroup;
   num1: number;
   num2: number;
+  isLoggedIn: boolean;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
-    private signUpService: AuthService
+    private authService: AuthService,
+    private modal: NgbModal,
+    private commonService: CommonService,
+    private router: Router
   ) {
     this.num1 = Math.floor(Math.random() * 100);
     this.num2 = Math.floor(Math.random() * 100);
   }
 
   ngOnInit(): void {
+    this.envName = this.commonService.getEnvironment();
     this.signUpForm = new FormGroup({
       signUpEmail: new FormControl('', [Validators.required, Validators.email]),
       signUpPassword: new FormControl('', Validators.required),
@@ -33,10 +44,39 @@ export class SignupComponent implements OnInit, AfterContentChecked {
       signUpFullName: new FormControl('', Validators.required),
       signUpAddVerify: new FormControl('', Validators.required),
     });
+    this.loginForm = new FormGroup({
+      loginEmail: new FormControl('', [Validators.required, Validators.email]),
+      loginPassword: new FormControl(null, Validators.required),
+    });
+    this.isLoggedIn = this.authService.shouldAllow();
   }
 
   ngAfterContentChecked(): void {
     this.changeDetector.detectChanges();
+  }
+
+  openSignupModal(signup_modal: TemplateRef<any>): void {
+    this.modal.open(signup_modal, {
+      backdrop: 'static',
+      keyboard: false,
+      size: 'md',
+    });
+  }
+
+  openLoginModal(login_modal: TemplateRef<any>): void {
+    this.modal.open(login_modal, {
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+    });
+  }
+
+  openProfileModal(profile_modal: TemplateRef<any>): void {
+    this.modal.open(profile_modal, {
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+    });
   }
 
   isSignupPasswordOk(): boolean {
@@ -113,6 +153,34 @@ export class SignupComponent implements OnInit, AfterContentChecked {
     const signUpEmail = this.signUpForm.get('signUpEmail').value;
     const signUpPassword = this.signUpForm.get('signUpPassword').value;
     const signUpFullName = this.signUpForm.get('signUpFullName').value;
-    this.signUpService.signUpUser(signUpEmail, signUpPassword, signUpFullName);
+    this.authService.signUpUser(signUpEmail, signUpPassword, signUpFullName);
+    this.closeSignupModal();
+  }
+
+  doLogin(): void {
+    const loginEmail = this.loginForm.get('loginEmail').value;
+    const loginPassword = this.loginForm.get('loginPassword').value;
+    this.authService.loginUser(loginEmail, loginPassword);
+    this.closeLoginModal();
+  }
+
+  loggedInEmail(): string {
+    return this.authService.getLoginEmail();
+  }
+
+  closeSignupModal() {
+    this.modal.dismissAll();
+  }
+
+  closeLoginModal() {
+    this.modal.dismissAll();
+  }
+
+  closeProfileModal() {
+    this.modal.dismissAll();
+  }
+
+  doLogout(): void {
+    this.authService.logOut();
   }
 }

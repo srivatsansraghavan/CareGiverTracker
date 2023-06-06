@@ -13,9 +13,9 @@
         let trackExcretion of trackedExcretions | trackItems : 'getKeyValue'
       "
     >
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
-      {{ trackExcretion[0].key }}
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <time dateTime="{{ trackExcretion[0].key }}" class="exc-date"
+        >{{ trackExcretion[0].key | dateDiff }}
+      </time>
       <ul
         class="exc-date-timeline"
         *ngFor="
@@ -26,13 +26,19 @@
         <li
           *ngIf="eachExcretion.hasOwnProperty('excretionType')"
           class="tracked-exc-timeline"
+          showEditDelete
         >
-          {{ eachExcretion.excretionType }}: {{ eachExcretion.napkinType }} ({{
-            eachExcretion.excretionTime
-          }}) -
-          <span *ngIf="eachExcretion.napkinType === 'Diaper'">
-            {{ eachExcretion.diaperCount }} Diapers used.
+          <span class="tracked-exc">
+            {{ eachExcretion.excretionType }}:
+            {{ eachExcretion.napkinType }} (<time
+              dateTime="{{ eachExcretion.excretionTime }}"
+              >{{ eachExcretion.excretionTime | date : "mediumTime" }}</time
+            >) -
+            <span *ngIf="eachExcretion.napkinType === 'Diaper'">
+              {{ eachExcretion.diaperCount }} Diapers used.
+            </span>
           </span>
+
           <button
             class="bi bi-pencil btn-edit-tracked-exc"
             (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"

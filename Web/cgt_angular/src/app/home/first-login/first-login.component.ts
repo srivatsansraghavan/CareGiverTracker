@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/shared/auth.service';
 import { FirstLoginService } from './first-login.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-first-login',
@@ -14,7 +15,7 @@ export class FirstLoginComponent implements OnInit {
 
   careTakenOf: string;
   careTakenName: string;
-  careTakenDOB: Date;
+  careTakenDOB: { year: number; month: number; day: number };
   careTakenGender: string;
   careGiver: string;
   roles: string[] = [
@@ -49,11 +50,16 @@ export class FirstLoginComponent implements OnInit {
   }
 
   assignRoles(): void {
+    const ctDob: Date = new Date(
+      this.careTakenDOB.year,
+      this.careTakenDOB.month - 1,
+      this.careTakenDOB.day
+    );
     this.flService.addRole(
       this.careGiver,
       this.careTakenOf,
       this.careTakenName,
-      this.careTakenDOB,
+      ctDob,
       this.careTakenGender
     );
   }

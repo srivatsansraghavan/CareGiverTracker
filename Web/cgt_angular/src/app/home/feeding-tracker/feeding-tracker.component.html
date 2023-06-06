@@ -1,5 +1,9 @@
 <div class="feeding-container">
-  <button class="btn btn-primary btn-add-feed" (click)="addFeed(addFeedModal)">
+  <button
+    class="btn btn-primary btn-add-feed"
+    (click)="addFeed(addFeedModal)"
+    *ngIf="trackedFeeds"
+  >
     Start Feed
   </button>
   <span
@@ -9,29 +13,52 @@
     role="status"
   ></span>
   <ul class="feed-timeline">
+    <li *ngIf="!trackedFeeds">
+      No feeds tracked.
+      <button
+        class="btn btn-primary btn-add-feed"
+        (click)="addFeed(addFeedModal)"
+      >
+        Start Feed
+      </button>
+    </li>
     <li
       class="feed-per-date"
       *ngFor="let trackFeed of trackedFeeds | trackItems : 'getKeyValue'"
     >
-      {{ trackFeed[0].key }}
+      <time dateTime="{{ trackFeed[0].key }}" class="feed-date"
+        >{{ trackFeed[0].key | dateDiff }}
+      </time>
       <ul
         class="feed-date-timeline"
         *ngFor="
           let eachFeed of trackFeed[0].value | trackItems : 'getValueArray'
         "
+        [@addFeed]
       >
         <li
           *ngIf="eachFeed.hasOwnProperty('mode')"
-          id="eachFeed.id"
+          id="{eachFeed.id}"
           class="tracked-feed-timeline"
+          showEditDelete
         >
-          Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -<span
-            *ngIf="eachFeed.side !== null"
-          >
-            {{ eachFeed.side }} -</span
-          >
-          {{ eachFeed.quantity }} ml ({{ eachFeed.startTime }} -
-          {{ eachFeed.endTime }})
+          <span class="tracked-feed">
+            Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -<span
+              *ngIf="eachFeed.side !== null"
+            >
+              {{ eachFeed.side }} -</span
+            >
+            {{ eachFeed.quantity }} ml (<time
+              dateTime="{{ eachFeed.startDate }}"
+              >{{ eachFeed.startDate | date : "mediumTime" }}</time
+            >
+            -
+            <time dateTime="{{ eachFeed.endDate }}">{{
+              eachFeed.endDate | date : "mediumTime"
+            }}</time
+            >)
+          </span>
+
           <button
             class="bi bi-pencil btn-edit-tracked-feed"
             (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
@@ -47,18 +74,28 @@
           [ngClass]="{
             'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
           }"
+          showEditDelete
         >
-          Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
-          {{ eachFeed.pumpedQuantity }} ml ({{ eachFeed.pumpedStartTime }} -
-          {{ eachFeed.pumpedEndTime }})
-          <i
-            *ngIf="
-              eachFeed.hasOwnProperty('mode') &&
-              eachFeed.endDate !== eachFeed.pumpedEndDate
-            "
-          >
-            Pumped on {{ eachFeed.pumpedEndDate }}</i
-          >
+          <span class="pumped-feed">
+            Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
+            {{ eachFeed.pumpedQuantity }} ml (<time
+              dateTime="{{ eachFeed.pumpedStartDate }}"
+              >{{ eachFeed.pumpedStartDate | date : "mediumTime" }}</time
+            >
+            -
+            <time dateTime="{{ eachFeed.pumpedEndDate }}">{{
+              eachFeed.pumpedEndDate | date : "mediumTime"
+            }}</time
+            >)
+            <i
+              *ngIf="
+                eachFeed.hasOwnProperty('mode') &&
+                eachFeed.endDate !== eachFeed.pumpedEndDate
+              "
+            >
+              Pumped on {{ eachFeed.pumpedEndDate }}</i
+            >
+          </span>
           <span *ngIf="!eachFeed.hasOwnProperty('mode')">
             <button
               class="bi bi-pencil btn-edit-tracked-feed"

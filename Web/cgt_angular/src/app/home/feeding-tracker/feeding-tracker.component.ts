@@ -13,12 +13,35 @@ import {
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { FeedingTrackerService } from './feeding-tracker.service';
+import {
+  animate,
+  animation,
+  query,
+  stagger,
+  state,
+  style,
+  transition,
+  trigger,
+  useAnimation,
+} from '@angular/animations';
+
+import { addFeedAnimation } from 'src/app/shared/animations';
+
+const slideFromTop = animation([
+  style({ opacity: 0, transform: 'translateY(-100%)' }),
+  animate('1s', style({ opacity: 1, transform: 'translateY(0%)' })),
+]);
+
+const slideToBottom = animation(
+  animate('1s', style({ opacity: 0, transform: 'translateY(100%)' }))
+);
 
 @Component({
   selector: 'app-feeding-tracker',
   templateUrl: './feeding-tracker.component.html',
   providers: [FeedingTrackerService, CommonService],
   styleUrls: ['./feeding-tracker.component.css'],
+  animations: [trigger('addFeed', addFeedAnimation)],
 })
 export class FeedingTrackerComponent implements OnInit, OnDestroy {
   careTakenName: string;
@@ -290,8 +313,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
       size: 'lg',
     });
     this.ftService.getFeedForId(feedId).subscribe({
-      next: (feedData: any) => {
-        console.log(feedData);
+      next: (feedData: trackedFeedsData) => {
         this.editFeedData = feedData;
       },
       error: (err: any) => {

@@ -1,16 +1,14 @@
-import { connectToMongoDBGetTable, cgtdbEnv } from "../config.js";
 import moment from "moment";
+import {
+  firstLoginModel,
+  addRoleModel,
+  getRoleDetailsModel,
+} from "../models/roleModel.js";
 
 export async function firstLogin(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_roles"
-    );
-    const firstLogin = await collection.findOne({
-      care_giver: req.query.email,
-    });
-    if (firstLogin && Object.keys(firstLogin).length > 0) {
+    const firstLogin = await firstLoginModel(req.query.giver_email);
+    if (firstLogin == 1) {
       res.send(false);
     } else {
       res.send(true);
@@ -22,20 +20,18 @@ export async function firstLogin(req, res, next) {
 
 export async function addRole(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_roles"
-    );
-    const addRole = await collection.insertOne({
+    const addRole = await addRoleModel({
       care_giver: req.body.care_giver,
       care_taken_of: req.body.care_taken_of,
       care_taken_name: req.body.care_taken_name,
-      care_taken_dob: req.body.care_taken_dob,
+      care_taken_dob: moment(req.body.care_taken_dob).format(
+        "MM/DD/YYYY HH:mm:ss"
+      ),
       care_taken_gender: req.body.care_taken_gender,
       care_taken_added_time: moment().format("DD/MM/YYYY HH:mm:ss"),
       care_last_accessed: true,
     });
-    if (addRole.acknowledged) {
+    if (addRole.hasOwnProperty("_id")) {
       res.status(200).json({
         message: `Care can now be provided to ${req.body.care_taken_name}`,
       });
@@ -51,16 +47,9 @@ export async function addRole(req, res, next) {
 
 export async function getRoleDetails(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_roles"
-    );
-    const getRoleDetails = await collection.findOne({
-      care_giver: req.query.giver_email,
-      care_last_accessed: true,
-    });
-    if (getRoleDetails && Object.keys(getRoleDetails).length > 0) {
-      res.status(200).json(getRoleDetails);
+    const roleDetails = await getRoleDetailsModel(req.query.giver_email);
+    if (roleDetails && Object.keys(roleDetails).length > 0) {
+      res.status(200).json(roleDetails);
     } else {
       res.status(404).json({ message: "No matching records found" });
     }

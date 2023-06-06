@@ -1,12 +1,12 @@
-import { connectToMongoDBGetTable, cgtdbEnv } from "../config.js";
 import moment from "moment";
+import {
+  saveTrackedInvModel,
+  getInventoriesModel,
+  getAvailableInventoryModel,
+} from "../models/inventoryModel.js";
 
 export async function addToInventory(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
     let addedTime = moment().format("DD/MM/YYYY HH:mm:ss");
     const inventoryTotal =
       req.body.inventoryCount * req.body.inventoryEachContains;
@@ -21,8 +21,8 @@ export async function addToInventory(req, res, next) {
       inventory_total: inventoryTotal,
       inventory_used: 0,
     };
-    const saveInventory = await collection.insertOne(insertQuery);
-    if (saveInventory.acknowledged) {
+    const saveInventory = await saveTrackedInvModel(insertQuery);
+    if (saveInventory && Object.keys(saveInventory).length > 0) {
       res
         .status(200)
         .json({ message: `Inventory of ${req.body.careTakenOf.name} noted!` });
@@ -38,17 +38,10 @@ export async function addToInventory(req, res, next) {
 
 export async function getInventories(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
-    const getInventories = await collection
-      .find({
-        care_giver: req.query.careGiver,
-        care_taken_of_id: req.query.careTakenId,
-      })
-      .sort({ _id: -1 })
-      .toArray();
+    const getInventories = await getInventoriesModel({
+      care_giver: req.query.careGiver,
+      care_taken_of_id: req.query.careTakenId,
+    });
     if (getInventories && getInventories.length > 0) {
       res.status(200).json(getInventories);
     } else {
@@ -61,19 +54,12 @@ export async function getInventories(req, res, next) {
 
 export async function getAvailableInventory(req, res, next) {
   try {
-    const collection = await connectToMongoDBGetTable(
-      cgtdbEnv[process.env.NODE_ENV],
-      "tbl_inventory"
-    );
-    const getAvlInventory = await collection
-      .find({
-        care_giver: req.query.careGiver,
-        care_taken_of_id: req.query.careTakenId,
-        inventory_type: req.query.inventoryType,
-        $expr: { $gt: ["$inventory_total", "$inventory_used"] },
-      })
-      .sort({ _id: -1 })
-      .toArray();
+    const getAvlInventory = await getAvailableInventoryModel({
+      care_giver: req.query.careGiver,
+      care_taken_of_id: req.query.careTakenId,
+      inventory_type: req.query.inventoryType,
+      $expr: { $gt: ["$inventory_total", "$inventory_used"] },
+    });
     if (getAvlInventory && getAvlInventory.length > 0) {
       res.status(200).json(getAvlInventory);
     } else {

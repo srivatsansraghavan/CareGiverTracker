@@ -1,16 +1,6 @@
 <app-first-login *ngIf="isFirstLogin; else showTabs"></app-first-login>
 <ng-template #showTabs>
-  <h1 class="home-header">Caregiver Tracker</h1>
-  <nav class="navbar navbar-dark bg-primary">
-    <a class="navbar-brand ml-2" href="http://srivatsanssr.com/index.html"
-      >Portfolio Home</a
-    >
-    <a class="navbar-brand ml-2" [routerLink]="['/home']">Caregiver Tracker</a>
-    <a class="navbar-brand ml-2" href="#">Environment: {{ envName }}</a>
-    <button type="button" class="mr-sm-2 btn btn-primary" (click)="doLogout()">
-      Logout
-    </button>
-  </nav>
+  <app-menubar></app-menubar>
   <ul ngbNav #nav="ngbNav" class="nav-tabs">
     <li [ngbNavItem]="1">
       <a ngbNavLink> Feeding </a>

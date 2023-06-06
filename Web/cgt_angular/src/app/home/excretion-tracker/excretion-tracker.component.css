@@ -21,19 +21,56 @@
     justify-content: center;
 }
 
-li.exc-per-date {
+ul {
+    padding: 0;
+}
+
+.exc-per-date {
     list-style-type: none;
     padding-bottom: 1%;
     display: block;
+    border-bottom: 1px dotted;
 }
 
-li.tracked-exc-timeline {
+.exc-date {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2%;
+    font-size: large;
+    font-weight: 400;
+
+}
+
+.tracked-exc-timeline {
     list-style-type: none;
-    padding-bottom: 1%;
+    height: 100%;
 }
 
-.btn-edit-tracked-exc, .btn-delete-tracked-exc {
-    background-color: transparent;
-    border: 0 transparent;
+.tracked-exc {
+    border: 1px solid #ccc;
+    background-color: snow;
     display: inline-block;
+    height: 70px;
+    width: 100%;
+    padding: 2.5%;
+}
+
+.btn-edit-tracked-exc {
+    background-color: green;
+    border: 0 transparent;
+    display: none;
+    width: 10%;
+    height: 70px;
+} 
+
+.btn-delete-tracked-exc {
+    background-color: red;
+    border: 0 transparent;
+    display: none;
+    width: 10%;
+    height: 70px;
+}
+
+#spinner {
+    margin: 20 auto;
 }

@@ -44,14 +44,14 @@ export interface trackedFeedsData {
   side?: string;
   pumpedQuantity?: number;
   quantity: number;
-  pumpedStartDate?: string;
-  startDate: string;
-  pumpedStartTime?: string;
-  startTime: string;
-  pumpedEndDate?: string;
-  endDate: string;
-  pumpedEndTime?: string;
-  endTime: string;
+  pumpedStartDate?: Date;
+  startDate: Date;
+  pumpedStartTime?: Date;
+  startTime: Date;
+  pumpedEndDate?: Date;
+  endDate: Date;
+  pumpedEndTime?: Date;
+  endTime: Date;
   pumpedTimeTaken?: number;
   timeTaken: number;
 }
@@ -74,7 +74,7 @@ export interface trackedExcretionData {
   diaperCount: number;
   diaperBrand: string;
   excretionDate: string;
-  excretionTime: string;
+  excretionTime: Date;
 }
 
 export interface trackedMedicationData {

@@ -27,8 +27,4 @@ export class HomeComponent implements OnInit {
       this.isFirstLogin = firstLogin;
     });
   }
-
-  doLogout(): void {
-    this.authService.logOut();
-  }
 }

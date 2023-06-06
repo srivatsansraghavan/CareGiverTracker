@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -7,8 +8,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MainComponent } from './main/main.component';
-import { SignupComponent } from './signup/signup.component';
-import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AuthConfigInterceptor } from './shared/authconfig.interceptor';
@@ -20,13 +19,15 @@ import { MedicationTrackerComponent } from './home/medication-tracker/medication
 import { TimerComponent } from './shared/timer/timer.component';
 import { TrackItemsPipe } from './shared/pipes/track-items.pipe';
 import { InventoryTrackerComponent } from './home/inventory-tracker/inventory-tracker.component';
+import { MenubarComponent } from './shared/menubar/menubar.component';
+import { ShowEditDeleteDirective } from './shared/directives/mousehover.directive';
+import { DateDiffPipe } from './shared/pipes/show-date-diff.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
-    SignupComponent,
-    LoginComponent,
+    MenubarComponent,
     HomeComponent,
     ToastComponent,
     FirstLoginComponent,
@@ -35,10 +36,13 @@ import { InventoryTrackerComponent } from './home/inventory-tracker/inventory-tr
     MedicationTrackerComponent,
     TimerComponent,
     TrackItemsPipe,
+    DateDiffPipe,
+    ShowEditDeleteDirective,
     InventoryTrackerComponent,
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     NgbModule,
     NgbNavModule,
     ReactiveFormsModule,

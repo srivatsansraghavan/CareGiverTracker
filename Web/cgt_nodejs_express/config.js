@@ -1,15 +1,17 @@
-import { MongoClient } from "mongodb";
 const uri = `mongodb://${process.env.MONGO_DB_URI}:27017`;
-const client = new MongoClient(uri);
+import mongoose from "mongoose";
 
 export async function connectToMongoDB(dbName) {
-  await client.connect();
-  const db = client.db(dbName);
-  return db;
+  try {
+    mongoose.pluralize(null);
+    return await mongoose.connect(`${uri}/${dbName}`);
+  } catch (err) {
+    console.error(err);
+  }
 }
 export async function connectToMongoDBGetTable(dbName, tableName) {
   const db = await connectToMongoDB(dbName);
-  const collection = db.collection(tableName);
+  const collection = await db.collection(tableName);
   return collection;
 }
 export const cgtdbEnv = {

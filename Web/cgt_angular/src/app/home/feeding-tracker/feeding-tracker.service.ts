@@ -82,20 +82,20 @@ export class FeedingTrackerService {
           let feedGrouped = {};
           for (let responseItem of response.body) {
             let responseDetails = {};
-            let endDate;
+            let endDate: string;
             responseDetails['id'] = responseItem._id;
             if (responseItem.hasOwnProperty('pumped_mode')) {
-              endDate = responseItem.pump_end_time.split(' ')[0];
+              endDate = responseItem.pump_end_time.split('T')[0];
               responseDetails['pumpedMode'] = responseItem.pumped_mode;
               responseDetails['pumpedSide'] = responseItem.pumped_side;
               responseDetails['pumpedQuantity'] = responseItem.pumped_quantity;
               responseDetails['pumpedStartDate'] =
-                responseItem.pump_start_time.split(' ')[0];
+                responseItem.pump_start_time.split('T')[0];
               responseDetails['pumpedStartTime'] =
-                responseItem.pump_start_time.split(' ')[1];
+                responseItem.pump_start_time.split('T')[1];
               responseDetails['pumpedEndDate'] = endDate;
               responseDetails['pumpedEndTime'] =
-                responseItem.pump_end_time.split(' ')[1];
+                responseItem.pump_end_time.split('T')[1];
               responseDetails['pumpedTimeTaken'] = responseItem.pumped_time;
             }
             if (responseItem.hasOwnProperty('feed_taken_mode')) {
@@ -103,14 +103,23 @@ export class FeedingTrackerService {
               responseDetails['mode'] = responseItem.feed_taken_mode;
               responseDetails['side'] = responseItem.feed_taken_side;
               responseDetails['quantity'] = responseItem.feed_quantity;
-              endDate = responseItem.feed_end_time.split(' ')[0];
-              responseDetails['startDate'] =
-                responseItem.feed_start_time.split(' ')[0];
-              responseDetails['startTime'] =
-                responseItem.feed_start_time.split(' ')[1];
-              responseDetails['endDate'] = endDate;
-              responseDetails['endTime'] =
-                responseItem.feed_end_time.split(' ')[1];
+              endDate = responseItem.feed_end_time.split('T')[0];
+              // responseDetails['startDate'] = new Date(
+              //   responseItem.feed_start_time.split('T')[0]
+              // );
+              // responseDetails['startTime'] = new Date(
+              //   responseItem.feed_start_time.split('T')[1]
+              // );
+              // responseDetails['endDate'] = new Date(endDate);
+              // responseDetails['endTime'] = new Date(
+              //   responseItem.feed_end_time.split('T')[1]
+              // );
+              responseDetails['startDate'] = new Date(
+                responseItem.feed_start_time
+              ).toLocaleString();
+              responseDetails['endDate'] = new Date(
+                responseItem.feed_end_time
+              ).toLocaleString();
               responseDetails['timeTaken'] = responseItem.feed_taken_time;
             }
             if (!feedGrouped.hasOwnProperty(endDate)) {
@@ -139,12 +148,18 @@ export class FeedingTrackerService {
             responseFeeds['pumpedMode'] = responseItem.pumped_mode;
             responseFeeds['pumpedSide'] = responseItem.pumped_side;
             responseFeeds['quantity'] = responseItem.pumped_quantity;
-            responseFeeds['startDate'] =
-              responseItem.pump_start_time.split(' ')[0];
-            responseFeeds['startTime'] =
-              responseItem.pump_start_time.split(' ')[1];
-            responseFeeds['endDate'] = responseItem.pump_end_time.split(' ')[0];
-            responseFeeds['endTime'] = responseItem.pump_end_time.split(' ')[1];
+            // responseFeeds['startDate'] =
+            //   responseItem.pump_start_time.split('T')[0];
+            // responseFeeds['startTime'] =
+            //   responseItem.pump_start_time.split('T')[1];
+            // responseFeeds['endDate'] = responseItem.pump_end_time.split('-')[0];
+            // responseFeeds['endTime'] = responseItem.pump_end_time.split('-')[1];
+            responseFeeds['startDate'] = new Date(
+              responseItem.pump_start_time
+            ).toString();
+            responseFeeds['endDate'] = new Date(
+              responseItem.pump_end_time
+            ).toString();
             responseFeeds['timeTaken'] = responseItem.pumped_time;
             feedPumped.push(responseFeeds);
           }
@@ -172,35 +187,49 @@ export class FeedingTrackerService {
           responseFeed['mode'] = response.body.feed_taken_mode;
           responseFeed['side'] = response.body.feed_taken_side;
           responseFeed['quantity'] = response.body.feed_quantity;
-          let startDate = response.body.feed_start_time
-            .split(' ')[0]
-            .split('/');
+          let startDateTime = new Date(response.body.feed_start_time)
+            .toLocaleString()
+            .split(' ');
+          console.log(startDateTime);
+          let startDate = startDateTime[0].split('/');
+          let startTime = startDateTime[1].split(':');
           responseFeed['startDate'] = {
             year: parseInt(startDate[2]),
             month: parseInt(startDate[1]),
             day: parseInt(startDate[0]),
           };
-          let startTime = response.body.feed_start_time
-            .split(' ')[1]
-            .split(':');
+          // let startDate = response.body.feed_start_time
+          //   .split('T')[0]
+          //   .split('-');
+
+          // let startTime = response.body.feed_start_time
+          //   .split('T')[1]
+          //   .split(':');
           responseFeed['startTime'] = {
             hour: parseInt(startTime[0]),
             minute: parseInt(startTime[1]),
             second: parseInt(startTime[2]),
           };
-          let endDate = response.body.feed_end_time.split(' ')[0].split('/');
+          let endDateTime = new Date(response.body.feed_end_time)
+            .toLocaleString()
+            .split(' ');
+          console.log(endDateTime);
+          let endDate = endDateTime[0].split('/');
+          let endTime = endDateTime[1].split(':');
+          // let endDate = response.body.feed_end_time.split('T')[0].split('-');
           responseFeed['endDate'] = {
             year: parseInt(endDate[2]),
             month: parseInt(endDate[1]),
             day: parseInt(endDate[0]),
           };
-          let endTime = response.body.feed_end_time.split(' ')[1].split(':');
+          // let endTime = response.body.feed_end_time.split('T')[1].split(':');
           responseFeed['endTime'] = {
             hour: parseInt(endTime[0]),
             minute: parseInt(endTime[1]),
             second: parseInt(endTime[2]),
           };
           responseFeed['timeTaken'] = response.body.feed_taken_time;
+          console.log(responseFeed);
           return responseFeed;
         })
       );
