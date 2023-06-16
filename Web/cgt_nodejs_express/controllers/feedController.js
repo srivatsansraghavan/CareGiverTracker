@@ -13,10 +13,10 @@ import {
 export async function saveTrackingFeed(req, res, next) {
   try {
     let addTrackedFeed;
-    let feedEndTime = moment().format("DD/MM/YYYY HH:mm:ss");
-    let feedStartTime = moment(feedEndTime, "DD/MM/YYYY HH:mm:ss")
+    let feedEndTime = moment().format("MM/DD/YYYY HH:mm:ss");
+    let feedStartTime = moment(feedEndTime, "MM/DD/YYYY HH:mm:ss")
       .subtract(req.body.feedTime, "seconds")
-      .format("DD/MM/YYYY HH:mm:ss");
+      .format("MM/DD/YYYY HH:mm:ss");
     let insertQuery = {
       feed_giver: req.body.feedGiver,
       feed_taker_name: req.body.feedTaker.name,
@@ -59,10 +59,10 @@ export async function saveTrackingFeed(req, res, next) {
 
 export async function savePumpingFeed(req, res, next) {
   try {
-    let feedEndTime = moment().format("DD/MM/YYYY HH:mm:ss");
-    let feedStartTime = moment(feedEndTime, "DD/MM/YYYY HH:mm:ss")
+    let feedEndTime = moment().format("MM/DD/YYYY HH:mm:ss");
+    let feedStartTime = moment(feedEndTime, "MM/DD/YYYY HH:mm:ss")
       .subtract(req.body.feedTime, "seconds")
-      .format("DD/MM/YYYY HH:mm:ss");
+      .format("MM/DD/YYYY HH:mm:ss");
     let insertQuery = {
       pumped_by: req.body.feedGiver,
       pumped_for_name: req.body.feedTaker.name,

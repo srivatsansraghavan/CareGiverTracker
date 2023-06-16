@@ -23,7 +23,7 @@ export class FirstLoginService {
   ) {
     this.httpClient
       .post(
-        `${environment.expressURL}/role/add-role`,
+        `${environment.expressURL}/caretaken/add-care-taken`,
         {
           care_giver,
           care_taken_of,
@@ -33,13 +33,13 @@ export class FirstLoginService {
         },
         { observe: 'response' }
       )
-      .subscribe((responseAddRole: any) => {
-        if (responseAddRole.status === 200) {
+      .subscribe((responseAddCareTaken: any) => {
+        if (responseAddCareTaken.status === 200) {
           this.router.navigate(['/home']);
           localStorage.setItem('login_email', care_giver);
           this.toastService.show(
-            'Role Addition',
-            responseAddRole.body.message,
+            'Care taken Addition',
+            responseAddCareTaken.body.message,
             'bg-success text-light role-addition-toast',
             true
           );

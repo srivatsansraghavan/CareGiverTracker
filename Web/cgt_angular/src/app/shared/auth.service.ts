@@ -103,7 +103,7 @@ export class AuthService {
   isFirstLogin(loginEmail: string): Observable<boolean> {
     this.httpClient
       .get(
-        `${environment.expressURL}/role/is-first-login?giver_email=${loginEmail}`
+        `${environment.expressURL}/caretaken/is-first-login?giver_email=${loginEmail}`
       )
       .subscribe((firstLogin: any) => {
         this.firstLogin.next(firstLogin);

@@ -22,6 +22,13 @@ import { InventoryTrackerComponent } from './home/inventory-tracker/inventory-tr
 import { MenubarComponent } from './shared/menubar/menubar.component';
 import { ShowEditDeleteDirective } from './shared/directives/mousehover.directive';
 import { DateDiffPipe } from './shared/pipes/show-date-diff.pipe';
+import { CareTakenDetailsComponent } from './home/care-taken-details/care-taken-details.component';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { CareTakenDetailsEffects } from './store/care-taken-details/care-taken-details.effects';
+import { careTakenDetailsReducer } from './store/care-taken-details/care-taken-details.reducer';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -39,6 +46,7 @@ import { DateDiffPipe } from './shared/pipes/show-date-diff.pipe';
     DateDiffPipe,
     ShowEditDeleteDirective,
     InventoryTrackerComponent,
+    CareTakenDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,6 +57,9 @@ import { DateDiffPipe } from './shared/pipes/show-date-diff.pipe';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
+    StoreModule.forRoot({ caretakendetails: careTakenDetailsReducer }),
+    EffectsModule.forRoot([CareTakenDetailsEffects]),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
   ],
   providers: [
     {

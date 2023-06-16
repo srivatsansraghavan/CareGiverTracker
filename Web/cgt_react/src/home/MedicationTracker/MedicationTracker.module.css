@@ -1,0 +1,12 @@
+.medContainer {
+    display: block;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-bottom: 3%;
+    min-width: 800px;
+    min-height: 600px;
+    width: 60%;
+    height: 90%;
+    background-color: rgb(200, 142, 84);
+    overflow: hidden;
+}

@@ -21,15 +21,12 @@ export const addUserModel = async function (query) {
   return JSON.parse(JSON.stringify(addedUser));
 };
 
-export const getPassword = async function (emailId) {
+export const getUserDetails = async function (emailId) {
   const userModel = await getUserSchema();
-  const fetchPassword = await userModel
-    .findOne(
-      {
-        user_email: emailId,
-      },
-      "user_password"
-    )
+  const fetchDetails = await userModel
+    .findOne({
+      user_email: emailId,
+    })
     .exec();
-  return fetchPassword;
+  return fetchDetails;
 };

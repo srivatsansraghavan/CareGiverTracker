@@ -127,7 +127,7 @@ export const saveFeedForPumpedModel = async function (finder, updated) {
 };
 
 export const getFeedDetailsModel = async function (
-  care_giver_email,
+  care_giver,
   care_taken_of_id,
   feed_count
 ) {
@@ -139,7 +139,7 @@ export const getFeedDetailsModel = async function (
           {
             $and: [
               {
-                feed_giver: care_giver_email,
+                feed_giver: care_giver,
                 feed_taker_id: care_taken_of_id,
               },
             ],
@@ -147,7 +147,7 @@ export const getFeedDetailsModel = async function (
           {
             $and: [
               {
-                pumped_by: care_giver_email,
+                pumped_by: care_giver,
                 pumped_for_id: care_taken_of_id,
               },
             ],

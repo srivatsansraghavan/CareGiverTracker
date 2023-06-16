@@ -1,31 +1,38 @@
 <app-first-login *ngIf="isFirstLogin; else showTabs"></app-first-login>
 <ng-template #showTabs>
   <app-menubar></app-menubar>
-  <ul ngbNav #nav="ngbNav" class="nav-tabs">
-    <li [ngbNavItem]="1">
-      <a ngbNavLink> Feeding </a>
-      <ng-template ngbNavContent>
-        <app-feeding-tracker></app-feeding-tracker>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="2">
-      <a ngbNavLink> Excretions </a>
-      <ng-template ngbNavContent>
-        <app-excretion-tracker></app-excretion-tracker>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="3">
-      <a ngbNavLink> Medications </a>
-      <ng-template ngbNavContent>
-        <app-medication-tracker></app-medication-tracker>
-      </ng-template>
-    </li>
-    <li [ngbNavItem]="4">
-      <a ngbNavLink> Inventory </a>
-      <ng-template ngbNavContent>
-        <app-inventory-tracker></app-inventory-tracker>
-      </ng-template>
-    </li>
-  </ul>
-  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  <div class="home-container">
+    <div class="home-nav-container">
+      <ul ngbNav #nav="ngbNav" class="nav-tabs">
+        <li [ngbNavItem]="1">
+          <a ngbNavLink> Feeding </a>
+          <ng-template ngbNavContent>
+            <app-feeding-tracker></app-feeding-tracker>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink> Excretions </a>
+          <ng-template ngbNavContent>
+            <app-excretion-tracker></app-excretion-tracker>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+          <a ngbNavLink> Medications </a>
+          <ng-template ngbNavContent>
+            <app-medication-tracker></app-medication-tracker>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="4">
+          <a ngbNavLink> Inventory </a>
+          <ng-template ngbNavContent>
+            <app-inventory-tracker></app-inventory-tracker>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav" class="mt-2 nav-outlet"></div>
+    </div>
+    <app-care-taken-details
+      class="care-taken-container"
+    ></app-care-taken-details>
+  </div>
 </ng-template>

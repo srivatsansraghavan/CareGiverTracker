@@ -70,7 +70,7 @@
         </li>
         <li
           *ngIf="eachFeed.hasOwnProperty('pumpedMode')"
-          id="eachFeed.id"
+          id="{{ eachFeed.id }}"
           [ngClass]="{
             'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
           }"

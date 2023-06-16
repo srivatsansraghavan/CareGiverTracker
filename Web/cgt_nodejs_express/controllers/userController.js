@@ -4,7 +4,7 @@ const { sign } = jsonwebtoken;
 import fs from "fs";
 import moment from "moment";
 const privateKey = fs.readFileSync("./private.key");
-import { addUserModel, getPassword } from "../models/userModel.js";
+import { addUserModel, getUserDetails } from "../models/userModel.js";
 
 export async function addUser(req, res, next) {
   try {
@@ -25,6 +25,8 @@ export async function addUser(req, res, next) {
       res.status(200).json({
         access_token: jwToken,
         message: "User created successfully!",
+        added_user: addedUsers._id,
+        added_email: addedUsers.user_email,
       });
     } else {
       res.status(404).send("Unable to add user. Please try again!");
@@ -36,11 +38,12 @@ export async function addUser(req, res, next) {
 
 export async function loginUser(req, res, next) {
   try {
-    const userPassword = await getPassword(req.body.email);
+    const userDetail = await getUserDetails(req.body.email);
     const verifyPassword = await compare(
       req.body.password,
-      userPassword.user_password
+      userDetail.user_password
     );
+    console.log("userDetail:", userDetail);
     if (verifyPassword) {
       const jwToken = sign({}, privateKey, {
         algorithm: "RS256",
@@ -51,6 +54,8 @@ export async function loginUser(req, res, next) {
       res.status(200).json({
         access_token: jwToken,
         message: "User signed in successfully!",
+        logged_in_user: userDetail._id,
+        logged_in_email: userDetail.user_email,
       });
     } else {
       res.status(404).send("Incorrect password!");

@@ -1,0 +1,133 @@
+<div class="container">
+  <h1>Care Taken Details</h1>
+  <div
+    class="ctd-card"
+    *ngFor="let careTakenDetail of careTakenDetails$ | async"
+    [class.selected]="careTakenDetail.care_last_accessed"
+    (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
+  >
+    <div class="ctd-card-row">
+      <p class="ctd-card-key">Name</p>
+      <p class="ctd-card-value">
+        {{ careTakenDetail.care_taken_name }}
+      </p>
+    </div>
+    <div class="ctd-card-row">
+      <p class="ctd-card-key">Type</p>
+      <p class="ctd-card-value">{{ careTakenDetail.care_taken_of }}</p>
+    </div>
+    <div class="ctd-card-row">
+      <p class="ctd-card-key">Date of Birth</p>
+      <p class="ctd-card-value">{{ careTakenDetail.care_taken_dob }}</p>
+    </div>
+    <div class="ctd-card-row">
+      <p class="ctd-card-key">Gender</p>
+      <p class="ctd-card-value">{{ careTakenDetail.care_taken_gender }}</p>
+    </div>
+  </div>
+  <div class="ctd-add-btn">
+    <button (click)="addCareTakenPerson(addCareTakenDetailsModal)">
+      Add Care Taken Person
+    </button>
+  </div>
+</div>
+<ng-template #addCareTakenDetailsModal>
+  <div class="modal-header">
+    <h3 class="modal-title">Add Care Taken Person</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-of"> I take care of </label>
+      </div>
+      <div class="col-md-6">
+        <select
+          class="form-select-sm w-auto"
+          id="care-taken-of"
+          name="care-taken-of"
+          [(ngModel)]="careTakenOf"
+        >
+          <option *ngFor="let role of roles" [value]="role">
+            {{ role | titlecase }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-name"> Their Name </label>
+      </div>
+      <div class="col-md-6">
+        <input
+          class="form-control w-auto"
+          type="text"
+          id="care-taken-name"
+          name="care-taken-name"
+          [(ngModel)]="careTakenName"
+        />
+      </div>
+    </div>
+
+    <div class="row mb-3 row-cols-sm-auto">
+      <div class="col-md-3">
+        <label for="care-taken-dob">Their Date of Birth </label>
+      </div>
+      <div class="col-md-6">
+        <div class="input-group">
+          <input
+            class="form-control w-10"
+            ngbDatepicker
+            id="care-taken-dob"
+            name="care-taken-dob"
+            [(ngModel)]="careTakenDOB"
+            #d="ngbDatepicker"
+          />
+          <button
+            class="btn btn-outline-secondary bi bi-calendar3"
+            (click)="d.toggle()"
+            type="button"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="care-taken-age">Their Gender </label>
+      </div>
+      <div class="col-md-6">
+        <select
+          class="form-select-sm w-auto"
+          id="care-taken-gender"
+          name="care-taken-gender"
+          [(ngModel)]="careTakenGender"
+        >
+          <option value="Female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Transgender">Transgender</option>
+          <option value="NonBinary">Non Binary</option>
+          <option value="NoResponse">Prefer not to respond</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="
+        !careTakenOf || !careTakenName || !careTakenDOB || !careTakenGender
+      "
+      (click)="addCareTakenOf()"
+    >
+      Save
+    </button>
+    <button
+      type="button"
+      class="btn btn-secondary"
+      (click)="closeModalLogOut()"
+    >
+      Later
+    </button>
+  </div>
+</ng-template>

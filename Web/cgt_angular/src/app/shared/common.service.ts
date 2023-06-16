@@ -102,7 +102,7 @@ export class CommonService {
   getCareTakenOfDetails(giver_email: string): Observable<careTakenDetail> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/role/get-role-details?giver_email=${giver_email}`,
+        `${environment.expressURL}/caretaken/get-care-taken-details?giver_email=${giver_email}`,
         { observe: 'response' }
       )
       .pipe(

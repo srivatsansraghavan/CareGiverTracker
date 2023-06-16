@@ -1,0 +1,44 @@
+.container {
+    width: 600px;
+    height: 100%;
+    background-color: khaki;
+    margin: 0 auto;
+    padding: 10%;
+}
+
+.ctd-card {
+    display: block;
+    width: 80%;
+    height: 30%;
+    background-color:chocolate;
+    border: 1 solid cornsilk;
+    border-radius: 5%;
+    margin: 5%;
+    cursor: pointer;
+}
+
+.ctd-card.selected {
+    background-color: greenyellow;
+    border: 1 solid black;
+    cursor:crosshair;
+}
+
+.ctd-card-row {
+    display: flex;
+    justify-content: space-around;
+}
+
+.ctd-card-key {
+    font-weight: 500;
+}
+
+.ctd-card-value {
+    font-weight: 300;
+}
+
+.ctd-add-btn {
+    display: block;
+    position: relative;
+    top: 100px;
+    left: 100px;
+}

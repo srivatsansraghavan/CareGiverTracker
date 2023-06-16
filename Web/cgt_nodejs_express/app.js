@@ -6,7 +6,7 @@ const { json } = pkg;
 app.use(cors()).use(json());
 
 import user from "./routes/user.js";
-import role from "./routes/role.js";
+import caretaken from "./routes/caretaken.js";
 import feed from "./routes/feed.js";
 import excretion from "./routes/excretion.js";
 import inventory from "./routes/inventory.js";
@@ -14,7 +14,7 @@ import medication from "./routes/medication.js";
 import base from "./routes/base.js";
 
 app.use("/user", user);
-app.use("/role", role);
+app.use("/caretaken", caretaken);
 app.use("/feed", feed);
 app.use("/excretion", excretion);
 app.use("/inventory", inventory);

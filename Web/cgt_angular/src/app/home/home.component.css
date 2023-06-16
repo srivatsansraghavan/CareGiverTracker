@@ -1,6 +1,7 @@
-.home-header{
-    text-align: center;
-    margin-top: 2%;
+.home-container {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .nav-tabs {
@@ -9,4 +10,20 @@
     margin-right: 5%;
     max-width: 900px;
     border: 1 solid blanchedalmond;
+}
+
+.nav-outlet {
+    margin-top: 2%;
+    margin-right: 2%;
+    max-width: 900px;
+    width: 900px;
+}
+
+.home-nav-container {
+    flex: 1 0.5;
+}
+
+.care-taken-container {
+    flex: auto;
+    border: 1 solid gainsboro;
 }
