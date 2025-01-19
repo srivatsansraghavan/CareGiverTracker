@@ -31,7 +31,8 @@ export class AuthService {
         next: (response: any) => {
           if (response.status === 200) {
             localStorage.setItem('access_token', response.body.access_token);
-            localStorage.setItem('login_email', email_id);
+            localStorage.setItem('logged_in_email', response.body.added_email);
+            localStorage.setItem('logged_in_user', response.body.added_user);
             this.router.navigate(['home']);
             this.toastService.show(
               'Sign up message',
@@ -66,7 +67,14 @@ export class AuthService {
         next: (response: any) => {
           if (response.status === 200) {
             localStorage.setItem('access_token', response.body.access_token);
-            localStorage.setItem('login_email', email_id);
+            localStorage.setItem(
+              'logged_in_email',
+              response.body.logged_in_email
+            );
+            localStorage.setItem(
+              'logged_in_user',
+              response.body.logged_in_user
+            );
             this.router.navigate(['home']);
             this.toastService.show(
               'Login message',
@@ -96,14 +104,19 @@ export class AuthService {
   }
 
   getLoginEmail(): string {
-    const loginEmail = localStorage.getItem('login_email');
+    const loginEmail = localStorage.getItem('logged_in_email');
     return loginEmail;
   }
 
-  isFirstLogin(loginEmail: string): Observable<boolean> {
+  getLoginId(): string {
+    const loginId = localStorage.getItem('logged_in_user');
+    return loginId;
+  }
+
+  isFirstLogin(loginUser: string): Observable<boolean> {
     this.httpClient
       .get(
-        `${environment.expressURL}/caretaken/is-first-login?giver_email=${loginEmail}`
+        `${environment.expressURL}/caretaken/is-first-login?giver_user=${loginUser}`
       )
       .subscribe((firstLogin: any) => {
         this.firstLogin.next(firstLogin);
@@ -117,8 +130,8 @@ export class AuthService {
 
   logOut() {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('login_email');
-    localStorage.removeItem('care_taken_name');
+    localStorage.removeItem('logged_in_email');
+    localStorage.removeItem('logged_in_user');
     this.router.navigate(['']);
     this.toastService.show(
       'Logout message',

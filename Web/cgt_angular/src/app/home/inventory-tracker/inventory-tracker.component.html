@@ -11,9 +11,9 @@
       class="inv-per-date"
       *ngFor="let inventory of inventories | trackItems : 'getKeyValue'"
     >
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
-      {{ inventory[0].key }}
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <time dateTime="{{ inventory[0].key }}" class="inv-date"
+        >{{ inventory[0].key | dateDiff }}
+      </time>
       <ul
         class="inv-date-timeline"
         *ngFor="
@@ -24,11 +24,14 @@
           *ngIf="eachInventory.hasOwnProperty('inventoryType')"
           class="tracked-inv-timeline"
         >
-          {{ eachInventory.inventoryType }}:
-          {{ eachInventory.inventoryBrand }} -
-          {{ eachInventory.inventoryRemaining }} remaining out of
-          {{ eachInventory.inventoryTotal }}. (Added on
-          {{ eachInventory.addedTime }})
+          <span class="tracked-inv">
+            {{ eachInventory.inventoryType }}:
+            {{ eachInventory.inventoryBrand }} -
+            {{ eachInventory.inventoryRemaining }} remaining out of
+            {{ eachInventory.inventoryTotal }}. (Added on
+            {{ eachInventory.addedTime }})
+          </span>
+
           <!-- <button
             class="bi bi-pencil btn-edit-tracked-exc"
             (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
@@ -46,7 +49,7 @@
   <ng-template #addInvModal>
     <div class="modal-header">
       <h3 class="modal-title centre">
-        Inventory for {{ careTakenDetails.name }}
+        Inventory for {{ selCareTaken.care_taken_name }}
       </h3>
     </div>
     <div class="modal-body">

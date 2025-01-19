@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TimerService } from 'src/app/shared/timer/timer.service';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class FeedingTrackerService {
 
   saveTrackingFeed(
     feedGiver: string,
-    feedTaker: Object,
+    feedTaker: careTakenDetail,
     feedType: string,
     feedMode: string,
     feedSide: string,
@@ -31,7 +32,10 @@ export class FeedingTrackerService {
       `${environment.expressURL}/feed/save-tracking-feed`,
       {
         feedGiver,
-        feedTaker,
+        feedTaker: {
+          id: feedTaker._id,
+          name: feedTaker.care_taken_name,
+        },
         feedType,
         feedMode,
         feedSide,

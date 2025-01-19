@@ -20,14 +20,56 @@
 .modal-footer {
     justify-content: center;
 }
+ul {
+    padding: 0;
+}
 
-li.inv-per-date {
+.inv-per-date {
     list-style-type: none;
     padding-bottom: 1%;
     display: block;
+    border-bottom: 1px dotted;
 }
 
-li.tracked-inv-timeline {
+.inv-date {
+    display: flex;
+    justify-content: center;
+    padding-bottom: 2%;
+    font-size: large;
+    font-weight: 400;
+
+}
+
+.tracked-inv-timeline {
     list-style-type: none;
-    padding-bottom: 1%;
+    height: 100%;
+}
+
+.tracked-inv {
+    border: 1px solid #ccc;
+    background-color: snow;
+    display: inline-block;
+    height: 70px;
+    width: 100%;
+    padding: 2.5%;
+}
+
+.btn-edit-tracked-inv {
+    background-color: green;
+    border: 0 transparent;
+    display: none;
+    width: 10%;
+    height: 70px;
+} 
+
+.btn-delete-tracked-inv {
+    background-color: red;
+    border: 0 transparent;
+    display: none;
+    width: 10%;
+    height: 70px;
+}
+
+#spinner {
+    margin: 20 auto;
 }

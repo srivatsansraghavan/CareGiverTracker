@@ -3,7 +3,7 @@ import { careTakenDetail } from './care-taken-details.model';
 
 export const getSelectedCareTaken = createAction(
   '[Care Taken Details] Get Selected Care Taken Of Details',
-  props<{ caregiveremail: string }>()
+  props<{ caregiver: string }>()
 );
 
 export const getSelectedCareTakenSuccess = createAction(
@@ -33,7 +33,7 @@ export const addCareTakenPersonFailure = createAction(
 
 export const changeCareTakenPerson = createAction(
   '[Care Taken Details] Change Care Taken Person',
-  props<{ changecaretakenid: string; changecaregiveremail: string }>()
+  props<{ changecaretakenid: string; changecaregiver: string }>()
 );
 
 export const changeCareTakenPersonSuccess = createAction(

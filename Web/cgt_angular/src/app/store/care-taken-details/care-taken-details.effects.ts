@@ -66,19 +66,17 @@ export class CareTakenDetailsEffects {
     this.actions$.pipe(
       ofType(ctdActions.getSelectedCareTaken),
       switchMap((action) =>
-        this.careTakenDetailService
-          .selCareTakenDetails(action.caregiveremail)
-          .pipe(
-            map((response) =>
-              ctdActions.getSelectedCareTakenSuccess({
-                selcaretakendetails: response,
-              })
-            ),
-            tap(() => this.modal.dismissAll()),
-            catchError((error) =>
-              of(ctdActions.getSelectedCareTakenFailure({ error }))
-            )
+        this.careTakenDetailService.selCareTakenDetails(action.caregiver).pipe(
+          map((response) =>
+            ctdActions.getSelectedCareTakenSuccess({
+              selcaretakendetails: response,
+            })
+          ),
+          tap(() => this.modal.dismissAll()),
+          catchError((error) =>
+            of(ctdActions.getSelectedCareTakenFailure({ error }))
           )
+        )
       )
     )
   );
@@ -90,7 +88,7 @@ export class CareTakenDetailsEffects {
         this.careTakenDetailService
           .changeCareTakenPerson(
             action.changecaretakenid,
-            action.changecaregiveremail
+            action.changecaregiver
           )
           .pipe(
             map((response) =>

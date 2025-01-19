@@ -8,35 +8,15 @@ import { Observable, map } from 'rxjs';
 export class CareTakenDetailsService {
   constructor(private httpClient: HttpClient) {}
 
-  // getCareTakenOfDetails(giver_email: string): Observable<careTakenDetail> {
-  //   return this.httpClient
-  //     .get(
-  //       `${environment.expressURL}/role/get-role-details?giver_email=${giver_email}`,
-  //       { observe: 'response' }
-  //     )
-  //     .pipe(
-  //       map((response) => {
-  //         return {
-  //           _id: response.body['_id'],
-  //           care_taken_name: response.body['care_taken_name'],
-  //           care_taken_dob: response.body['care_taken_dob'],
-  //           care_taken_gender: response.body['care_taken_gender'],
-  //           care_taken_of: response.body['care_taken_of'],
-  //           care_giver: giver_email,
-  //         };
-  //       })
-  //     );
-  // }
-
-  getCareTakenDetails(giver_email: string): Observable<careTakenDetail[]> {
+  getCareTakenDetails(care_giver: string): Observable<careTakenDetail[]> {
     return this.httpClient.get<careTakenDetail[]>(
-      `${environment.expressURL}/caretaken/get-care-taken-details?giver_email=${giver_email}`
+      `${environment.expressURL}/caretaken/get-care-taken-details?care_giver=${care_giver}`
     );
   }
 
-  selCareTakenDetails(giver_email: string): Observable<careTakenDetail> {
+  selCareTakenDetails(care_giver: string): Observable<careTakenDetail> {
     return this.httpClient.get<careTakenDetail>(
-      `${environment.expressURL}/caretaken/get-selected-care-taken-detail?giver_email=${giver_email}`
+      `${environment.expressURL}/caretaken/get-selected-care-taken-detail?care_giver=${care_giver}`
     );
   }
 
@@ -57,10 +37,11 @@ export class CareTakenDetailsService {
 
   changeCareTakenPerson(
     care_taken_id: string,
-    care_giver_email: string
+    care_giver: string
   ): Observable<careTakenDetail> {
-    return this.httpClient.get<careTakenDetail>(
-      `${environment.expressURL}/caretaken/change-care-taken?care_giver_email=${care_giver_email}&care_taken_id=${care_taken_id}`
+    return this.httpClient.post<careTakenDetail>(
+      `${environment.expressURL}/caretaken/change-care-taken`,
+      { care_giver, care_taken_id }
     );
   }
 }

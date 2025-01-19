@@ -1,28 +1,30 @@
-<div class="container">
-  <h1>Care Taken Details</h1>
-  <div
-    class="ctd-card"
-    *ngFor="let careTakenDetail of careTakenDetails$ | async"
-    [class.selected]="careTakenDetail.care_last_accessed"
-    (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
-  >
-    <div class="ctd-card-row">
-      <p class="ctd-card-key">Name</p>
-      <p class="ctd-card-value">
-        {{ careTakenDetail.care_taken_name }}
-      </p>
-    </div>
-    <div class="ctd-card-row">
-      <p class="ctd-card-key">Type</p>
-      <p class="ctd-card-value">{{ careTakenDetail.care_taken_of }}</p>
-    </div>
-    <div class="ctd-card-row">
-      <p class="ctd-card-key">Date of Birth</p>
-      <p class="ctd-card-value">{{ careTakenDetail.care_taken_dob }}</p>
-    </div>
-    <div class="ctd-card-row">
-      <p class="ctd-card-key">Gender</p>
-      <p class="ctd-card-value">{{ careTakenDetail.care_taken_gender }}</p>
+<div class="ctd-container">
+  <h2>Care Taken Details</h2>
+  <div class="ctd-cards">
+    <div
+      class="ctd-card"
+      *ngFor="let careTakenDetail of careTakenDetails$ | async"
+      [class.selected]="careTakenDetail.care_last_accessed"
+      (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
+    >
+      <div class="ctd-card-row">
+        <p class="ctd-card-key">Name</p>
+        <p class="ctd-card-value">
+          {{ careTakenDetail.care_taken_name }}
+        </p>
+      </div>
+      <div class="ctd-card-row">
+        <p class="ctd-card-key">Type</p>
+        <p class="ctd-card-value">{{ careTakenDetail.care_taken_of }}</p>
+      </div>
+      <div class="ctd-card-row">
+        <p class="ctd-card-key">Date of Birth</p>
+        <p class="ctd-card-value">{{ careTakenDetail.care_taken_dob }}</p>
+      </div>
+      <div class="ctd-card-row">
+        <p class="ctd-card-key">Gender</p>
+        <p class="ctd-card-value">{{ careTakenDetail.care_taken_gender }}</p>
+      </div>
     </div>
   </div>
   <div class="ctd-add-btn">

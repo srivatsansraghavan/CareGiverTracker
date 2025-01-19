@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,7 +31,7 @@ export class ExcretionTrackerService {
             responseDetails['napkinType'] = responseItem.napkin_type;
             responseDetails['diaperCount'] = responseItem.diaper_count;
             responseDetails['diaperBrand'] = responseItem.diaper_brand;
-            endDate = responseItem.excretion_time.split(' ')[0];
+            endDate = responseItem.excretion_time.split('T')[0];
             responseDetails['excretionTime'] = new Date(
               responseItem.excretion_time
             ).toLocaleString();
@@ -48,7 +49,7 @@ export class ExcretionTrackerService {
 
   saveTrackedExcretion(
     careGiver: string,
-    careTakenOf: Object,
+    careTakenOf: careTakenDetail,
     excretionType: string,
     napkinType: string,
     diaperCount: number,
@@ -58,7 +59,10 @@ export class ExcretionTrackerService {
       `${environment.expressURL}/excretion/save-tracked-excretion`,
       {
         careGiver,
-        careTakenOf,
+        careTakenOf: {
+          id: careTakenOf._id,
+          name: careTakenOf.care_taken_name,
+        },
         excretionType,
         napkinType,
         diaperCount,

@@ -13,9 +13,9 @@
         let trackMedication of trackedMedications | trackItems : 'getKeyValue'
       "
     >
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
-      {{ trackMedication[0].key }}
-      <ng-container *ngFor="let _ of [].constructor(50)">-</ng-container>
+      <time dateTime="{{ trackMedication[0].key }}" class="med-date"
+        >{{ trackMedication[0].key | dateDiff }}
+      </time>
       <ul
         class="med-date-timeline"
         *ngFor="
@@ -27,16 +27,19 @@
           *ngIf="eachMedication.hasOwnProperty('medicineName')"
           class="tracked-med-timeline"
         >
-          {{ eachMedication.medicineName }} -
-          {{ eachMedication.medicineQuantity }}
-          <span
-            *ngIf="
-              eachMedication.medicineForm === 'Drops' ||
-              eachMedication.medicineForm === 'Syrup'
-            "
-            >ml</span
-          >
-          ({{ eachMedication.medicationTime }})
+          <span class="tracked-med">
+            {{ eachMedication.medicineName }} -
+            {{ eachMedication.medicineQuantity }}
+            <span
+              *ngIf="
+                eachMedication.medicineForm === 'Drops' ||
+                eachMedication.medicineForm === 'Syrup'
+              "
+              >ml</span
+            >
+            ({{ eachMedication.medicationTime }})
+          </span>
+
           <button
             class="bi bi-pencil btn-edit-tracked-med"
             (click)="editTrackedMedModal(editMedModal, eachMedication.id)"
@@ -54,7 +57,7 @@
   <ng-template #addMedModal>
     <div class="modal-header">
       <h3 class="modal-title centre">
-        Medication to {{ careTakenDetails.name }}
+        Medication to {{ selCareTaken.care_taken_name }}
       </h3>
     </div>
     <div class="modal-body">

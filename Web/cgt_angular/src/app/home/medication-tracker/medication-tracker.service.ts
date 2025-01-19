@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -30,10 +31,10 @@ export class MedicationTrackerService {
             responseDetails['medicineForm'] = responseItem.medicine_form;
             responseDetails['medicineQuantity'] =
               responseItem.medicine_quantity;
-            endDate = responseItem.medication_time.split(' ')[0];
-            responseDetails['medicationTime'] =
-              responseItem.medication_time.split(' ')[1];
-            responseDetails['medicationDate'] = endDate;
+            endDate = responseItem.medication_time.split('T')[0];
+            responseDetails['medicationTime'] = new Date(
+              responseItem.medication_time
+            ).toLocaleString();
             if (!medicationGrouped.hasOwnProperty(endDate)) {
               medicationGrouped[endDate] = [];
             }
@@ -47,7 +48,7 @@ export class MedicationTrackerService {
 
   saveTrackedMedication(
     careGiver: string,
-    careTakenOf: Object,
+    careTakenOf: careTakenDetail,
     medicineId: string,
     medicineQuantity: number
   ): Observable<Object> {
@@ -55,7 +56,10 @@ export class MedicationTrackerService {
       `${environment.expressURL}/medication/save-tracked-medication`,
       {
         careGiver,
-        careTakenOf,
+        careTakenOf: {
+          id: careTakenOf._id,
+          name: careTakenOf.care_taken_name,
+        },
         medicineId,
         medicineQuantity,
       },
