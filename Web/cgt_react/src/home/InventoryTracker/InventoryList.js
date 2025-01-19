@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Button, IconButton, Typography } from "@mui/material";
-import axios from "axios";
+import { IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Modal from "../../shared/Modal";
@@ -8,11 +7,6 @@ function InventoryList({ classname, invContent }) {
   const [showEditDeleteIcon, setShowEditDeleteIcon] = useState(false);
   const [showEditInvModal, setShowEditInvModal] = useState(false);
   const [showDeleteInvModal, setShowDeleteInvModal] = useState(false);
-  const [isEditFormNotValid, setIsEditFormNotValid] = useState(true);
-
-  const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
-  });
 
   const showEditDeleteInv = () => {
     setShowEditDeleteIcon(true);
@@ -101,7 +95,6 @@ function InventoryList({ classname, invContent }) {
       type: "submit",
       text: "Save & Close",
       buttonId: "editInvSubmit",
-      isNotValid: isEditFormNotValid,
     },
     {
       type: "button",

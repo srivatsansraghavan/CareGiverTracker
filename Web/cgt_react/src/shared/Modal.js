@@ -66,7 +66,16 @@ const Modal = ({ show, title, formId, formFields, formFooter, onAction }) => {
               onChange={(event) => {
                 formField.fieldSetState(event.target.value);
               }}
+              onBlur={(event) => {
+                formField.fieldValidate(event.target.value);
+              }}
             />
+            <Typography className={modalstyle.errorField}>
+              {formField.fieldError?.required}
+            </Typography>
+            <Typography className={modalstyle.errorField}>
+              {formField.fieldError?.expected}
+            </Typography>
           </FormControl>
         );
     }
@@ -75,7 +84,9 @@ const Modal = ({ show, title, formId, formFields, formFooter, onAction }) => {
     <div className={modalstyle.modal}>
       <div className={modalstyle.modalContent}>
         <div className={modalstyle.modalHeader}>
-          <h4 className={modalstyle.modalTitle}>{title}</h4>
+          <h4 className={modalstyle.modalTitle} data-testid="modal-title">
+            {title}
+          </h4>
         </div>
         <div className={modalstyle.modalBody}>
           <form className={modalstyle.form} id={formId} onSubmit={onFormSubmit}>

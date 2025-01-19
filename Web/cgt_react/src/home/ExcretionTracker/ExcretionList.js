@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, IconButton, Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -8,7 +8,6 @@ function ExcretionList({ classname, excContent }) {
   const [showEditDeleteIcon, setShowEditDeleteIcon] = useState(false);
   const [showEditExcModal, setShowEditExcModal] = useState(false);
   const [showDeleteExcModal, setShowDeleteExcModal] = useState(false);
-  const [isEditFormNotValid, setIsEditFormNotValid] = useState(true);
 
   const axiosClient = axios.create({
     baseURL: "http://localhost:3000/",
@@ -81,7 +80,6 @@ function ExcretionList({ classname, excContent }) {
       type: "submit",
       text: "Save & Close",
       buttonId: "editExcSubmit",
-      isNotValid: isEditFormNotValid,
     },
     {
       type: "button",

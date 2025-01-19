@@ -8,33 +8,40 @@ import Home, { firstTimeLogin } from "./home/Home";
 import { logoutLoader } from "./shared/MenuBar";
 import ErrorPage from "./shared/Error";
 import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import store from "./store/index";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <RootLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Main />,
-      },
-      {
-        path: "home/:userId",
-        element: <Home />,
-        loader: firstTimeLogin,
-      },
-      {
-        path: "logout",
-        loader: logoutLoader,
-      },
-    ],
-  },
-]);
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <RootLayout />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          index: true,
+          element: <Main />,
+        },
+        {
+          path: "home/:userId",
+          element: <Home />,
+          loader: firstTimeLogin,
+        },
+        {
+          path: "logout",
+          loader: logoutLoader,
+        },
+      ],
+    },
+  ],
+  { basename: process.env.PUBLIC_URL }
+);
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );
 

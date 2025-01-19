@@ -1,16 +1,6 @@
 import mainstyle from "./Main.module.css";
-import MenuBar from "../shared/MenuBar";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 function Main() {
-  let navigate = useNavigate();
-
-  const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
-  });
-
   return (
     <div className={mainstyle.mainContainer}>
       <article>

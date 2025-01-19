@@ -4,6 +4,11 @@ import { useNavigate, Link, redirect } from "react-router-dom";
 import Modal from "../shared/Modal";
 import axios from "axios";
 import { Button } from "@mui/material";
+import {
+  signUpFormValidation,
+  loginFormValidation,
+} from "../validation/formValidation";
+import useFormValidation from "../Hooks/useFormValidation";
 
 function MenuBar() {
   let navigate = useNavigate();
@@ -13,16 +18,17 @@ function MenuBar() {
   const [loginPassword, setLoginPassword] = useState("");
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
+  const [signUpRepeatPassword, setSignUpRepeatPassword] = useState("");
   const [signUpFullName, setSignUpFullName] = useState("");
   const [signUpFormNotValid, setSignUpFormNotValid] = useState(false);
   const [loginFormNotValid, setLoginFormNotValid] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
-  const [addUserResponse, setAddUserResponse] = useState("");
+  // const [addUserResponse, setAddUserResponse] = useState("");
 
   const loggedInEmail = localStorage.getItem("logged_in_email");
 
   const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.REACT_APP_API_URL,
   });
 
   const openLoginModal = () => {
@@ -54,14 +60,14 @@ function MenuBar() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setAddUserResponse(response.data.message);
+          //setAddUserResponse(response.data.message);
           localStorage.setItem("access_token", response.data.access_token);
           localStorage.setItem("logged_in_user", response.data.added_user);
           localStorage.setItem("logged_in_email", response.data.added_email);
           setShowSignUpModal(false);
           navigate(`/home/${response.data.added_user}`);
         } else {
-          setAddUserResponse(response.data.message);
+          //setAddUserResponse(response.data.message);
           navigate("/");
         }
       });
@@ -75,7 +81,7 @@ function MenuBar() {
       })
       .then((response) => {
         if (response.status === 200) {
-          setAddUserResponse(response.data.message);
+          // setAddUserResponse(response.data.message);
           localStorage.setItem("access_token", response.data.access_token);
           localStorage.setItem("logged_in_user", response.data.logged_in_user);
           localStorage.setItem(
@@ -85,7 +91,7 @@ function MenuBar() {
           setShowLoginModal(false);
           navigate(`/home/${response.data.logged_in_user}`);
         } else {
-          setAddUserResponse(response.data.message);
+          //setAddUserResponse(response.data.message);
           navigate("/");
         }
       });
@@ -98,6 +104,18 @@ function MenuBar() {
       setSignUpFormNotValid(true);
     }
   }, [signUpEmail, signUpPassword, signUpFullName]);
+
+  const { errors: signUpErrors, formErrorHandler: signUpFormErrorHandler } =
+    useFormValidation(signUpFormValidation);
+  const { errors: loginErrors, formErrorHandler: loginFormErrorHandler } =
+    useFormValidation(loginFormValidation);
+
+  // const signUpFormErrorHandler = (field, value) => {
+  //   setSignUpFormError((prevState) => [
+  //     { ...prevState },
+  //     { signUpEmailError: errors },
+  //   ]);
+  // };
 
   useEffect(() => {
     if (loginEmail !== "" && loginPassword !== "") {
@@ -117,6 +135,10 @@ function MenuBar() {
       fieldSetState: (value) => {
         setSignUpEmail(value);
       },
+      fieldError: signUpErrors.signUpEmail,
+      fieldValidate: (value) => {
+        signUpFormErrorHandler("signUpEmail", value);
+      },
     },
     {
       fieldLabel: "Password",
@@ -127,12 +149,24 @@ function MenuBar() {
       fieldSetState: (value) => {
         setSignUpPassword(value);
       },
+      fieldError: signUpErrors.signUpPassword,
+      fieldValidate: (value) => {
+        signUpFormErrorHandler("signUpPassword", value);
+      },
     },
     {
       fieldLabel: "Repeat password",
       fieldType: "text",
       fieldId: "signUpRepeatPassword",
       fieldName: "signUpRepeatPassword",
+      fieldState: signUpRepeatPassword,
+      fieldSetState: (value) => {
+        setSignUpRepeatPassword(value);
+      },
+      fieldError: signUpErrors.signUpRepeatPassword,
+      fieldValidate: (value) => {
+        signUpFormErrorHandler("signUpRepeatPassword", value);
+      },
     },
     {
       fieldLabel: "Full Name",
@@ -142,6 +176,10 @@ function MenuBar() {
       fieldState: signUpFullName,
       fieldSetState: (value) => {
         setSignUpFullName(value);
+      },
+      fieldError: signUpErrors.signUpFullName,
+      fieldValidate: (value) => {
+        signUpFormErrorHandler("signUpFullName", value);
       },
     },
   ];
@@ -171,6 +209,10 @@ function MenuBar() {
       fieldSetState: (value) => {
         setLoginEmail(value);
       },
+      fieldError: loginErrors.loginEmail,
+      fieldValidate: (value) => {
+        loginFormErrorHandler("loginEmail", value);
+      },
     },
     {
       fieldLabel: "Password",
@@ -180,6 +222,10 @@ function MenuBar() {
       fieldState: loginPassword,
       fieldSetState: (value) => {
         setLoginPassword(value);
+      },
+      fieldError: loginErrors.loginPassword,
+      fieldValidate: (value) => {
+        loginFormErrorHandler("loginPassword", value);
       },
     },
   ];
@@ -195,6 +241,23 @@ function MenuBar() {
       type: "button",
       text: "Close",
       onClick: () => setShowLoginModal(false),
+      buttonId: "loginClose",
+    },
+  ];
+
+  const profileFormFields = [
+    {
+      fieldLabel: "Email",
+      fieldType: "readonly",
+      fieldText: loginEmail,
+    },
+  ];
+
+  const profileFormButtons = [
+    {
+      type: "button",
+      text: "Close",
+      onClick: () => setShowProfileModal(false),
       buttonId: "loginClose",
     },
   ];
@@ -216,6 +279,13 @@ function MenuBar() {
         formFields={loginFormFields}
         formFooter={loginFormButtons}
         onAction={doLoginUser}
+      />
+      <Modal
+        show={showProfileModal}
+        title="Profile"
+        formId="profileForm"
+        formFields={profileFormFields}
+        formFooter={profileFormButtons}
       />
       <ul className={menubarstyle.menuBar}>
         <li key="header" className={menubarstyle.menuHeader}>
@@ -243,6 +313,7 @@ function MenuBar() {
                   color: "black",
                 }}
                 onClick={openSignUpModal}
+                data-testid="signup-button"
               >
                 Signup
               </Button>
@@ -270,6 +341,9 @@ function MenuBar() {
             </li>
           </>
         )}
+        <>
+          <span>{process.env.NODE_ENV}</span>
+        </>
       </ul>
     </>
   );

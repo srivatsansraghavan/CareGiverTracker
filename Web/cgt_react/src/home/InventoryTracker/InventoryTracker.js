@@ -23,13 +23,13 @@ function InventoryTracker({ user, caretaken }) {
   };
 
   const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.REACT_APP_API_URL,
   });
 
   useEffect(() => {
     axiosClient
       .get(
-        `/inventory/get-inventories?careGiver=${user}&careTakenId=${caretaken.care_taken_id}`
+        `/inventory/get-inventories?careGiver=${user}&careTakenId=${caretaken.id}`
       )
       .then((response) => {
         if (response.status === 200) {
@@ -66,7 +66,7 @@ function InventoryTracker({ user, caretaken }) {
           // navigate("/");
         }
       });
-  }, [showInvModal]);
+  }, [showInvModal, user, caretaken, axiosClient]);
 
   useEffect(() => {
     if (inventoryType !== "" && inventoryBrand !== "" && inventoryCount > 0) {
@@ -105,79 +105,73 @@ function InventoryTracker({ user, caretaken }) {
     },
   ];
 
-  {
-    inventoryType !== "" &&
-      trackInvFields.push({
-        fieldLabel: "Inventory Brand",
-        fieldType: "text",
-        fieldId: "inventoryBrand",
-        fieldName: "inventoryBrand",
-        fieldState: inventoryBrand,
-        fieldSetState: (value) => {
-          setInventoryCount(0);
-          setInventoryBrand(value);
+  inventoryType === "Medicine" &&
+    trackInvFields.push({
+      fieldLabel: "Inventory Form",
+      fieldType: "dropdown",
+      fieldId: "inventoryForm",
+      fieldName: "inventoryForm",
+      fieldState: inventoryForm,
+      fieldSetState: (value) => {
+        setInventoryForm(value);
+        setInventoryBrand("");
+        setInventoryCount(0);
+      },
+      fieldItems: [
+        {
+          value: "Drops",
+          text: "Drops",
         },
-      });
-  }
+        {
+          value: "Syrup",
+          text: "Syrup",
+        },
+        {
+          value: "Pill",
+          text: "Pill",
+        },
+        {
+          value: "Tablet",
+          text: "Tablet",
+        },
+      ],
+    });
 
-  {
-    inventoryType === "Medicine" &&
-      trackInvFields.push({
-        fieldLabel: "Inventory Form",
-        fieldType: "dropdown",
-        fieldId: "inventoryForm",
-        fieldName: "inventoryForm",
-        fieldState: inventoryForm,
-        fieldSetState: (value) => {
-          setInventoryForm(value);
-          setInventoryBrand("");
-          setInventoryCount(0);
-        },
-        fieldItems: [
-          {
-            value: "Drops",
-            text: "Drops",
-          },
-          {
-            value: "Syrup",
-            text: "Syrup",
-          },
-          {
-            value: "Pill",
-            text: "Pill",
-          },
-          {
-            value: "Tablet",
-            text: "Tablet",
-          },
-        ],
-      });
-  }
+  inventoryType !== "" &&
+    trackInvFields.push({
+      fieldLabel: "Inventory Brand",
+      fieldType: "text",
+      fieldId: "inventoryBrand",
+      fieldName: "inventoryBrand",
+      fieldState: inventoryBrand,
+      fieldSetState: (value) => {
+        setInventoryCount(0);
+        setInventoryBrand(value);
+      },
+    });
 
-  {
-    inventoryType !== "" &&
-      inventoryBrand !== "" &&
-      trackInvFields.push({
-        fieldLabel: "Inventory Count",
-        fieldType: "number",
-        fieldId: "inventoryCount",
-        fieldName: "inventoryCount",
-        fieldState: inventoryCount,
-        fieldSetState: (value) => {
-          setInventoryCount(value);
-        },
-      }) &&
-      trackInvFields.push({
-        fieldLabel: "Inventory Each Contains",
-        fieldType: "number",
-        fieldId: "inventoryEachContains",
-        fieldName: "inventoryEachContains",
-        fieldState: inventoryEachContains,
-        fieldSetState: (value) => {
-          setInventoryEachContains(value);
-        },
-      });
-  }
+  inventoryType !== "" &&
+    inventoryBrand !== "" &&
+    trackInvFields.push({
+      fieldLabel: "Inventory Count",
+      fieldType: "number",
+      fieldId: "inventoryCount",
+      fieldName: "inventoryCount",
+      fieldState: inventoryCount,
+      fieldSetState: (value) => {
+        setInventoryCount(value);
+      },
+    }) &&
+    trackInvFields.push({
+      fieldLabel: "Inventory Each Contains",
+      fieldType: "number",
+      fieldId: "inventoryEachContains",
+      fieldName: "inventoryEachContains",
+      fieldState: inventoryEachContains,
+      fieldSetState: (value) => {
+        setInventoryEachContains(value);
+      },
+    });
 
   const trackInvFooter = [
     {
@@ -201,7 +195,7 @@ function InventoryTracker({ user, caretaken }) {
         careGiver: user,
         careTakenOf: {
           name: caretaken.care_taken_name,
-          id: caretaken.care_taken_id,
+          id: caretaken.id,
         },
         inventoryType,
         inventoryBrand,

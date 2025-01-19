@@ -26,13 +26,13 @@ function FeedingTracker({ user, caretaken }) {
   };
 
   const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.REACT_APP_API_URL,
   });
 
   useEffect(() => {
     axiosClient
       .get(
-        `/feed/get-feed-details?feed_giver=${user}&feed_taker=${caretaken.care_taken_id}&feed_count=10`
+        `/feed/get-feed-details?feed_giver=${user}&feed_taker=${caretaken.id}&feed_count=10`
       )
       .then((response) => {
         if (response.status === 200) {
@@ -86,8 +86,8 @@ function FeedingTracker({ user, caretaken }) {
           // navigate("/");
         }
       });
-  }, [showFeedModal]);
-  const validateStartTracking = useEffect(() => {
+  }, [showFeedModal, axiosClient, user, caretaken]);
+  useEffect(() => {
     if (feedingType !== "" && feedingMode !== "") {
       setCanStartTracking(false);
     } else {
@@ -95,7 +95,7 @@ function FeedingTracker({ user, caretaken }) {
     }
   }, [feedingType, feedingMode]);
 
-  const validateAddFeedForm = useEffect(() => {
+  useEffect(() => {
     if (feedingType !== "" && feedingMode !== "" && feedingQuantity !== "") {
       setIsFormNotValid(false);
     } else {
@@ -124,70 +124,64 @@ function FeedingTracker({ user, caretaken }) {
     },
   ];
 
-  {
-    feedingType !== "" &&
-      trackFeedFields.push({
-        fieldLabel: "Feed Mode",
-        fieldType: "dropdown",
-        fieldId: "feedingMode",
-        fieldName: "feedingMode",
-        fieldState: feedingMode,
-        fieldSetState: (value) => {
-          setFeedingMode(value);
-          setFeedingSide("");
-          setFeedingQuantity(0);
-        },
-        fieldItems: feedingOptions[caretaken.care_taken_type][feedingType].map(
-          (mode) => {
-            return { value: mode, text: mode };
-          }
-        ),
-      });
-  }
+  feedingType !== "" &&
+    trackFeedFields.push({
+      fieldLabel: "Feed Mode",
+      fieldType: "dropdown",
+      fieldId: "feedingMode",
+      fieldName: "feedingMode",
+      fieldState: feedingMode,
+      fieldSetState: (value) => {
+        setFeedingMode(value);
+        setFeedingSide("");
+        setFeedingQuantity(0);
+      },
+      fieldItems: feedingOptions[caretaken.care_taken_type][feedingType].map(
+        (mode) => {
+          return { value: mode, text: mode };
+        }
+      ),
+    });
 
-  {
-    feedingType !== "" &&
-      ["Breast Pump", "Breast Feed"].includes(feedingType) &&
-      trackFeedFields.push({
-        fieldLabel: "Feed Side",
-        fieldType: "dropdown",
-        fieldId: "feedingSide",
-        fieldName: "feedingSide",
-        fieldState: feedingSide,
-        fieldSetState: (value) => {
-          setFeedingSide(value);
+  feedingType !== "" &&
+    ["Breast Pump", "Breast Feed"].includes(feedingType) &&
+    trackFeedFields.push({
+      fieldLabel: "Feed Side",
+      fieldType: "dropdown",
+      fieldId: "feedingSide",
+      fieldName: "feedingSide",
+      fieldState: feedingSide,
+      fieldSetState: (value) => {
+        setFeedingSide(value);
+      },
+      fieldItems: [
+        {
+          value: "Left Side",
+          text: "Left Side",
         },
-        fieldItems: [
-          {
-            value: "Left Side",
-            text: "Left Side",
-          },
-          {
-            value: "Right Side",
-            text: "Right Side",
-          },
-          {
-            value: "Both Sides",
-            text: "Both Sides",
-          },
-        ],
-      });
-  }
+        {
+          value: "Right Side",
+          text: "Right Side",
+        },
+        {
+          value: "Both Sides",
+          text: "Both Sides",
+        },
+      ],
+    });
 
-  {
-    feedingType !== "" &&
-      feedingMode !== "" &&
-      trackFeedFields.push({
-        fieldLabel: "Feed Quantity",
-        fieldType: "number",
-        fieldId: "feedingQuantity",
-        fieldName: "feedingQuantity",
-        fieldState: feedingQuantity,
-        fieldSetState: (value) => {
-          setFeedingQuantity(value);
-        },
-      });
-  }
+  feedingType !== "" &&
+    feedingMode !== "" &&
+    trackFeedFields.push({
+      fieldLabel: "Feed Quantity",
+      fieldType: "number",
+      fieldId: "feedingQuantity",
+      fieldName: "feedingQuantity",
+      fieldState: feedingQuantity,
+      fieldSetState: (value) => {
+        setFeedingQuantity(value);
+      },
+    });
 
   const trackFeed = () => {
     if (isTrackingFeed === "Start Tracking") {
@@ -236,7 +230,7 @@ function FeedingTracker({ user, caretaken }) {
         feedGiver: user,
         feedTaker: {
           name: caretaken.care_taken_name,
-          id: caretaken.care_taken_id,
+          id: caretaken.id,
         },
         feedType: feedingType,
         feedMode: feedingMode,

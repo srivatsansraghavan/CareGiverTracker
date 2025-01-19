@@ -23,18 +23,18 @@ function ExcretionTracker({ user, caretaken }) {
   };
 
   const axiosClient = axios.create({
-    baseURL: "http://localhost:3000/",
+    baseURL: process.env.REACT_APP_API_URL,
   });
 
   useEffect(() => {
     axiosClient
       .get(
-        `/excretion/get-excretion-details?careGiver=${user}&careTakenId=${caretaken.care_taken_id}&feed_count=10`
+        `/excretion/get-excretion-details?careGiver=${user}&careTakenId=${caretaken.id}&feed_count=10`
       )
       .then((response) => {
         if (response.status === 200) {
           let excGrouped = {};
-          for (let responseItem of response.body) {
+          for (let responseItem of response.data) {
             let responseDetails = {};
             let endDate;
             responseDetails["id"] = responseItem._id;
@@ -64,7 +64,7 @@ function ExcretionTracker({ user, caretaken }) {
           // navigate("/");
         }
       });
-  }, [showExcModal]);
+  }, [showExcModal, axiosClient, user, caretaken]);
 
   useEffect(() => {
     if (excretionType !== "" && napkinType !== "") {
@@ -78,7 +78,7 @@ function ExcretionTracker({ user, caretaken }) {
     if (diaperCount > 0) {
       axiosClient
         .get(
-          `/inventory/get-available-inventory?careGiver=${user}&careTakenId=${caretaken.care_taken_id}&inventoryType=Diaper`
+          `/inventory/get-available-inventory?careGiver=${user}&careTakenId=${caretaken.id}&inventoryType=Diaper`
         )
         .then((response) => {
           if (response.status === 200) {
@@ -86,7 +86,7 @@ function ExcretionTracker({ user, caretaken }) {
           }
         });
     }
-  }, [diaperCount]);
+  }, [diaperCount, axiosClient, user, caretaken]);
 
   const trackExcFields = [
     {
@@ -121,60 +121,54 @@ function ExcretionTracker({ user, caretaken }) {
     },
   ];
 
-  {
-    excretionType !== "" &&
-      trackExcFields.push({
-        fieldLabel: "Napkin Type",
-        fieldType: "dropdown",
-        fieldId: "napkinType",
-        fieldName: "napkinType",
-        fieldState: napkinType,
-        fieldSetState: (value) => {
-          setNapkinType(value);
-          setDiaperCount(0);
-        },
-        fieldItems: [
-          { value: "Diaper", text: "Diaper" },
-          { value: "Others", text: "Others" },
-        ],
-      });
-  }
+  excretionType !== "" &&
+    trackExcFields.push({
+      fieldLabel: "Napkin Type",
+      fieldType: "dropdown",
+      fieldId: "napkinType",
+      fieldName: "napkinType",
+      fieldState: napkinType,
+      fieldSetState: (value) => {
+        setNapkinType(value);
+        setDiaperCount(0);
+      },
+      fieldItems: [
+        { value: "Diaper", text: "Diaper" },
+        { value: "Others", text: "Others" },
+      ],
+    });
 
-  {
-    excretionType !== "" &&
-      napkinType === "Diaper" &&
-      trackExcFields.push({
-        fieldLabel: "Diaper Count",
-        fieldType: "number",
-        fieldId: "diaperCount",
-        fieldName: "diaperCount",
-        fieldState: diaperCount,
-        fieldSetState: (value) => {
-          setDiaperCount(value);
-        },
-      });
-  }
+  excretionType !== "" &&
+    napkinType === "Diaper" &&
+    trackExcFields.push({
+      fieldLabel: "Diaper Count",
+      fieldType: "number",
+      fieldId: "diaperCount",
+      fieldName: "diaperCount",
+      fieldState: diaperCount,
+      fieldSetState: (value) => {
+        setDiaperCount(value);
+      },
+    });
 
-  {
-    diaperCount > 0 &&
-      excretionType !== "" &&
-      trackExcFields.push({
-        fieldLabel: "Diaper Brand",
-        fieldType: "dropdown",
-        fieldId: "diaperBrand",
-        fieldName: "diaperBrand",
-        fieldState: diaperBrand,
-        fieldSetState: (value) => {
-          setDiaperBrand(value);
-        },
-        fieldItems: diaperBrands.map((diaper) => {
-          return {
-            value: diaper,
-            text: diaper,
-          };
-        }),
-      });
-  }
+  diaperCount > 0 &&
+    excretionType !== "" &&
+    trackExcFields.push({
+      fieldLabel: "Diaper Brand",
+      fieldType: "dropdown",
+      fieldId: "diaperBrand",
+      fieldName: "diaperBrand",
+      fieldState: diaperBrand,
+      fieldSetState: (value) => {
+        setDiaperBrand(value);
+      },
+      fieldItems: diaperBrands.map((diaper) => {
+        return {
+          value: diaper,
+          text: diaper,
+        };
+      }),
+    });
 
   const trackExcFooter = [
     {
@@ -198,7 +192,7 @@ function ExcretionTracker({ user, caretaken }) {
         careGiver: user,
         careTakenOf: {
           name: caretaken.care_taken_name,
-          id: caretaken.care_taken_id,
+          id: caretaken.id,
         },
         excretionType: excretionType,
         napkinType: napkinType,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, IconButton, Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -8,7 +8,6 @@ function FeedingList({ classname, feedContent }) {
   const [showEditDeleteIcon, setShowEditDeleteIcon] = useState(false);
   const [showEditFeedModal, setShowEditFeedModal] = useState(false);
   const [showDeleteFeedModal, setShowDeleteFeedModal] = useState(false);
-  const [isEditFormNotValid, setIsEditFormNotValid] = useState(true);
 
   const axiosClient = axios.create({
     baseURL: "http://localhost:3000/",
@@ -81,7 +80,6 @@ function FeedingList({ classname, feedContent }) {
       type: "submit",
       text: "Save & Close",
       buttonId: "editFeedSubmit",
-      isNotValid: isEditFormNotValid,
     },
     {
       type: "button",
@@ -141,7 +139,7 @@ function FeedingList({ classname, feedContent }) {
           formFooter={deleteFeedFooter}
         />
       )}
-      <li classname={classname} content={feedContent}>
+      <li key={feedContent.id} className={classname}>
         <Typography
           sx={{
             border: "1px solid #ccc",
