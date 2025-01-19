@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -11,7 +12,7 @@ export class InventoryTrackerService {
 
   getInventoryDetails(
     care_giver: string,
-    care_taken_id: object,
+    care_taken_id: string,
     inventory_count: number
   ): Observable<any> {
     return this.httpClient
@@ -33,9 +34,10 @@ export class InventoryTrackerService {
             responseDetails['inventoryUsed'] = responseItem.inventory_used;
             responseDetails['inventoryRemaining'] =
               responseItem.inventory_total - responseItem.inventory_used;
-            addedDate = responseItem.added_time.split(' ')[0];
-            responseDetails['addedTime'] =
-              responseItem.added_time.split(' ')[1];
+            addedDate = responseItem.added_time.split('T')[0];
+            responseDetails['addedTime'] = new Date(
+              responseItem.added_time
+            ).toLocaleString();
             responseDetails['addedDate'] = addedDate;
             if (!inventoryGrouped.hasOwnProperty(addedDate)) {
               inventoryGrouped[addedDate] = [];
@@ -50,7 +52,7 @@ export class InventoryTrackerService {
 
   addToInventory(
     careGiver: string,
-    careTakenOf: object,
+    careTakenOf: careTakenDetail,
     inventoryType: string,
     inventoryForm: string,
     inventoryBrand: string,
@@ -61,7 +63,10 @@ export class InventoryTrackerService {
       `${environment.expressURL}/inventory/add-to-inventory`,
       {
         careGiver,
-        careTakenOf,
+        careTakenOf: {
+          id: careTakenOf._id,
+          name: careTakenOf.care_taken_name,
+        },
         inventoryType,
         inventoryForm,
         inventoryBrand,

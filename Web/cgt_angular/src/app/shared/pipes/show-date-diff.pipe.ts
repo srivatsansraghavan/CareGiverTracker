@@ -5,6 +5,6 @@ import * as moment from 'moment';
 export class DateDiffPipe implements PipeTransform {
   transform(pipeValue: any) {
     if (!pipeValue) return [];
-    return moment(pipeValue, 'DD/MM/YYYY').fromNow();
+    return moment(pipeValue, 'YYYY-MM-DD').fromNow();
   }
 }

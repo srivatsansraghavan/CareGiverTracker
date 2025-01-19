@@ -1,14 +1,16 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {
   CommonService,
-  careTakenDetail,
   trackedExcretionData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { ExcretionTrackerService } from './excretion-tracker.service';
+import { Store } from '@ngrx/store';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 let moment = require('moment');
+import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 
 @Component({
   selector: 'app-excretion-tracker',
@@ -18,8 +20,7 @@ let moment = require('moment');
 })
 export class ExcretionTrackerComponent implements OnInit {
   careTakenName: string;
-  careGiverEmail: string;
-  careTakenDetails: careTakenDetail;
+  careGiver: string;
   subscription: Subscription;
   trackedExcretions: trackedExcretionData;
   excretionTypes: string[] = ['Urine', 'Stools', 'Urine and Stools', 'None'];
@@ -32,42 +33,38 @@ export class ExcretionTrackerComponent implements OnInit {
   diaperCount: number = 0;
   deleteExcId: string;
   editTrackedExcData: trackedExcretionData;
+  selectedCareTaken$: Observable<careTakenDetail>;
+  selCareTaken: careTakenDetail;
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private etService: ExcretionTrackerService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private store: Store<{ caretakendetails: careTakenDetail }>
   ) {}
 
   ngOnInit(): void {
-    this.careGiverEmail = localStorage.getItem('login_email');
-    this.getTrackedExcretions();
+    this.careGiver = localStorage.getItem('logged_in_user');
+    this.selectedCareTaken$ = this.store.select(
+      selectors.selectCareTakenDetails
+    );
+    this.selectedCareTaken$.subscribe((ctd) => {
+      this.selCareTaken = ctd;
+      this.getTrackedExcretions();
+    });
   }
 
   getTrackedExcretions() {
-    this.subscription = this.commonService
-      .getCareTakenOfDetails(this.careGiverEmail)
-      .subscribe((response) => {
-        this.careTakenDetails = response;
-        this.etService
-          .getExcretionDetails(
-            this.careGiverEmail,
-            this.careTakenDetails.id,
-            10
-          )
-          .subscribe((excretionDetailsResponse) => {
-            this.trackedExcretions = excretionDetailsResponse;
-          });
-        this.commonService
-          .getAvailableInventory(
-            this.careGiverEmail,
-            this.careTakenDetails.id,
-            'Diaper'
-          )
-          .subscribe((availableDiapersResp) => {
-            this.diaperBrands = availableDiapersResp.body;
-          });
+    this.subscription = this.etService
+      .getExcretionDetails(this.careGiver, this.selCareTaken._id, 10)
+      .subscribe((excretionDetailsResponse) => {
+        this.trackedExcretions = excretionDetailsResponse;
+      });
+    this.commonService
+      .getAvailableInventory(this.careGiver, this.selCareTaken._id, 'Diaper')
+      .subscribe((availableDiapersResp) => {
+        this.diaperBrands = availableDiapersResp.body;
       });
   }
 
@@ -82,8 +79,8 @@ export class ExcretionTrackerComponent implements OnInit {
   saveTrackingExcretion() {
     this.etService
       .saveTrackedExcretion(
-        this.careGiverEmail,
-        this.careTakenDetails,
+        this.careGiver,
+        this.selCareTaken,
         this.chosenExcretionType,
         this.chosenNapkinType,
         this.diaperCount,

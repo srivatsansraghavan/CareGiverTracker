@@ -1,11 +1,14 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
 import { Observable, map } from 'rxjs';
 import {
   addCareTakenPerson,
+  addCareTakenPersonSuccess,
   getSelectedCareTaken,
   changeCareTakenPerson,
+  changeCareTakenPersonSuccess,
 } from 'src/app/store/care-taken-details/care-taken-details.actions';
 import { CareTakenDetailsService } from 'src/app/store/care-taken-details/care-taken-details.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
@@ -35,26 +38,27 @@ export class CareTakenDetailsComponent implements OnInit {
   constructor(
     private modal: NgbModal,
     private careTakenDetailService: CareTakenDetailsService,
-    private store: Store<{ caretakendetails: careTakenDetail }>
-  ) {
-    this.store.dispatch(
-      getSelectedCareTaken({
-        caregiveremail: localStorage.getItem('login_email'),
-      })
-    );
-  }
+    private store: Store<{ caretakendetails: careTakenDetail }>,
+    private actions$: Actions
+  ) {}
 
   ngOnInit() {
-    this.careGiver = localStorage.getItem('login_email');
+    this.careGiver = localStorage.getItem('logged_in_user');
+    this.loadLatestCareTaken();
+  }
+
+  loadLatestCareTaken(): void {
     this.careTakenDetails$ = this.careTakenDetailService.getCareTakenDetails(
       this.careGiver
+    );
+    this.store.dispatch(
+      getSelectedCareTaken({
+        caregiver: localStorage.getItem('logged_in_user'),
+      })
     );
     this.selectedCareTaken$ = this.store.pipe(
       select(selectors.selectCareTakenDetails)
     );
-    // this.careTakenDetails$ = this.store.pipe(
-    //   select(selectors.selectCareTakenDetails)
-    // );
   }
 
   addCareTakenPerson(add_care_taken_person_modal: TemplateRef<any>): void {
@@ -82,15 +86,21 @@ export class CareTakenDetailsComponent implements OnInit {
         },
       })
     );
+    this.actions$.pipe(ofType(addCareTakenPersonSuccess)).subscribe({
+      next: () => this.loadLatestCareTaken(),
+    });
   }
 
   changeCareTaken(care_taken_id: string, care_giver: string): void {
     this.store.dispatch(
       changeCareTakenPerson({
         changecaretakenid: care_taken_id,
-        changecaregiveremail: care_giver,
+        changecaregiver: care_giver,
       })
     );
+    this.actions$.pipe(ofType(changeCareTakenPersonSuccess)).subscribe({
+      next: () => this.loadLatestCareTaken(),
+    });
   }
 
   closeModalLogOut(): void {

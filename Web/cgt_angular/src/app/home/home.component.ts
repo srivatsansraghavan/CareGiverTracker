@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.envName = this.commonService.getEnvironment();
-    const loginEmail = localStorage.getItem('login_email');
-    this.authService.isFirstLogin(loginEmail).subscribe((firstLogin: any) => {
+    const loginUser = localStorage.getItem('logged_in_user');
+    this.authService.isFirstLogin(loginUser).subscribe((firstLogin: any) => {
       this.isFirstLogin = firstLogin;
     });
   }

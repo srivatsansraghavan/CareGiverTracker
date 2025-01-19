@@ -1,14 +1,16 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {
   CommonService,
-  careTakenDetail,
   trackedMedicationData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MedicationTrackerService } from './medication-tracker.service';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
+import { Store } from '@ngrx/store';
 let moment = require('moment');
+import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 
 @Component({
   selector: 'app-medication-tracker',
@@ -18,8 +20,7 @@ let moment = require('moment');
 })
 export class MedicationTrackerComponent implements OnInit {
   careTakenName: string;
-  careGiverEmail: string;
-  careTakenDetails: careTakenDetail;
+  careGiver: string;
   subscription: Subscription;
   trackedMedications: trackedMedicationData;
   medicineNames: any[];
@@ -29,42 +30,38 @@ export class MedicationTrackerComponent implements OnInit {
   medicineQuantity: number = 0;
   deleteMedId: string;
   editTrackedMedData: trackedMedicationData;
+  selectedCareTaken$: Observable<careTakenDetail>;
+  selCareTaken: careTakenDetail;
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private mtService: MedicationTrackerService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private store: Store<{ caretakendetails: careTakenDetail }>
   ) {}
 
   ngOnInit(): void {
-    this.careGiverEmail = localStorage.getItem('login_email');
-    this.getTrackedMedications();
+    this.careGiver = localStorage.getItem('logged_in_user');
+    this.selectedCareTaken$ = this.store.select(
+      selectors.selectCareTakenDetails
+    );
+    this.selectedCareTaken$.subscribe((ctd) => {
+      this.selCareTaken = ctd;
+      this.getTrackedMedications();
+    });
   }
 
   getTrackedMedications() {
-    this.subscription = this.commonService
-      .getCareTakenOfDetails(this.careGiverEmail)
-      .subscribe((response) => {
-        this.careTakenDetails = response;
-        this.mtService
-          .getMedicationDetails(
-            this.careGiverEmail,
-            this.careTakenDetails.id,
-            10
-          )
-          .subscribe((medicationDetailsResponse) => {
-            this.trackedMedications = medicationDetailsResponse;
-          });
-        this.commonService
-          .getAvailableInventory(
-            this.careGiverEmail,
-            this.careTakenDetails.id,
-            'Medicine'
-          )
-          .subscribe((availableMedsResp) => {
-            this.medicineNames = availableMedsResp.body;
-          });
+    this.subscription = this.mtService
+      .getMedicationDetails(this.careGiver, this.selCareTaken._id, 10)
+      .subscribe((medicationDetailsResponse) => {
+        this.trackedMedications = medicationDetailsResponse;
+      });
+    this.commonService
+      .getAvailableInventory(this.careGiver, this.selCareTaken._id, 'Medicine')
+      .subscribe((availableMedsResp) => {
+        this.medicineNames = availableMedsResp.body;
       });
   }
 
@@ -87,8 +84,8 @@ export class MedicationTrackerComponent implements OnInit {
   saveTrackingMedication() {
     this.mtService
       .saveTrackedMedication(
-        this.careGiverEmail,
-        this.careTakenDetails,
+        this.careGiver,
+        this.selCareTaken,
         this.chosenMedicineName,
         this.medicineQuantity
       )

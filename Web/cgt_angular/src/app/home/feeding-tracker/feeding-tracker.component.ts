@@ -1,16 +1,16 @@
 import { OnDestroy, Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 let moment = require('moment');
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import {
   CommonService,
-  careTakenDetail,
   feedTypeOptions,
   feedModeOptions,
   feedSideOptions,
   pumpedFeedsData,
   trackedFeedsData,
 } from 'src/app/shared/common.service';
+import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { FeedingTrackerService } from './feeding-tracker.service';
 import {
@@ -26,6 +26,8 @@ import {
 } from '@angular/animations';
 
 import { addFeedAnimation } from 'src/app/shared/animations';
+import { Store, select } from '@ngrx/store';
+import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 
 const slideFromTop = animation([
   style({ opacity: 0, transform: 'translateY(-100%)' }),
@@ -45,8 +47,7 @@ const slideToBottom = animation(
 })
 export class FeedingTrackerComponent implements OnInit, OnDestroy {
   careTakenName: string;
-  careGiverEmail: string;
-  careTakenDetails: careTakenDetail;
+  careGiver: string;
   chosenFeedType: string;
   chosenFeedMode: string;
   chosenFeedSide: string;
@@ -113,41 +114,45 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   deleteFeedId: string;
   subscription: Subscription;
   showSpinner: boolean = false;
+  selectedCareTaken$: Observable<careTakenDetail>;
+  selCareTaken: careTakenDetail;
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private ftService: FeedingTrackerService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private store: Store<{ caretakendetails: careTakenDetail }>
   ) {}
 
   ngOnInit(): void {
     this.showSpinner = true;
-    this.careGiverEmail = localStorage.getItem('login_email');
-    this.getFeeds();
+    this.careGiver = localStorage.getItem('logged_in_user');
+    this.selectedCareTaken$ = this.store.select(
+      selectors.selectCareTakenDetails
+    );
+    this.selectedCareTaken$.subscribe((ctd) => {
+      this.selCareTaken = ctd;
+      this.getFeeds();
+    });
   }
 
   getFeeds() {
-    this.subscription = this.commonService
-      .getCareTakenOfDetails(this.careGiverEmail)
-      .subscribe((response) => {
-        this.careTakenDetails = response;
-        this.ftService
-          .getFeedDetails(this.careGiverEmail, this.careTakenDetails.id, 10)
-          .subscribe({
-            next: (feedDetailsResponse) => {
-              this.trackedFeeds = feedDetailsResponse;
-              this.showSpinner = false;
-            },
-            error: (error) => {
-              this.showSpinner = false;
-            },
-          });
+    this.subscription = this.ftService
+      .getFeedDetails(this.careGiver, this.selCareTaken._id, 10)
+      .subscribe({
+        next: (feedDetailsResponse) => {
+          this.trackedFeeds = feedDetailsResponse;
+          this.showSpinner = false;
+        },
+        error: (error) => {
+          this.showSpinner = false;
+        },
       });
   }
 
   addFeed(add_feed_modal: TemplateRef<any>): void {
-    this.feedTypes = this.totalFeedTypes[this.careTakenDetails.type];
+    this.feedTypes = this.totalFeedTypes[this.selCareTaken.care_taken_of];
     this.modal.open(add_feed_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -160,7 +165,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
     this.feedModes = this.totalFeedModes[this.chosenFeedType];
     if (
       this.chosenFeedType === 'Mashed food' &&
-      this.careTakenDetails.type === 'infant'
+      this.selCareTaken.care_taken_of === 'infant'
     ) {
       this.feedModes = this.feedModes.filter((item) => item !== 'Self-feeding');
     }
@@ -181,7 +186,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
       this.chosenFeedMode === 'Pumped Milk'
     ) {
       this.ftService
-        .fetchPumpedFeeds(this.careGiverEmail, this.careTakenDetails.id)
+        .fetchPumpedFeeds(this.careGiver, this.selCareTaken._id)
         .subscribe((prepFeeds) => {
           this.pumpedFeeds = prepFeeds;
         });
@@ -214,8 +219,8 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   savePumpedFeed() {
     this.ftService
       .savePumpingFeed(
-        this.careGiverEmail,
-        this.careTakenDetails,
+        this.careGiver,
+        this.selCareTaken,
         this.chosenFeedType,
         this.chosenFeedMode,
         this.chosenFeedSide,
@@ -261,8 +266,8 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
     }
     this.ftService
       .saveTrackingFeed(
-        this.careGiverEmail,
-        this.careTakenDetails,
+        this.careGiver,
+        this.selCareTaken,
         this.chosenFeedType,
         this.chosenFeedMode,
         this.chosenFeedSide,
