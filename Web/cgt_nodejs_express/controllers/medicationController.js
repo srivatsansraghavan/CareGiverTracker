@@ -11,7 +11,7 @@ import {
 
 export async function saveTrackedMedications(req, res, next) {
   try {
-    let medTime = moment().format("DD/MM/YYYY HH:mm:ss");
+    let medTime = moment().format("MM/DD/YYYY HH:mm:ss");
     const invMedDetails = await getInventoriesModel({
       _id: req.body.medicineId,
     });
@@ -50,6 +50,7 @@ export async function getMedicationDetails(req, res, next) {
       care_giver: req.query.careGiver,
       care_taken_of_id: req.query.careTakenId,
     });
+    console.log(getTrackedMedication);
     if (getTrackedMedication && Object.keys(getTrackedMedication).length > 0) {
       res.status(200).json(getTrackedMedication);
     } else {

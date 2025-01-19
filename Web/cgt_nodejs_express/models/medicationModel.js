@@ -6,7 +6,7 @@ async function getMedSchema() {
   const medSchema = await medTable.Schema({
     care_giver: {
       type: String,
-      required: [true, "Care Giver Email is required"],
+      required: [true, "Care Giver Id is required"],
     },
     care_taken_of_name: {
       type: String,
@@ -32,7 +32,7 @@ async function getMedSchema() {
       type: String,
     },
     medication_time: {
-      type: String,
+      type: Date,
     },
   });
 
@@ -56,6 +56,6 @@ export const deleteMedicationModel = async function (finder) {
 
 export const getMedicationModel = async function (finder) {
   const medModel = await getMedSchema();
-  const getMedForId = await medModel.findOne(finder, null).exec();
+  const getMedForId = await medModel.find(finder, null).exec();
   return getMedForId;
 };

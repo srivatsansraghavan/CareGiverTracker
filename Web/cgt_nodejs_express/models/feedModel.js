@@ -6,7 +6,7 @@ async function getFeedSchema() {
   const feedSchema = await feedTable.Schema({
     feed_giver: {
       type: String,
-      required: [true, "Care Giver Email is required"],
+      required: [true, "Care Giver Id is required"],
     },
     feed_taker_name: {
       type: String,

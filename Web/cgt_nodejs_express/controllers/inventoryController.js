@@ -7,7 +7,7 @@ import {
 
 export async function addToInventory(req, res, next) {
   try {
-    let addedTime = moment().format("DD/MM/YYYY HH:mm:ss");
+    let addedTime = moment().format("MM/DD/YYYY HH:mm:ss");
     const inventoryTotal =
       req.body.inventoryCount * req.body.inventoryEachContains;
     const insertQuery = {

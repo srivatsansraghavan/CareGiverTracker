@@ -51,7 +51,7 @@ export async function addCareTaken(req, res, next) {
 export async function getCareTakenDetails(req, res, next) {
   try {
     const careTakenDetails = await getCareTakenDetailsModel(
-      req.query.giver_email
+      req.query.care_giver
     );
     if (careTakenDetails && careTakenDetails.length > 0) {
       res.status(200).json(careTakenDetails);
@@ -68,7 +68,6 @@ export async function getSelectedCareTakenDetail(req, res, next) {
     const careTakenDetail = await getSelectedCareTakenDetailModel(
       req.query.care_giver
     );
-    console.log(careTakenDetail);
     if (careTakenDetail && Object.keys(careTakenDetail).length > 0) {
       res.status(200).json(careTakenDetail);
     } else {
@@ -82,8 +81,8 @@ export async function getSelectedCareTakenDetail(req, res, next) {
 export async function changeCareTaken(req, res, next) {
   try {
     const changeCareTaken = await changeCareTakenModel(
-      req.query.care_taken_id,
-      req.query.care_giver_email
+      req.body.care_taken_id,
+      req.body.care_giver
     );
     console.log(changeCareTaken);
     if (changeCareTaken && Object.keys(changeCareTaken).length > 0) {

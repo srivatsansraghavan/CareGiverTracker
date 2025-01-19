@@ -9,7 +9,7 @@ import { updateInventoryModel } from "../models/inventoryModel.js";
 
 export async function saveTrackedExcretion(req, res, next) {
   try {
-    let excTime = moment().format("DD/MM/YYYY HH:mm:ss");
+    let excTime = moment().format("MM/DD/YYYY HH:mm:ss");
     const insertQuery = {
       care_giver: req.body.careGiver,
       care_taken_of_name: req.body.careTakenOf.name,

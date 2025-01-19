@@ -43,7 +43,6 @@ export async function loginUser(req, res, next) {
       req.body.password,
       userDetail.user_password
     );
-    console.log("userDetail:", userDetail);
     if (verifyPassword) {
       const jwToken = sign({}, privateKey, {
         algorithm: "RS256",
@@ -51,6 +50,7 @@ export async function loginUser(req, res, next) {
         expiresIn: 3600,
         subject: req.body.email,
       });
+      res.cookie("userId", userDetail._id);
       res.status(200).json({
         access_token: jwToken,
         message: "User signed in successfully!",

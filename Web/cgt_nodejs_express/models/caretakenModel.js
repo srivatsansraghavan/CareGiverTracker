@@ -43,7 +43,6 @@ export const firstLoginModel = async function (userId) {
       care_giver: userId,
     })
     .exec();
-  console.log(firstTimeLogin);
   return firstTimeLogin;
 };
 
@@ -57,11 +56,11 @@ export const addCareTakenModel = async function (query) {
   return JSON.parse(JSON.stringify(addedCareTaken));
 };
 
-export const getCareTakenDetailsModel = async function (emailId) {
+export const getCareTakenDetailsModel = async function (userId) {
   const caretakenModel = await getCareTakenSchema();
   const getCareTakenDetails = await caretakenModel
     .find({
-      care_giver: emailId,
+      care_giver: userId,
     })
     .exec();
   return getCareTakenDetails;
@@ -78,10 +77,10 @@ export const getSelectedCareTakenDetailModel = async function (userId) {
   return getSelectedCareTakenDetail;
 };
 
-export const changeCareTakenModel = async function (careTakenId, emailId) {
+export const changeCareTakenModel = async function (careTakenId, userId) {
   const caretakenModel = await getCareTakenSchema();
   await caretakenModel.updateMany(
-    { care_giver: emailId },
+    { care_giver: userId },
     { $set: { care_last_accessed: false } }
   );
   await caretakenModel.updateOne(

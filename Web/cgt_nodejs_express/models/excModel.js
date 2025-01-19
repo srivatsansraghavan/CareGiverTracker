@@ -6,7 +6,7 @@ async function getExcSchema() {
   const excSchema = await excTable.Schema({
     care_giver: {
       type: String,
-      required: [true, "Care Giver Email is required"],
+      required: [true, "Care Giver Id is required"],
     },
     care_taken_of_name: {
       type: String,
@@ -31,7 +31,7 @@ async function getExcSchema() {
       type: String,
     },
     excretion_time: {
-      type: String,
+      type: Date,
     },
   });
 

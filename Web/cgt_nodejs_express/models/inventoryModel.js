@@ -6,7 +6,7 @@ async function getInvSchema() {
   const invSchema = await invTable.Schema({
     care_giver: {
       type: String,
-      required: [true, "Care Giver Email is required"],
+      required: [true, "Care Giver Id is required"],
     },
     care_taken_of_name: {
       type: String,
@@ -26,7 +26,6 @@ async function getInvSchema() {
     },
     inventory_form: {
       type: String,
-      required: [true, "Inventory Form is required"],
     },
     inventory_total: {
       type: Number,
@@ -35,7 +34,7 @@ async function getInvSchema() {
       type: Number,
     },
     added_time: {
-      type: String,
+      type: Date,
     },
   });
 

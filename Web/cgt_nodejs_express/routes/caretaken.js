@@ -12,6 +12,6 @@ router.get("/is-first-login", firstLogin);
 router.post("/add-care-taken", addCareTaken);
 router.get("/get-care-taken-details", getCareTakenDetails);
 router.get("/get-selected-care-taken-detail", getSelectedCareTakenDetail);
-router.get("/change-care-taken", changeCareTaken);
+router.post("/change-care-taken", changeCareTaken);
 
 export default router;
