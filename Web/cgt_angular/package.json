@@ -25,17 +25,17 @@
     "@angular/platform-browser-dynamic": "^15.2.10",
     "@angular/router": "^15.2.10",
     "@auth0/angular-jwt": "^5.1.2",
-    "@ng-bootstrap/ng-bootstrap": "^13.0.0",
-    "@ngrx/effects": "^14.0.0",
-    "@ngrx/entity": "^14.0.0",
-    "@ngrx/store": "^14.0.0",
+    "@ng-bootstrap/ng-bootstrap": "^14.0.0",
+    "@ngrx/effects": "^15.0.0",
+    "@ngrx/entity": "^15.0.0",
+    "@ngrx/store": "^15.0.0",
     "@popperjs/core": "^2.10.2",
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.10.3",
     "faker": "^6.6.6",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "^0.13.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.11",
@@ -50,6 +50,6 @@
     "karma-jasmine": "~5.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "moment": "^2.29.4",
-    "typescript": "~5.0"
+    "typescript": "^5.5.4"
   }
 }
