@@ -17,6 +17,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
   templateUrl: './excretion-tracker.component.html',
   providers: [ExcretionTrackerService, CommonService],
   styleUrls: ['./excretion-tracker.component.css'],
+  standalone: false,
 })
 export class ExcretionTrackerComponent implements OnInit {
   careTakenName: string;

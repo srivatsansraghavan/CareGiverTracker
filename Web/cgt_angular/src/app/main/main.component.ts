@@ -31,6 +31,7 @@ const slideIntoLeft = animation(
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
+  standalone: false,
   animations: [
     trigger('rightBlocks', [
       transition('void => *', useAnimation(slideFromRight)),

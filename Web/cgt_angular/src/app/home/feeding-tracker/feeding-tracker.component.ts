@@ -44,6 +44,7 @@ const slideToBottom = animation(
   providers: [FeedingTrackerService, CommonService],
   styleUrls: ['./feeding-tracker.component.css'],
   animations: [trigger('addFeed', addFeedAnimation)],
+  standalone: false,
 })
 export class FeedingTrackerComponent implements OnInit, OnDestroy {
   careTakenName: string;

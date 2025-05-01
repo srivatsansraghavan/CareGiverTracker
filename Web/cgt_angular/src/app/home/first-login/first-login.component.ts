@@ -9,6 +9,7 @@ import * as moment from 'moment';
   templateUrl: './first-login.component.html',
   styleUrls: ['./first-login.component.css'],
   providers: [FirstLoginService],
+  standalone: false,
 })
 export class FirstLoginComponent implements OnInit {
   @ViewChild('firstloginmodal') firstLoginModal: TemplateRef<any>;

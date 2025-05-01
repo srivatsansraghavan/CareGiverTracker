@@ -17,6 +17,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
   templateUrl: './medication-tracker.component.html',
   providers: [MedicationTrackerService, CommonService],
   styleUrls: ['./medication-tracker.component.css'],
+  standalone: false,
 })
 export class MedicationTrackerComponent implements OnInit {
   careTakenName: string;

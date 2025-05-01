@@ -18,6 +18,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
   selector: 'app-care-taken-details',
   templateUrl: './care-taken-details.component.html',
   styleUrls: ['./care-taken-details.component.css'],
+  standalone: false,
 })
 export class CareTakenDetailsComponent implements OnInit {
   careTakenOf: string;

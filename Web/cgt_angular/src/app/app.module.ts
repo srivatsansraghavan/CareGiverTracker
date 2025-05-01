@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,45 +28,43 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CareTakenDetailsEffects } from './store/care-taken-details/care-taken-details.effects';
 import { careTakenDetailsReducer } from './store/care-taken-details/care-taken-details.reducer';
 import { environment } from 'src/environments/environment';
+import { AppComponent } from './app.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    MainComponent,
-    MenubarComponent,
-    HomeComponent,
-    ToastComponent,
-    FirstLoginComponent,
-    FeedingTrackerComponent,
-    ExcretionTrackerComponent,
-    MedicationTrackerComponent,
-    TimerComponent,
-    TrackItemsPipe,
-    DateDiffPipe,
-    ShowEditDeleteDirective,
-    InventoryTrackerComponent,
-    CareTakenDetailsComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    NgbModule,
-    NgbNavModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    FormsModule,
-    StoreModule.forRoot({ caretakendetails: careTakenDetailsReducer }),
-    EffectsModule.forRoot([CareTakenDetailsEffects]),
-    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthConfigInterceptor,
-      multi: true,
-    },
-  ],
-  bootstrap: [AppComponent],
+@NgModule({ 
+    declarations: [
+        AppComponent,
+        MainComponent,
+        MenubarComponent,
+        HomeComponent,
+        ToastComponent,
+        FirstLoginComponent,
+        FeedingTrackerComponent,
+        ExcretionTrackerComponent,
+        MedicationTrackerComponent,
+        TimerComponent,
+        TrackItemsPipe,
+        DateDiffPipe,
+        ShowEditDeleteDirective,
+        InventoryTrackerComponent,
+        CareTakenDetailsComponent,
+    ],
+    bootstrap: [AppComponent], 
+    imports: [BrowserModule,
+        BrowserAnimationsModule,
+        NgbModule,
+        NgbNavModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        FormsModule,
+        StoreModule.forRoot({ caretakendetails: careTakenDetailsReducer }),
+        EffectsModule.forRoot([CareTakenDetailsEffects]),
+        StoreDevtoolsModule.instrument({ logOnly: environment.production })], providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthConfigInterceptor,
+            multi: true,
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+    ] 
 })
 export class AppModule {}

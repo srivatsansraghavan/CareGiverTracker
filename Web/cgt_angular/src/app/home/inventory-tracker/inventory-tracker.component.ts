@@ -13,6 +13,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
   templateUrl: './inventory-tracker.component.html',
   providers: [InventoryTrackerService, CommonService],
   styleUrls: ['./inventory-tracker.component.css'],
+  standalone: false,
 })
 export class InventoryTrackerComponent implements OnInit {
   careTakenName: string;

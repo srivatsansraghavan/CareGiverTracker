@@ -99,16 +99,16 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "cgt_angular:build:production"
+              "buildTarget": "cgt_angular:build:production"
             },
             "development": {
-              "browserTarget": "cgt_angular:build:development"
+              "buildTarget": "cgt_angular:build:development"
             },
             "test": {
-              "browserTarget": "cgt_angular:build:test"
+              "buildTarget": "cgt_angular:build:test"
             },
             "local": {
-              "browserTarget": "cgt_angular:build:local"
+              "buildTarget": "cgt_angular:build:local"
             }
           },
           "defaultConfiguration": "local"
@@ -116,7 +116,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "cgt_angular:build"
+            "buildTarget": "cgt_angular:build"
           }
         },
         "test": {

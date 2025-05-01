@@ -15,6 +15,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   selector: 'app-menubar',
   templateUrl: 'menubar.component.html',
   styleUrls: ['menubar.component.css'],
+  standalone: false,
 })
 export class MenubarComponent implements OnInit, AfterContentChecked {
   envName: string;
