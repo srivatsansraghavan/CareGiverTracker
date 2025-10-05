@@ -6,10 +6,11 @@ import {
   deleteExcretion,
   getExcretionForId,
 } from "../controllers/excretionController.js";
+import { isAuthenticated } from "../utils.js";
 
-router.post("/save-tracked-excretion", saveTrackedExcretion);
-router.get("/get-excretion-details", getExcretionDetails);
-router.delete("/delete-exc/:excId", deleteExcretion);
-router.get("/get-exc-for-id/:excId", getExcretionForId);
+router.post("/save-tracked-excretion", isAuthenticated, saveTrackedExcretion);
+router.get("/get-excretion-details", isAuthenticated, getExcretionDetails);
+router.delete("/delete-exc/:excId", isAuthenticated, deleteExcretion);
+router.get("/get-exc-for-id/:excId", isAuthenticated, getExcretionForId);
 
 export default router;

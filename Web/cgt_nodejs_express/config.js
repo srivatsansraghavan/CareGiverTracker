@@ -1,10 +1,10 @@
 const uri = `mongodb://${process.env.MONGO_DB_URI}:27017`;
 import mongoose from "mongoose";
 
-export async function connectToMongoDB(dbName) {
+export function connectToMongoDB(dbName) {
   try {
     mongoose.pluralize(null);
-    return await mongoose.connect(`${uri}/${dbName}`);
+    return mongoose.connect(`${uri}/${dbName}`);
   } catch (err) {
     console.error(err);
   }

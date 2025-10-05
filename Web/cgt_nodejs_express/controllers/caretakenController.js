@@ -9,7 +9,7 @@ import {
 
 export async function firstLogin(req, res, next) {
   try {
-    const firstLogin = await firstLoginModel(req.query.giver_user);
+    const firstLogin = await firstLoginModel(req.user.user_email);
     if (firstLogin > 0) {
       res.send(false);
     } else {
@@ -23,10 +23,10 @@ export async function firstLogin(req, res, next) {
 export async function addCareTaken(req, res, next) {
   try {
     const addCareTaken = await addCareTakenModel({
-      care_giver: req.body.care_giver,
+      care_giver: req.user.user_email,
       care_taken_of: req.body.care_taken_of,
       care_taken_name: req.body.care_taken_name,
-      care_taken_dob: moment(req.body.care_taken_dob).format(
+      care_taken_dob: moment(req.body.care_taken_dob, "DD/MM/YYYY HH:mm:ss").format(
         "MM/DD/YYYY HH:mm:ss"
       ),
       care_taken_gender: req.body.care_taken_gender,
@@ -51,7 +51,7 @@ export async function addCareTaken(req, res, next) {
 export async function getCareTakenDetails(req, res, next) {
   try {
     const careTakenDetails = await getCareTakenDetailsModel(
-      req.query.care_giver
+      req.user.user_email
     );
     if (careTakenDetails && careTakenDetails.length > 0) {
       res.status(200).json(careTakenDetails);

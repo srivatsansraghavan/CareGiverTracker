@@ -17,7 +17,7 @@ async function getCareTakenSchema() {
       required: [true, "Care Taken name is required"],
     },
     care_taken_dob: {
-      type: Date,
+      type: String,
       required: [true, "Care Taken Date of Birth is required"],
     },
     care_taken_gender: {
@@ -30,30 +30,36 @@ async function getCareTakenSchema() {
     },
   });
 
+  caretakenSchema.index({ care_giver: 1, care_taken_of: 1 }, { unique: true })
+
   return (
     caretakenTable.models["tbl_caretaken"] ||
     caretakenTable.model("tbl_caretaken", caretakenSchema)
   );
 }
 
-export const firstLoginModel = async function (userId) {
+export const firstLoginModel = async function (userEmail) {
   const caretakenModel = await getCareTakenSchema();
   const firstTimeLogin = await caretakenModel
     .countDocuments({
-      care_giver: userId,
+      care_giver: userEmail,
     })
     .exec();
   return firstTimeLogin;
 };
 
-export const addCareTakenModel = async function (query) {
-  const caretakenModel = await getCareTakenSchema();
-  await caretakenModel.updateMany(
-    { care_giver: query.care_giver },
-    { $set: { care_last_accessed: false } }
-  );
-  const addedCareTaken = await new caretakenModel(query).save();
-  return JSON.parse(JSON.stringify(addedCareTaken));
+export const addCareTakenModel = async function (careTaken) {
+  try {
+    const caretakenModel = await getCareTakenSchema();
+    // await caretakenModel.updateMany(
+    //   { care_giver: careTaken.care_giver },
+    //   { $set: { care_last_accessed: false } }
+    // );
+    const addedCareTaken = await new caretakenModel(careTaken).save();
+    return JSON.parse(JSON.stringify(addedCareTaken));
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const getCareTakenDetailsModel = async function (userId) {

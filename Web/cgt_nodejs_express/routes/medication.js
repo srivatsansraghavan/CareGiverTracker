@@ -7,11 +7,12 @@ import {
   getMedForId,
   getMedForm,
 } from "../controllers/medicationController.js";
+import { isAuthenticated } from "../utils.js";
 
-router.post("/save-tracked-medication", saveTrackedMedications);
-router.get("/get-medication-details", getMedicationDetails);
-router.delete("/delete-med/:medId", deleteMedication);
-router.get("/get-med-for-id/:medId", getMedForId);
-router.get("/get-med-form/:medId", getMedForm);
+router.post("/save-tracked-medication", isAuthenticated, saveTrackedMedications);
+router.get("/get-medication-details", isAuthenticated, getMedicationDetails);
+router.delete("/delete-med/:medId", isAuthenticated, deleteMedication);
+router.get("/get-med-for-id/:medId", isAuthenticated, getMedForId);
+router.get("/get-med-form/:medId", isAuthenticated, getMedForm);
 
 export default router;

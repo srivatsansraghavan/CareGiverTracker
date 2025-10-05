@@ -9,13 +9,14 @@ import {
   getFeedForId,
   saveEditedFeed,
 } from "../controllers/feedController.js";
+import { isAuthenticated } from "../utils.js";
 
-router.post("/save-tracking-feed", saveTrackingFeed);
-router.post("/save-pumping-feed", savePumpingFeed);
-router.get("/get-feed-details", getFeedDetails);
-router.get("/get-pumped-feeds", getPumpedFeed);
-router.delete("/delete-feed/:feedId", deleteTrackedFeed);
-router.get("/get-feed-for-id/:feedId", getFeedForId);
-router.post("/save-edited-feed", saveEditedFeed);
+router.post("/save-tracking-feed", isAuthenticated, saveTrackingFeed);
+router.post("/save-pumping-feed", isAuthenticated, savePumpingFeed);
+router.get("/get-feed-details", isAuthenticated, getFeedDetails);
+router.get("/get-pumped-feeds", isAuthenticated, getPumpedFeed);
+router.delete("/delete-feed/:feedId", isAuthenticated, deleteTrackedFeed);
+router.get("/get-feed-for-id/:feedId", isAuthenticated, getFeedForId);
+router.post("/save-edited-feed", isAuthenticated, saveEditedFeed);
 
 export default router;
