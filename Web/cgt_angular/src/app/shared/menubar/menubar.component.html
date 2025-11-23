@@ -1,356 +1,43 @@
-<header class="home-header">Caregiver Tracker</header>
 <nav class="navbar">
   <a class="navbar-brand" href="http://srivatsanssr.com/index.html"
     >Portfolio Home</a
   >
   <a class="navbar-brand" [routerLink]="['/home']">Home</a>
-  <button
-    class="navbar-brand"
-    (click)="openSignupModal(signupModal)"
-    *ngIf="!isLoggedIn"
-  >
-    Sign Up
-  </button>
-  <button
-    class="navbar-brand"
-    (click)="openLoginModal(loginModal)"
-    *ngIf="!isLoggedIn"
-  >
-    Login
-  </button>
+  @if(isLoggedIn) {
   <button
     class="navbar-brand"
     (click)="openProfileModal(profileModal)"
-    *ngIf="isLoggedIn"
   >
     {{ loggedInEmail() }}
   </button>
-  <a class="navbar-brand" href="#">Environment: {{ envName }}</a>
-  <button class="navbar-brand" (click)="doLogout()" *ngIf="isLoggedIn">
+    <button class="navbar-brand" (click)="doLogout()">
     Logout
   </button>
+  } @else {
+    <button
+      class="navbar-brand"
+      (click)="openSignupModal(signupModal)"
+    >
+      Sign Up
+    </button>
+    <button
+      class="navbar-brand"
+      (click)="openLoginModal(loginModal)"
+    >
+      Login
+    </button>
+  }
+
+  <a class="navbar-brand" href="#">Environment: {{ envName }}</a>
+
 </nav>
 
 <ng-template #signupModal>
-  <div class="modal-header">
-    <h3 class="modal-title centre">Signup</h3>
-  </div>
-  <div class="modal-body">
-    <form
-      class="sign-up-form"
-      [formGroup]="signUpForm"
-      (ngSubmit)="doSignUp()"
-      title="Signup"
-      id="signupform"
-    >
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="signUpEmail">Email</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="email"
-            name="signUpEmail"
-            class="form-control"
-            placeholder="Enter email address"
-            formControlName="signUpEmail"
-          />
-          <span
-            class="signup-form-error"
-            id="signUpEmailError"
-            *ngIf="
-              signUpForm
-                .get('signUpEmail')
-                .errors?.hasOwnProperty('required') &&
-              signUpForm.get('signUpEmail').touched
-            "
-            >Email field is required</span
-          >
-          <span
-            class="signup-form-error"
-            id="signUpEmailError"
-            *ngIf="
-              signUpForm.get('signUpEmail').errors?.hasOwnProperty('email') &&
-              signUpForm.get('signUpEmail').touched
-            "
-            >Please enter a valid email</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="signUpPassword">Password</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="password"
-            name="signUpPassword"
-            class="form-control"
-            placeholder="Enter password"
-            formControlName="signUpPassword"
-          />
-          <span
-            class="signup-form-error"
-            id="signUpPasswordError"
-            *ngIf="
-              signUpForm
-                .get('signUpPassword')
-                .errors?.hasOwnProperty('required') &&
-              signUpForm.get('signUpPassword').touched
-            "
-            >Password field is required</span
-          >
-          <span
-            class="signup-form-error"
-            id="signUpPasswordError"
-            *ngIf="
-              !isSignupPasswordOk() &&
-              signUpForm.get('signUpPassword').touched &&
-              signUpForm.get('signUpPassword').value != ''
-            "
-            >Password should have atleast one uppercase, lowercase, number and
-            special character</span
-          >
-        </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="signUpRepeatPassword">Repeat Password</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="text"
-            name="signUpRepeatPassword"
-            class="form-control"
-            placeholder="Repeat password"
-            formControlName="signUpRepeatPassword"
-          />
-          <span
-            class="signup-form-error"
-            id="signUpRepeatPasswordError"
-            *ngIf="
-              signUpForm
-                .get('signUpRepeatPassword')
-                .errors?.hasOwnProperty('required') &&
-              signUpForm.get('signUpRepeatPassword').touched
-            "
-            >Repeat Password field is required</span
-          >
-          <span
-            class="signup-form-error"
-            id="signUpRepeatPasswordError"
-            *ngIf="
-              signUpForm.get('signUpRepeatPassword').dirty &&
-              !isPasswordRepeatPasswordSame()
-            "
-            >Password and Repeat Password should be the same</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="signUpFullName">Full Name</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="text"
-            name="signUpFullName"
-            class="form-control"
-            placeholder="Enter full name"
-            formControlName="signUpFullName"
-          />
-          <span
-            class="signup-form-error"
-            id="signUpFullNameError"
-            *ngIf="
-              signUpForm
-                .get('signUpFullName')
-                .errors?.hasOwnProperty('required') &&
-              signUpForm.get('signUpFullName').touched
-            "
-            >Full Name field is required</span
-          >
-          <span
-            class="signup-form-error"
-            id="signUpFullNameError"
-            *ngIf="
-              !isFullNameOk() &&
-              signUpForm.get('signUpFullName').touched &&
-              signUpForm.get('signUpFullName').value != ''
-            "
-            >Full name cannot have number or special characters</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="signUpAddVerify">{{ num1 }} + {{ num2 }} = </label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="text"
-            name="signUpAddVerify"
-            class="form-control add-verify"
-            formControlName="signUpAddVerify"
-            size="3"
-            maxlength="3"
-          />
-          <span
-            class="signup-form-error"
-            id="signUpAddVerifyError"
-            *ngIf="
-              signUpForm
-                .get('signUpAddVerify')
-                .errors?.hasOwnProperty('required') &&
-              signUpForm.get('signUpAddVerify').touched
-            "
-            >Adding numbers is required</span
-          >
-          <span
-            class="signup-form-error"
-            id="signUpAddVerifyError"
-            *ngIf="
-              !isAddVerifyOk() &&
-              signUpForm.get('signUpAddVerify').touched &&
-              signUpForm.get('signUpAddVerify').value != ''
-            "
-            >Not properly added!</span
-          >
-        </div>
-      </div>
-
-      <div class="row">
-        <p>Already having account? <a> Login now!</a></p>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <div class="form-group row">
-      <div class="col-md-4">
-        <button
-          type="submit"
-          class="btn btn-secondary center"
-          (click)="closeSignupModal()"
-        >
-          Close
-        </button>
-      </div>
-      <div class="col-md-8">
-        <button
-          type="submit"
-          class="btn btn-primary center"
-          form="signupform"
-          [disabled]="signUpForm.status == 'INVALID'"
-        >
-          Sign me Up!
-        </button>
-      </div>
-    </div>
-  </div>
+ <app-signup (closeModal)="modal.dismissAll()"></app-signup>
 </ng-template>
 
 <ng-template #loginModal>
-  <div class="modal-header">
-    <h3 class="modal-title centre">Login</h3>
-  </div>
-  <div class="modal-body">
-    <form
-      id="loginForm"
-      class="login-form"
-      [formGroup]="loginForm"
-      (ngSubmit)="doLogin()"
-      title="Login"
-    >
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="loginEmail">Email</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="email"
-            name="loginEmail"
-            class="form-control"
-            placeholder="Enter email address"
-            formControlName="loginEmail"
-          />
-          <span
-            class="login-form-error"
-            id="loginEmailError"
-            *ngIf="
-              loginForm.get('loginEmail').errors?.hasOwnProperty('required') &&
-              loginForm.get('loginEmail').touched
-            "
-            >Email field is required</span
-          >
-          <span
-            class="login-form-error"
-            id="loginEmailError"
-            *ngIf="
-              loginForm.get('loginEmail').errors?.hasOwnProperty('email') &&
-              loginForm.get('loginEmail').touched
-            "
-            >Please enter a valid email</span
-          >
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <div class="col-md-4">
-          <label for="loginPassword">Password</label>
-        </div>
-        <div class="col-md-8">
-          <input
-            type="password"
-            name="loginPassword"
-            class="form-control"
-            placeholder="Enter password"
-            formControlName="loginPassword"
-          />
-          <span
-            class="login-form-error"
-            id="loginPasswordError"
-            *ngIf="
-              loginForm
-                .get('loginPassword')
-                .errors?.hasOwnProperty('required') &&
-              loginForm.get('loginPassword').touched
-            "
-            >Password field is required</span
-          >
-        </div>
-      </div>
-
-      <div class="row">
-        <p>Not having account? <a> Sign up now!</a></p>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <div class="form-group row">
-      <div class="col-md-4">
-        <button
-          type="submit"
-          class="btn btn-secondary center"
-          (click)="closeLoginModal()"
-        >
-          Close
-        </button>
-      </div>
-      <div class="col-md-8">
-        <button
-          type="submit"
-          class="btn btn-primary center"
-          form="loginForm"
-          [disabled]="loginForm.status == 'INVALID'"
-        >
-          Log me In!
-        </button>
-      </div>
-    </div>
-  </div>
+  <app-login (closeModal)="modal.dismissAll()"></app-login>
 </ng-template>
 
 <ng-template #profileModal>

@@ -94,7 +94,7 @@ export async function savePumpingFeed(req, res, next) {
 export async function getFeedDetails(req, res, next) {
   try {
     const getFeedDetails = await getFeedDetailsModel(
-      req.query.feed_giver,
+      req.user,
       req.query.feed_taker,
       req.query.feed_count
     );

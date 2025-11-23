@@ -6,25 +6,28 @@
   >
     Start Feed
   </button>
-  <span
-    *ngIf="showSpinner"
-    id="spinner"
-    class="spinner-grow"
-    role="status"
-  ></span>
+  @if(showSpinner) {
+    <span
+      id="spinner"
+      class="spinner-grow"
+      role="status"
+    ></span>
+  }
   <ul class="feed-timeline">
-    <li *ngIf="!trackedFeeds">
-      No feeds tracked.
-      <button
-        class="btn btn-primary btn-add-feed"
-        (click)="addFeed(addFeedModal)"
-      >
-        Start Feed
-      </button>
-    </li>
+    @if(!trackedFeeds) {
+      <li>
+        No feeds tracked.
+        <button
+          class="btn btn-primary btn-add-feed"
+          (click)="addFeed(addFeedModal)"
+        >
+          Start Feed
+        </button>
+      </li>
+    } @else {
+      @for(trackFeed of trackedFeeds | trackItems: 'getKeyValue'; track 'key') {
     <li
       class="feed-per-date"
-      *ngFor="let trackFeed of trackedFeeds | trackItems : 'getKeyValue'"
     >
       <time dateTime="{{ trackFeed[0].key }}" class="feed-date"
         >{{ trackFeed[0].key | dateDiff }}
@@ -109,6 +112,8 @@
         </li>
       </ul>
     </li>
+  }
+  }
   </ul>
 
   <!-- Modal for adding feed starts -->

@@ -27,7 +27,7 @@ export class InventoryTrackerComponent implements OnInit {
   enteredInventoryBrand: string = '';
   enteredInventoryCount: number = 0;
   enteredInventoryEachContains: number = 0;
-  selectedCareTaken$: Observable<careTakenDetail>;
+  selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
 
   constructor(
@@ -35,8 +35,8 @@ export class InventoryTrackerComponent implements OnInit {
     private commonService: CommonService,
     private itService: InventoryTrackerService,
     private toastService: ToastService,
-    private store: Store<{ caretakendetails: careTakenDetail }>
-  ) {}
+    private store: Store<{ caretakendetails: careTakenDetail[] }>
+  ) { }
 
   ngOnInit(): void {
     this.careGiver = localStorage.getItem('logged_in_user');
@@ -44,7 +44,7 @@ export class InventoryTrackerComponent implements OnInit {
       selectors.selectCareTakenDetails
     );
     this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd;
+      this.selCareTaken = ctd[0];
       this.getInventories();
     });
   }

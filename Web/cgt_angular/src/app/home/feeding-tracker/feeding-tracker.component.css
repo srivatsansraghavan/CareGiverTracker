@@ -7,7 +7,6 @@
     min-height: 600px;
     width: 60%;
     height: 90%;
-    background-color: lavender;
     overflow: hidden;
 }
 
@@ -76,7 +75,7 @@ ul {
     display: none;
     width: 10%;
     height: 70px;
-} 
+}
 
 .btn-delete-tracked-feed {
     background-color: red;

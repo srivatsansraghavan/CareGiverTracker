@@ -1,9 +1,13 @@
+<ng-template #content let-ctdCanvas>
 <div class="ctd-container">
-  <h2>Care Taken Details</h2>
+  <div class="ctd-header">
+    <h4 class="ctd-title">Care Taken Details</h4>
+    <button type="button" class="btn-close" (click)="ctdCanvas.dismiss()"></button>
+  </div>
   <div class="ctd-cards">
     <div
       class="ctd-card"
-      *ngFor="let careTakenDetail of careTakenDetails$ | async"
+      *ngFor="let careTakenDetail of careTakenDetails"
       [class.selected]="careTakenDetail.care_last_accessed"
       (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
     >
@@ -33,6 +37,7 @@
     </button>
   </div>
 </div>
+</ng-template>
 <ng-template #addCareTakenDetailsModal>
   <div class="modal-header">
     <h3 class="modal-title">Add Care Taken Person</h3>
@@ -133,3 +138,4 @@
     </button>
   </div>
 </ng-template>
+<button (click)="open(content)">Open</button>

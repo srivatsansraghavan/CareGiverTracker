@@ -72,17 +72,6 @@ export const getCareTakenDetailsModel = async function (userId) {
   return getCareTakenDetails;
 };
 
-export const getSelectedCareTakenDetailModel = async function (userId) {
-  const caretakenModel = await getCareTakenSchema();
-  const getSelectedCareTakenDetail = await caretakenModel
-    .findOne({
-      care_giver: userId,
-      care_last_accessed: true,
-    })
-    .exec();
-  return getSelectedCareTakenDetail;
-};
-
 export const changeCareTakenModel = async function (careTakenId, userId) {
   const caretakenModel = await getCareTakenSchema();
   await caretakenModel.updateMany(

@@ -58,27 +58,18 @@ export class AuthService {
       .post(
         `${environment.expressURL}/user/login-user`,
         {
-          email: email_id,
+          user_email: email_id,
           password: pass_word,
         },
-        { observe: 'response' }
+        { observe: 'response', withCredentials: true }
       )
       .subscribe({
         next: (response: any) => {
           if (response.status === 200) {
-            localStorage.setItem('access_token', response.body.access_token);
-            localStorage.setItem(
-              'logged_in_email',
-              response.body.logged_in_email
-            );
-            localStorage.setItem(
-              'logged_in_user',
-              response.body.logged_in_user
-            );
-            this.router.navigate(['home']);
+            this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
             this.toastService.show(
               'Login message',
-              response.body.message,
+              'Logged in successfully',
               'bg-success text-light login-toast',
               true
             );
@@ -96,11 +87,7 @@ export class AuthService {
   }
 
   shouldAllow(): boolean {
-    const accessToken = localStorage.getItem('access_token');
-    if (!accessToken) {
-      return false;
-    }
-    return !this.jwtHelper.isTokenExpired(accessToken);
+    return !!document.cookie;
   }
 
   getLoginEmail(): string {
@@ -113,10 +100,11 @@ export class AuthService {
     return loginId;
   }
 
-  isFirstLogin(loginUser: string): Observable<boolean> {
+  isFirstLogin(): Observable<boolean> {
     this.httpClient
       .get(
-        `${environment.expressURL}/caretaken/is-first-login?giver_user=${loginUser}`
+        `${environment.expressURL}/caretaken/is-first-login`,
+        { withCredentials: true }
       )
       .subscribe((firstLogin: any) => {
         this.firstLogin.next(firstLogin);
@@ -124,20 +112,11 @@ export class AuthService {
     return this.firstLogin.asObservable();
   }
 
-  getAccessToken() {
-    return localStorage.getItem('access_token');
+  doLogOut(): Observable<void> {
+    return this.httpClient.delete<void>(`${environment.expressURL}/user/logout-user`);
   }
 
-  logOut() {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('logged_in_email');
-    localStorage.removeItem('logged_in_user');
-    this.router.navigate(['']);
-    this.toastService.show(
-      'Logout message',
-      'You are now logged out',
-      'bg-warning text-light logout-toast',
-      true
-    );
+  getAccessToken() {
+    return localStorage.getItem('access_token');
   }
 }

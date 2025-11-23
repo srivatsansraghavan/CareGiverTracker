@@ -3,14 +3,14 @@ import {
   addCareTakenPerson,
   addCareTakenPersonSuccess,
   addCareTakenPersonFailure,
-  getSelectedCareTakenSuccess,
-  getSelectedCareTakenFailure,
+  getCareTakenSuccess,
+  getCareTakenFailure,
   changeCareTakenPersonSuccess,
   changeCareTakenPersonFailure,
 } from './care-taken-details.actions';
 import { createReducer, on } from '@ngrx/store';
 
-export const initialState: careTakenDetail = {
+export const initialcareTakenDetail: careTakenDetail = {
   _id: '',
   care_giver: '',
   care_taken_name: '',
@@ -20,8 +20,30 @@ export const initialState: careTakenDetail = {
   care_last_accessed: false,
 };
 
+export const initialcareTakenDetails: careTakenDetail[] = [{
+  _id: '',
+  care_giver: '',
+  care_taken_name: '',
+  care_taken_dob: null,
+  care_taken_gender: '',
+  care_taken_of: '',
+  care_last_accessed: false,
+}]
+
 export const careTakenDetailsReducer = createReducer(
-  initialState,
+  initialcareTakenDetails,
+  on(getCareTakenSuccess, (state, { caretakendetails }) => ([
+    ...state,
+    ...caretakendetails
+  ])),
+  on(getCareTakenFailure, (state, action) => ({
+    ...state,
+    action,
+  })),
+)
+
+export const careTakenDetailReducer = createReducer(
+  initialcareTakenDetail,
   on(addCareTakenPersonSuccess, (state, { getcaretakendetails }) => ({
     ...state,
     _id: getcaretakendetails._id,
@@ -33,20 +55,6 @@ export const careTakenDetailsReducer = createReducer(
     care_last_accessed: getcaretakendetails.care_last_accessed,
   })),
   on(addCareTakenPersonFailure, (state, action) => ({
-    ...state,
-    action,
-  })),
-  on(getSelectedCareTakenSuccess, (state, { selcaretakendetails }) => ({
-    ...state,
-    _id: selcaretakendetails._id,
-    care_giver: selcaretakendetails.care_giver,
-    care_taken_name: selcaretakendetails.care_taken_name,
-    care_taken_dob: selcaretakendetails.care_taken_dob,
-    care_taken_of: selcaretakendetails.care_taken_of,
-    care_taken_gender: selcaretakendetails.care_taken_gender,
-    care_last_accessed: selcaretakendetails.care_last_accessed,
-  })),
-  on(getSelectedCareTakenFailure, (state, action) => ({
     ...state,
     action,
   })),

@@ -6,17 +6,13 @@ import { Observable, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CareTakenDetailsService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
-  getCareTakenDetails(care_giver: string): Observable<careTakenDetail[]> {
+  getCareTakenDetails(): Observable<careTakenDetail[]> {
     return this.httpClient.get<careTakenDetail[]>(
-      `${environment.expressURL}/caretaken/get-care-taken-details?care_giver=${care_giver}`
-    );
-  }
-
-  selCareTakenDetails(care_giver: string): Observable<careTakenDetail> {
-    return this.httpClient.get<careTakenDetail>(
-      `${environment.expressURL}/caretaken/get-selected-care-taken-detail?care_giver=${care_giver}`
+      `${environment.expressURL}/caretaken/get-care-taken-details`, {
+      withCredentials: true
+    }
     );
   }
 
@@ -26,7 +22,8 @@ export class CareTakenDetailsService {
     return this.httpClient
       .post(
         `${environment.expressURL}/caretaken/add-care-taken`,
-        care_taken_details
+        care_taken_details,
+        { withCredentials: true }
       )
       .pipe(
         map((responseAddRole: any) => {
@@ -41,7 +38,8 @@ export class CareTakenDetailsService {
   ): Observable<careTakenDetail> {
     return this.httpClient.post<careTakenDetail>(
       `${environment.expressURL}/caretaken/change-care-taken`,
-      { care_giver, care_taken_id }
+      { care_taken_id },
+      { withCredentials: true }
     );
   }
 }

@@ -1,18 +1,19 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, inject, OnInit, signal, TemplateRef, WritableSignal } from '@angular/core';
+import { NgbModal, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, map } from 'rxjs';
+import { Observable, filter, map, skip, take, takeLast } from 'rxjs';
 import {
   addCareTakenPerson,
   addCareTakenPersonSuccess,
-  getSelectedCareTaken,
+  getCareTaken,
   changeCareTakenPerson,
   changeCareTakenPersonSuccess,
 } from 'src/app/store/care-taken-details/care-taken-details.actions';
 import { CareTakenDetailsService } from 'src/app/store/care-taken-details/care-taken-details.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-care-taken-details',
@@ -21,12 +22,14 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
   standalone: false,
 })
 export class CareTakenDetailsComponent implements OnInit {
+  private ctdService = inject(NgbOffcanvas);
+  closeResult: WritableSignal<string> = signal('');
   careTakenOf: string;
   careTakenName: string;
   careTakenDOB: { year: number; month: number; day: number };
   careTakenGender: string;
   careGiver: string;
-  careTakenDetails$!: Observable<careTakenDetail[]>;
+  careTakenDetails: careTakenDetail[];
   roles: string[] = [
     'infant',
     'toddler',
@@ -35,31 +38,43 @@ export class CareTakenDetailsComponent implements OnInit {
     'parent',
     'friend',
   ];
-  selectedCareTaken$: Observable<careTakenDetail>;
+  selectedCareTaken$: Observable<careTakenDetail[]>;
   constructor(
     private modal: NgbModal,
     private careTakenDetailService: CareTakenDetailsService,
-    private store: Store<{ caretakendetails: careTakenDetail }>,
-    private actions$: Actions
-  ) {}
+    private store: Store<{ caretakendetails: careTakenDetail[] }>,
+    private actions$: Actions,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
-    this.careGiver = localStorage.getItem('logged_in_user');
     this.loadLatestCareTaken();
   }
 
   loadLatestCareTaken(): void {
-    this.careTakenDetails$ = this.careTakenDetailService.getCareTakenDetails(
-      this.careGiver
-    );
+    // this.careTakenDetails$ = this.careTakenDetailService.getCareTakenDetails();
     this.store.dispatch(
-      getSelectedCareTaken({
-        caregiver: localStorage.getItem('logged_in_user'),
-      })
+      getCareTaken()
     );
-    this.selectedCareTaken$ = this.store.pipe(
-      select(selectors.selectCareTakenDetails)
-    );
+    this.store.pipe(
+      select(selectors.selectCareTakenDetails),
+      skip(1),
+    ).subscribe({
+      next: (ctds) => {
+        if (Array.isArray(ctds)) {
+          if (!ctds.some((ctd) => ctd.care_last_accessed)) {
+            this.router.navigate(['home'], { state: { isFirstLogin: true } })
+          }
+          this.careTakenDetails = ctds.filter((ctd) => ctd.care_last_accessed);
+        }
+      }
+    });
+  }
+
+  open(content: TemplateRef<any>) {
+    this.ctdService.open(content, {
+      position: 'end'
+    }).result.then((result) => this.closeResult.set('Closed'))
   }
 
   addCareTakenPerson(add_care_taken_person_modal: TemplateRef<any>): void {

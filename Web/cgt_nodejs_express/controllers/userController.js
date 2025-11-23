@@ -21,11 +21,14 @@ export async function loginUser(req, res, next) {
   try {
       res.cookie("sessionId", req.sessionID);
       res.redirect("/caretaken/is-first-login")
-      // res.status(200).json({
-      //   message: "User signed in successfully!",
-      //   logged_in_email: req.user.user_email,
-      // });
   } catch (err) {
     return next(err);
   }
+}
+
+export async function logoutUser(req, res, next) {
+    req.logout((err) => {
+      if(err) return next(err);
+      res.status(200).json({ message: 'Logged out' });
+    })
 }

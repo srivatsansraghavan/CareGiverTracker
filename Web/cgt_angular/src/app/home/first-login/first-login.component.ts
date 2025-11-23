@@ -3,6 +3,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/shared/auth.service';
 import { FirstLoginService } from './first-login.service';
 import * as moment from 'moment';
+import { ToastService } from 'src/app/shared/toast/toast.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-first-login',
@@ -31,7 +33,9 @@ export class FirstLoginComponent implements OnInit {
   constructor(
     private modal: NgbModal,
     private flService: FirstLoginService,
-    public authService: AuthService
+    public authService: AuthService,
+    private toastService: ToastService,
+    private router: Router,
   ) {
     setTimeout(() => {
       this.showFirstLoginModal();
@@ -39,7 +43,6 @@ export class FirstLoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.careGiver = localStorage.getItem('login_email');
   }
 
   showFirstLoginModal(): void {
@@ -57,7 +60,6 @@ export class FirstLoginComponent implements OnInit {
       this.careTakenDOB.day
     );
     this.flService.addRole(
-      this.careGiver,
       this.careTakenOf,
       this.careTakenName,
       ctDob,
@@ -67,6 +69,16 @@ export class FirstLoginComponent implements OnInit {
 
   closeModalLogOut(): void {
     this.modal.dismissAll();
-    this.authService.logOut();
+    this.authService.doLogOut().subscribe({
+      next: () => {
+        this.router.navigate(['']);
+        this.toastService.show(
+          'Logout message',
+          'You are now logged out',
+          'bg-warning text-light logout-toast',
+          true
+        );
+      }
+    });
   }
 }

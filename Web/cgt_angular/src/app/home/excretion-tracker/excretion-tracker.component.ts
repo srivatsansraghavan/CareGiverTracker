@@ -34,7 +34,7 @@ export class ExcretionTrackerComponent implements OnInit {
   diaperCount: number = 0;
   deleteExcId: string;
   editTrackedExcData: trackedExcretionData;
-  selectedCareTaken$: Observable<careTakenDetail>;
+  selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
 
   constructor(
@@ -42,8 +42,8 @@ export class ExcretionTrackerComponent implements OnInit {
     private toastService: ToastService,
     private etService: ExcretionTrackerService,
     private commonService: CommonService,
-    private store: Store<{ caretakendetails: careTakenDetail }>
-  ) {}
+    private store: Store<{ caretakendetails: careTakenDetail[] }>
+  ) { }
 
   ngOnInit(): void {
     this.careGiver = localStorage.getItem('logged_in_user');
@@ -51,7 +51,7 @@ export class ExcretionTrackerComponent implements OnInit {
       selectors.selectCareTakenDetails
     );
     this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd;
+      this.selCareTaken = ctd[0];
       this.getTrackedExcretions();
     });
   }

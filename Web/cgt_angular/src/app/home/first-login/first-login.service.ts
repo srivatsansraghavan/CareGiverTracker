@@ -12,10 +12,9 @@ export class FirstLoginService {
     private toastService: ToastService,
     private modal: NgbModal,
     private router: Router
-  ) {}
+  ) { }
 
   addRole(
-    care_giver: string,
     care_taken_of: string,
     care_taken_name: string,
     care_taken_dob: Date,
@@ -25,18 +24,16 @@ export class FirstLoginService {
       .post(
         `${environment.expressURL}/caretaken/add-care-taken`,
         {
-          care_giver,
           care_taken_of,
           care_taken_name,
           care_taken_dob,
           care_taken_gender,
         },
-        { observe: 'response' }
+        { observe: 'response', withCredentials: true }
       )
       .subscribe((responseAddCareTaken: any) => {
         if (responseAddCareTaken.status === 200) {
           this.router.navigate(['/home']);
-          localStorage.setItem('login_email', care_giver);
           this.toastService.show(
             'Care taken Addition',
             responseAddCareTaken.body.message,

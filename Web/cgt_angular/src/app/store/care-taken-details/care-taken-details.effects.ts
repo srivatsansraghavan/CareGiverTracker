@@ -22,26 +22,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable()
 export class CareTakenDetailsEffects {
-  // getCareTakenDetails$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(getCareTakenOfDetails),
-  //     exhaustMap((action) =>
-  //       this.careTakenDetailService
-  //         .getCareTakenOfDetails(action.careGiverEmail)
-  //         .pipe(
-  //           map((response) => ({
-  //             type: '[Care Taken Details] Get Care Taken Of Details Success',
-  //             payload: response,
-  //           })),
-  //           catchError(() =>
-  //             of({
-  //               type: '[Care Taken Details] Get Care Taken Of Details Failure',
-  //             })
-  //           )
-  //         )
-  //     )
-  //   )
-  // );
+
   addCareTakenDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ctdActions.addCareTakenPerson),
@@ -62,19 +43,20 @@ export class CareTakenDetailsEffects {
       )
     )
   );
-  selCareTakenDetails$ = createEffect(() =>
+
+  getCareTakenDetails$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(ctdActions.getSelectedCareTaken),
+      ofType(ctdActions.getCareTaken),
       switchMap((action) =>
-        this.careTakenDetailService.selCareTakenDetails(action.caregiver).pipe(
-          map((response) =>
-            ctdActions.getSelectedCareTakenSuccess({
-              selcaretakendetails: response,
+        this.careTakenDetailService.getCareTakenDetails().pipe(
+          map((response: careTakenDetail[]) =>
+            ctdActions.getCareTakenSuccess({
+              caretakendetails: response,
             })
           ),
           tap(() => this.modal.dismissAll()),
           catchError((error) =>
-            of(ctdActions.getSelectedCareTakenFailure({ error }))
+            of(ctdActions.getCareTakenFailure({ error }))
           )
         )
       )
@@ -108,7 +90,7 @@ export class CareTakenDetailsEffects {
     private actions$: Actions,
     private careTakenDetailService: CareTakenDetailsService,
     private modal: NgbModal
-  ) {}
+  ) { }
   //     this.actions$.pipe(ofType(getCareTakenOfDetails), withLatestFrom(this.store.pipe(select(selectCareTakenDetails))), mergeMap((action) => {
   //     return this.httpClient
   //     .get<careTakenDetail>(

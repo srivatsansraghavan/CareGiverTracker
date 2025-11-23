@@ -1,0 +1,207 @@
+ <div class="modal-header">
+    <h3 class="modal-title centre">Signup</h3>
+  </div>
+  <div class="modal-body">
+    <form
+      class="sign-up-form"
+      [formGroup]="signUpForm"
+      (ngSubmit)="doSignUp()"
+      title="Signup"
+      id="signupform"
+    >
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="signUpEmail">Email</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="email"
+            name="signUpEmail"
+            class="form-control"
+            placeholder="Enter email address"
+            formControlName="signUpEmail"
+          />
+          @if(signUpForm
+                .get('signUpEmail')
+                .errors?.hasOwnProperty('required') &&
+              signUpForm.get('signUpEmail').touched) {
+                  <span
+                    class="signup-form-error"
+                    id="signUpEmailError"
+                    >Email field is required</span
+                  >
+          }
+          @if(signUpForm.get('signUpEmail').errors?.hasOwnProperty('email') &&
+              signUpForm.get('signUpEmail').touched) {
+                  <span
+                    class="signup-form-error"
+                    id="signUpEmailError"
+                    >Please enter a valid email</span
+                  >
+              }
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="signUpPassword">Password</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="password"
+            name="signUpPassword"
+            class="form-control"
+            placeholder="Enter password"
+            formControlName="signUpPassword"
+          />
+          @if(signUpForm
+                .get('signUpPassword')
+                .errors?.hasOwnProperty('required') &&
+              signUpForm.get('signUpPassword').touched) {
+                  <span
+                    class="signup-form-error"
+                    id="signUpPasswordError"
+                    >Password field is required</span
+                  >
+              }
+          @if( !isSignupPasswordOk() &&
+              signUpForm.get('signUpPassword').touched &&
+              signUpForm.get('signUpPassword').value != '') {
+                <span
+                  class="signup-form-error"
+                  id="signUpPasswordError"
+                  >Password should have atleast one uppercase, lowercase, number and
+                  special character</span
+                >
+          }
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="signUpRepeatPassword">Repeat Password</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            name="signUpRepeatPassword"
+            class="form-control"
+            placeholder="Repeat password"
+            formControlName="signUpRepeatPassword"
+          />
+          @if(signUpForm
+                .get('signUpRepeatPassword')
+                .errors?.hasOwnProperty('required') &&
+              signUpForm.get('signUpRepeatPassword').touched){
+                <span
+                  class="signup-form-error"
+                  id="signUpRepeatPasswordError"
+                  >Repeat Password field is required</span
+                >
+          }
+          @if(signUpForm.get('signUpRepeatPassword').dirty &&
+              !isPasswordRepeatPasswordSame()){
+                <span
+                  class="signup-form-error"
+                  id="signUpRepeatPasswordError"
+                  >Password and Repeat Password should be the same</span
+                >
+          }
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="signUpFullName">Full Name</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            name="signUpFullName"
+            class="form-control"
+            placeholder="Enter full name"
+            formControlName="signUpFullName"
+          />
+          @if(signUpForm.get('signUpFullName')
+                .errors?.hasOwnProperty('required') &&
+              signUpForm.get('signUpFullName').touched){
+                <span
+                  class="signup-form-error"
+                  id="signUpFullNameError"
+                  >Full Name field is required</span
+                >
+          }
+          @if(!isFullNameOk() &&
+              signUpForm.get('signUpFullName').touched &&
+              signUpForm.get('signUpFullName').value != ''){
+                <span
+                  class="signup-form-error"
+                  id="signUpFullNameError"
+                  >Full name cannot have number or special characters</span
+                >
+          }
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="signUpAddVerify">{{ num1 }} + {{ num2 }} = </label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="text"
+            name="signUpAddVerify"
+            class="form-control add-verify"
+            formControlName="signUpAddVerify"
+            size="3"
+            maxlength="3"
+          />
+          @if(signUpForm
+                .get('signUpAddVerify')
+                .errors?.hasOwnProperty('required') &&
+              signUpForm.get('signUpAddVerify').touched) {
+                <span
+                  class="signup-form-error"
+                  id="signUpAddVerifyError"
+                  >Adding numbers is required</span
+                >
+              }
+              @if(!isAddVerifyOk() &&
+              signUpForm.get('signUpAddVerify').touched &&
+              signUpForm.get('signUpAddVerify').value != '') {
+                <span
+                  class="signup-form-error"
+                  id="signUpAddVerifyError"
+                  >Not properly added!</span
+                >
+              }
+        </div>
+      </div>
+
+      <div class="row">
+        <p>Already having account? <a> Login now!</a></p>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="form-group row">
+      <div class="col-md-4">
+        <button
+          type="submit"
+          class="btn btn-secondary center"
+          (click)="closeModal.emit(true)"
+        >
+          Close
+        </button>
+      </div>
+      <div class="col-md-8">
+        <button
+          type="submit"
+          class="btn btn-primary center"
+          form="signupform"
+          [disabled]="signUpForm.status === 'INVALID'"
+        >
+          Sign me Up!
+        </button>
+      </div>
+    </div>
+  </div>

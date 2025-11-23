@@ -3,7 +3,6 @@ import {
   firstLoginModel,
   addCareTakenModel,
   getCareTakenDetailsModel,
-  getSelectedCareTakenDetailModel,
   changeCareTakenModel,
 } from "../models/caretakenModel.js";
 
@@ -57,21 +56,6 @@ export async function getCareTakenDetails(req, res, next) {
       res.status(200).json(careTakenDetails);
     } else {
       res.status(404).json({ message: "No matching records found" });
-    }
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function getSelectedCareTakenDetail(req, res, next) {
-  try {
-    const careTakenDetail = await getSelectedCareTakenDetailModel(
-      req.query.care_giver
-    );
-    if (careTakenDetail && Object.keys(careTakenDetail).length > 0) {
-      res.status(200).json(careTakenDetail);
-    } else {
-      res.status(404).json({ message: "No matching record found" });
     }
   } catch (err) {
     return next(err);

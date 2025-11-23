@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class FeedingTrackerService {
-  constructor(private httpClient: HttpClient, private timer: TimerService) {}
+  constructor(private httpClient: HttpClient, private timer: TimerService) { }
 
   startTracking() {
     let interval = this.timer.start(new Date());
@@ -72,14 +72,13 @@ export class FeedingTrackerService {
   }
 
   getFeedDetails(
-    feedGiver: string,
     feedTaker: Object,
     feedCount: number
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/feed/get-feed-details?feed_giver=${feedGiver}&feed_taker=${feedTaker}&feed_count=${feedCount}`,
-        { observe: 'response' }
+        `${environment.expressURL}/feed/get-feed-details?feed_taker=${feedTaker}&feed_count=${feedCount}`,
+        { observe: 'response', withCredentials: true }
       )
       .pipe(
         map((response: any) => {

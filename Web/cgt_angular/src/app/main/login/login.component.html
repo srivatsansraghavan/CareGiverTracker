@@ -1,0 +1,95 @@
+  <div class="modal-header">
+    <h3 class="modal-title centre">Login</h3>
+  </div>
+  <div class="modal-body">
+    <form
+      id="loginForm"
+      class="login-form"
+      [formGroup]="loginForm"
+      (ngSubmit)="doLogin()"
+      title="Login"
+    >
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="loginEmail">Email</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="email"
+            name="loginEmail"
+            class="form-control"
+            placeholder="Enter email address"
+            formControlName="loginEmail"
+          />
+          @if(loginForm.get('loginEmail').errors?.hasOwnProperty('required') &&
+              loginForm.get('loginEmail').touched){
+                  <span
+                    class="login-form-error"
+                    id="loginEmailError"
+                    >Email field is required</span
+                  >
+          }
+          @if(loginForm.get('loginEmail').errors?.hasOwnProperty('email') &&
+              loginForm.get('loginEmail').touched) {
+                  <span
+                    class="login-form-error"
+                    id="loginEmailError"
+                    >Please enter a valid email</span
+                  >
+              }
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-md-4">
+          <label for="loginPassword">Password</label>
+        </div>
+        <div class="col-md-8">
+          <input
+            type="password"
+            name="loginPassword"
+            class="form-control"
+            placeholder="Enter password"
+            formControlName="loginPassword"
+          />
+          @if(loginForm
+                .get('loginPassword')
+                .errors?.hasOwnProperty('required') &&
+              loginForm.get('loginPassword').touched) {
+                  <span
+                    class="login-form-error"
+                    id="loginPasswordError"
+                    >Password field is required</span
+                  >
+              }
+        </div>
+      </div>
+
+      <div class="row">
+        <p>Not having account? <a> Sign up now!</a></p>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <div class="form-group row">
+      <div class="col-md-4">
+        <button
+          type="submit"
+          class="btn btn-secondary center"
+          (click)="closeModal.emit(true)"
+        >
+          Close
+        </button>
+      </div>
+      <div class="col-md-8">
+        <button
+          type="submit"
+          class="btn btn-primary center"
+          form="loginForm"
+          [disabled]="loginForm.status == 'INVALID'"
+        >
+          Log me In!
+        </button>
+      </div>
+    </div>
+  </div>

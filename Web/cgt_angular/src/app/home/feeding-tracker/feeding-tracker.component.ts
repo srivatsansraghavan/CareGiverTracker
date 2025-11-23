@@ -1,7 +1,7 @@
 import { OnDestroy, Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 let moment = require('moment');
-import { Observable, Subscription, map } from 'rxjs';
+import { Observable, Subscription, map, skip } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
@@ -28,6 +28,7 @@ import {
 import { addFeedAnimation } from 'src/app/shared/animations';
 import { Store, select } from '@ngrx/store';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
+import { Router } from '@angular/router';
 
 const slideFromTop = animation([
   style({ opacity: 0, transform: 'translateY(-100%)' }),
@@ -115,7 +116,7 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   deleteFeedId: string;
   subscription: Subscription;
   showSpinner: boolean = false;
-  selectedCareTaken$: Observable<careTakenDetail>;
+  selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
 
   constructor(
@@ -123,24 +124,30 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private ftService: FeedingTrackerService,
     private commonService: CommonService,
-    private store: Store<{ caretakendetails: careTakenDetail }>
-  ) {}
+    private store: Store<{ caretakendetails: careTakenDetail[] }>,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.showSpinner = true;
-    this.careGiver = localStorage.getItem('logged_in_user');
-    this.selectedCareTaken$ = this.store.select(
-      selectors.selectCareTakenDetails
-    );
-    this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd;
-      this.getFeeds();
+    this.store.pipe(
+      select(selectors.selectCareTakenDetails),
+      skip(1)
+    ).subscribe((ctds) => {
+      if (Array.isArray(ctds)) {
+        if (!ctds.some((ctd) => ctd.care_last_accessed)) {
+          this.router.navigate(['home'], { state: { isFirstLogin: true } })
+        }
+        this.selCareTaken = ctds.filter((ctd) => ctd.care_last_accessed)[0];
+        this.getFeeds();
+      }
+      // this.selCareTaken = ctd[0];
     });
   }
 
   getFeeds() {
     this.subscription = this.ftService
-      .getFeedDetails(this.careGiver, this.selCareTaken._id, 10)
+      .getFeedDetails(this.selCareTaken._id, 10)
       .subscribe({
         next: (feedDetailsResponse) => {
           this.trackedFeeds = feedDetailsResponse;

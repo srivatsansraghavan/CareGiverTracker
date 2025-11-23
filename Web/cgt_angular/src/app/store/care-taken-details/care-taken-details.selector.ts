@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { careTakenDetail } from './care-taken-details.model';
 
 export interface AppState {
-  caretakendetails: careTakenDetail;
+  caretakendetails: careTakenDetail[];
 }
 
 export const selectCareTakenDetail = (state: AppState) =>
@@ -10,5 +10,5 @@ export const selectCareTakenDetail = (state: AppState) =>
 
 export const selectCareTakenDetails = createSelector(
   selectCareTakenDetail,
-  (state: careTakenDetail) => state
+  (state: careTakenDetail[]) => state
 );

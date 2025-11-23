@@ -1,18 +1,17 @@
 import { createAction, props } from '@ngrx/store';
 import { careTakenDetail } from './care-taken-details.model';
 
-export const getSelectedCareTaken = createAction(
-  '[Care Taken Details] Get Selected Care Taken Of Details',
-  props<{ caregiver: string }>()
+export const getCareTaken = createAction(
+  '[Care Taken Details] Get Care Taken Of Details',
 );
 
-export const getSelectedCareTakenSuccess = createAction(
-  '[Care Taken Details] Get Selected Care Taken Of Details Success',
-  props<{ selcaretakendetails: careTakenDetail }>()
+export const getCareTakenSuccess = createAction(
+  '[Care Taken Details] Get Care Taken Of Details Success',
+  props<{ caretakendetails: careTakenDetail[] }>()
 );
 
-export const getSelectedCareTakenFailure = createAction(
-  '[Care Taken Details] Get Selected Care Taken Of Details Failure',
+export const getCareTakenFailure = createAction(
+  '[Care Taken Details] Get Care Taken Of Details Failure',
   props<{ error: Error }>()
 );
 

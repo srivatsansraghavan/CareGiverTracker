@@ -31,7 +31,7 @@ export class MedicationTrackerComponent implements OnInit {
   medicineQuantity: number = 0;
   deleteMedId: string;
   editTrackedMedData: trackedMedicationData;
-  selectedCareTaken$: Observable<careTakenDetail>;
+  selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
 
   constructor(
@@ -39,8 +39,8 @@ export class MedicationTrackerComponent implements OnInit {
     private toastService: ToastService,
     private mtService: MedicationTrackerService,
     private commonService: CommonService,
-    private store: Store<{ caretakendetails: careTakenDetail }>
-  ) {}
+    private store: Store<{ caretakendetails: careTakenDetail[] }>
+  ) { }
 
   ngOnInit(): void {
     this.careGiver = localStorage.getItem('logged_in_user');
@@ -48,7 +48,7 @@ export class MedicationTrackerComponent implements OnInit {
       selectors.selectCareTakenDetails
     );
     this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd;
+      this.selCareTaken = ctd[0];
       this.getTrackedMedications();
     });
   }

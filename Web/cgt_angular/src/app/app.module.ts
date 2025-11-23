@@ -26,29 +26,28 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CareTakenDetailsEffects } from './store/care-taken-details/care-taken-details.effects';
-import { careTakenDetailsReducer } from './store/care-taken-details/care-taken-details.reducer';
+import { careTakenDetailReducer, careTakenDetailsReducer } from './store/care-taken-details/care-taken-details.reducer';
 import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
+import { MainCardComponent } from './main/main-card/main-card.component';
+import { SignupComponent } from "src/app/main/signup/signup.component";
+import { LoginComponent } from "src/app/main/login/login.component";
+import { SharedModule } from './shared/shared.module';
 
-@NgModule({ 
+@NgModule({
     declarations: [
         AppComponent,
         MainComponent,
-        MenubarComponent,
         HomeComponent,
-        ToastComponent,
         FirstLoginComponent,
         FeedingTrackerComponent,
         ExcretionTrackerComponent,
         MedicationTrackerComponent,
-        TimerComponent,
-        TrackItemsPipe,
-        DateDiffPipe,
-        ShowEditDeleteDirective,
         InventoryTrackerComponent,
         CareTakenDetailsComponent,
+        MainCardComponent,
     ],
-    bootstrap: [AppComponent], 
+    bootstrap: [AppComponent],
     imports: [BrowserModule,
         BrowserAnimationsModule,
         NgbModule,
@@ -56,15 +55,17 @@ import { AppComponent } from './app.component';
         ReactiveFormsModule,
         AppRoutingModule,
         FormsModule,
-        StoreModule.forRoot({ caretakendetails: careTakenDetailsReducer }),
+        StoreModule.forRoot({ caretakendetail: careTakenDetailReducer, caretakendetails: careTakenDetailsReducer }),
         EffectsModule.forRoot([CareTakenDetailsEffects]),
-        StoreDevtoolsModule.instrument({ logOnly: environment.production })], providers: [
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthConfigInterceptor,
-            multi: true,
-        },
+        StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+        SharedModule],
+    providers: [
+        // {
+        //     provide: HTTP_INTERCEPTORS,
+        //     useClass: AuthConfigInterceptor,
+        //     multi: true,
+        // },
         provideHttpClient(withInterceptorsFromDi()),
-    ] 
+    ]
 })
-export class AppModule {}
+export class AppModule { }

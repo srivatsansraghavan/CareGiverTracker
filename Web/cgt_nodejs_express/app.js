@@ -3,7 +3,6 @@ const app = express();
 import cors from "cors";
 import pkg from "body-parser";
 const { json } = pkg;
-app.use(cors()).use(json());
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
@@ -11,6 +10,11 @@ import LocalStrategy from "passport-local";
 import flash from "express-flash";
 import { userModel } from "./models/userModel.js"
 
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true
+}));
+app.use(express.json());
 app.use(cookieParser())
 app.use(session({ secret: 'secret', resave: true, saveUninitialized: false, cookie: { secure: false }}))
 app.use(passport.initialize());

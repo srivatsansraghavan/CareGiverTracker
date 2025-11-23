@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { AuthService } from '../shared/auth.service';
 import { CommonService } from '../shared/common.service';
+import { filter, takeUntil } from 'rxjs';
+import { NavigationEvent } from '@ng-bootstrap/ng-bootstrap/datepicker/datepicker-view-model';
 
 @Component({
   selector: 'app-home',
@@ -18,14 +20,10 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private commonService: CommonService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(): void {
+    this.isFirstLogin = this.router.lastSuccessfulNavigation.extras.state["isFirstLogin"];
     this.envName = this.commonService.getEnvironment();
-    const loginUser = localStorage.getItem('logged_in_user');
-    this.authService.isFirstLogin(loginUser).subscribe((firstLogin: any) => {
-      this.isFirstLogin = firstLogin;
-    });
   }
 }
