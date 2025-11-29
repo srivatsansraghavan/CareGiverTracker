@@ -18,7 +18,7 @@ export async function saveTrackingFeed(req, res, next) {
       .subtract(req.body.feedTime, "seconds")
       .format("MM/DD/YYYY HH:mm:ss");
     let insertQuery = {
-      feed_giver: req.body.feedGiver,
+      feed_giver: req.user.user_email,
       feed_taker_name: req.body.feedTaker.name,
       feed_taker_id: req.body.feedTaker.id,
       feed_taken_type: req.body.feedType,
@@ -94,15 +94,11 @@ export async function savePumpingFeed(req, res, next) {
 export async function getFeedDetails(req, res, next) {
   try {
     const getFeedDetails = await getFeedDetailsModel(
-      req.user,
+      req.user.user_email,
       req.query.feed_taker,
       req.query.feed_count
     );
-    if (getFeedDetails && getFeedDetails.length > 0) {
-      res.status(200).json(getFeedDetails);
-    } else {
-      res.status(404).json({ message: "No matching feeds found" });
-    }
+    res.status(200).json(getFeedDetails);
   } catch (err) {
     return next(err);
   }
@@ -114,11 +110,7 @@ export async function getPumpedFeed(req, res, next) {
       req.query.feed_giver,
       req.query.feed_taker
     );
-    if (getPumpedFeed && getPumpedFeed.length > 0) {
-      res.status(200).json(getPumpedFeed);
-    } else {
-      res.status(404).json({ message: "No matching pumped feeds found" });
-    }
+    res.status(200).json(getPumpedFeed);
   } catch (err) {
     return next(err);
   }

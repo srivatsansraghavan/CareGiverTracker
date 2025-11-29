@@ -2,6 +2,7 @@
     display: inline-flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    overflow-y: auto;
 }
 
 .nav-tabs {

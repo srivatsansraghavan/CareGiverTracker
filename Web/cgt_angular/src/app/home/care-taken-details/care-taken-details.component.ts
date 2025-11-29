@@ -1,8 +1,8 @@
-import { Component, inject, OnInit, signal, TemplateRef, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal, TemplateRef, WritableSignal } from '@angular/core';
 import { NgbModal, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, filter, map, skip, take, takeLast } from 'rxjs';
+import { Observable, filter, map, skip, take, takeLast, tap } from 'rxjs';
 import {
   addCareTakenPerson,
   addCareTakenPersonSuccess,
@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
   templateUrl: './care-taken-details.component.html',
   styleUrls: ['./care-taken-details.component.css'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CareTakenDetailsComponent implements OnInit {
   private ctdService = inject(NgbOffcanvas);
@@ -29,7 +30,7 @@ export class CareTakenDetailsComponent implements OnInit {
   careTakenDOB: { year: number; month: number; day: number };
   careTakenGender: string;
   careGiver: string;
-  careTakenDetails: careTakenDetail[];
+  careTakenDetails$: Observable<careTakenDetail[]>;
   roles: string[] = [
     'infant',
     'toddler',
@@ -45,6 +46,7 @@ export class CareTakenDetailsComponent implements OnInit {
     private store: Store<{ caretakendetails: careTakenDetail[] }>,
     private actions$: Actions,
     private router: Router,
+    private cd: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -56,19 +58,17 @@ export class CareTakenDetailsComponent implements OnInit {
     this.store.dispatch(
       getCareTaken()
     );
-    this.store.pipe(
+    this.careTakenDetails$ = this.store.pipe(
       select(selectors.selectCareTakenDetails),
-      skip(1),
-    ).subscribe({
-      next: (ctds) => {
+      tap(ctds => {
         if (Array.isArray(ctds)) {
-          if (!ctds.some((ctd) => ctd.care_last_accessed)) {
-            this.router.navigate(['home'], { state: { isFirstLogin: true } })
+          if (!ctds.some(ctd => ctd.care_last_accessed)) {
+            this.router.navigate(['home'], { state: { isFirstLogin: true } });
           }
-          this.careTakenDetails = ctds.filter((ctd) => ctd.care_last_accessed);
         }
-      }
-    });
+      }),
+      map(ctds => ctds.filter(ctd => ctd._id))
+    );
   }
 
   open(content: TemplateRef<any>) {

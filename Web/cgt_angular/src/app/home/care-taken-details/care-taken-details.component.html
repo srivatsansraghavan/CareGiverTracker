@@ -5,31 +5,32 @@
     <button type="button" class="btn-close" (click)="ctdCanvas.dismiss()"></button>
   </div>
   <div class="ctd-cards">
-    <div
-      class="ctd-card"
-      *ngFor="let careTakenDetail of careTakenDetails"
-      [class.selected]="careTakenDetail.care_last_accessed"
-      (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
-    >
-      <div class="ctd-card-row">
-        <p class="ctd-card-key">Name</p>
-        <p class="ctd-card-value">
-          {{ careTakenDetail.care_taken_name }}
-        </p>
+    @for(careTakenDetail of careTakenDetails$ | async; track careTakenDetail) {
+      <div
+        class="ctd-card"
+        [class.selected]="careTakenDetail.care_last_accessed"
+        (click)="changeCareTaken(careTakenDetail._id, careTakenDetail.care_giver)"
+      >
+        <div class="ctd-card-row">
+          <p class="ctd-card-key">Name</p>
+          <p class="ctd-card-value">
+            {{ careTakenDetail.care_taken_name }}
+          </p>
+        </div>
+        <div class="ctd-card-row">
+          <p class="ctd-card-key">Type</p>
+          <p class="ctd-card-value">{{ careTakenDetail.care_taken_of }}</p>
+        </div>
+        <div class="ctd-card-row">
+          <p class="ctd-card-key">Date of Birth</p>
+          <p class="ctd-card-value">{{ careTakenDetail.care_taken_dob }}</p>
+        </div>
+        <div class="ctd-card-row">
+          <p class="ctd-card-key">Gender</p>
+          <p class="ctd-card-value">{{ careTakenDetail.care_taken_gender }}</p>
+        </div>
       </div>
-      <div class="ctd-card-row">
-        <p class="ctd-card-key">Type</p>
-        <p class="ctd-card-value">{{ careTakenDetail.care_taken_of }}</p>
-      </div>
-      <div class="ctd-card-row">
-        <p class="ctd-card-key">Date of Birth</p>
-        <p class="ctd-card-value">{{ careTakenDetail.care_taken_dob }}</p>
-      </div>
-      <div class="ctd-card-row">
-        <p class="ctd-card-key">Gender</p>
-        <p class="ctd-card-value">{{ careTakenDetail.care_taken_gender }}</p>
-      </div>
-    </div>
+    }
   </div>
   <div class="ctd-add-btn">
     <button (click)="addCareTakenPerson(addCareTakenDetailsModal)">
@@ -138,4 +139,4 @@
     </button>
   </div>
 </ng-template>
-<button (click)="open(content)">Open</button>
+<button class="care-taken-detail" (click)="open(content)">Care Taken Detail</button>

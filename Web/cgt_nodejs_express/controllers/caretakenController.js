@@ -30,7 +30,7 @@ export async function addCareTaken(req, res, next) {
       ),
       care_taken_gender: req.body.care_taken_gender,
       care_taken_added_time: moment().format("MM/DD/YYYY HH:mm:ss"),
-      care_last_accessed: true,
+      care_last_accessed: false,
     });
     if (addCareTaken.hasOwnProperty("_id")) {
       res.status(200).json({
@@ -52,11 +52,7 @@ export async function getCareTakenDetails(req, res, next) {
     const careTakenDetails = await getCareTakenDetailsModel(
       req.user.user_email
     );
-    if (careTakenDetails && careTakenDetails.length > 0) {
-      res.status(200).json(careTakenDetails);
-    } else {
-      res.status(404).json({ message: "No matching records found" });
-    }
+    res.status(200).json(careTakenDetails);
   } catch (err) {
     return next(err);
   }
@@ -66,14 +62,9 @@ export async function changeCareTaken(req, res, next) {
   try {
     const changeCareTaken = await changeCareTakenModel(
       req.body.care_taken_id,
-      req.body.care_giver
+      req.user.user_email
     );
-    console.log(changeCareTaken);
-    if (changeCareTaken && Object.keys(changeCareTaken).length > 0) {
-      res.status(200).json(changeCareTaken);
-    } else {
-      res.status(404).json({ message: "Unable to change care taken" });
-    }
+    res.status(200).json(changeCareTaken);
   } catch (err) {
     return next(err);
   }

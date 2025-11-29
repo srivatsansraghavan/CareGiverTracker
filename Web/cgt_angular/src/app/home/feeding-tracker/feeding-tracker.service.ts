@@ -43,7 +43,7 @@ export class FeedingTrackerService {
         feedQuantity,
         pumpedFeedId,
       },
-      { observe: 'response' }
+      { observe: 'response', withCredentials: true }
     );
   }
 

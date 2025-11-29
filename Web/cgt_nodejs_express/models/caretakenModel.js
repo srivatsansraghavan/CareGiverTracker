@@ -74,6 +74,14 @@ export const getCareTakenDetailsModel = async function (userId) {
 
 export const changeCareTakenModel = async function (careTakenId, userId) {
   const caretakenModel = await getCareTakenSchema();
+  let changedCareTakenDetail = await caretakenModel
+  .findOne({
+    _id: careTakenId,
+  })
+  .exec();
+  if(changedCareTakenDetail.care_last_accessed) {
+    return;
+  }
   await caretakenModel.updateMany(
     { care_giver: userId },
     { $set: { care_last_accessed: false } }
@@ -82,10 +90,10 @@ export const changeCareTakenModel = async function (careTakenId, userId) {
     { _id: careTakenId },
     { $set: { care_last_accessed: true } }
   );
-  const changedCareTakenDetail = await caretakenModel
-    .findOne({
-      _id: careTakenId,
-    })
-    .exec();
+changedCareTakenDetail = await caretakenModel
+  .findOne({
+    _id: careTakenId,
+  })
+  .exec();
   return changedCareTakenDetail;
 };

@@ -33,7 +33,6 @@ export const initialcareTakenDetails: careTakenDetail[] = [{
 export const careTakenDetailsReducer = createReducer(
   initialcareTakenDetails,
   on(getCareTakenSuccess, (state, { caretakendetails }) => ([
-    ...state,
     ...caretakendetails
   ])),
   on(getCareTakenFailure, (state, action) => ({
