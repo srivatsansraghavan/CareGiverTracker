@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 let moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
+import { DIAPER_BRANDS, EXCRETION_TYPES, NAPKIN_TYPES } from 'src/app/shared/constants';
 
 @Component({
   selector: 'app-excretion-tracker',
@@ -24,9 +25,9 @@ export class ExcretionTrackerComponent implements OnInit {
   careGiver: string;
   subscription: Subscription;
   trackedExcretions: trackedExcretionData;
-  excretionTypes: string[] = ['Urine', 'Stools', 'Urine and Stools', 'None'];
-  napkinTypes: string[] = ['Diaper', 'Others'];
-  diaperBrands: any;
+  excretionTypes: string[] = EXCRETION_TYPES;
+  napkinTypes: string[] = NAPKIN_TYPES;
+  diaperBrands: { _id: string; inventory_brand: string; added_time: string; }[];
   chosenExcretionType: string;
   chosenNapkinType: string;
   chosenDiaperBrand: string;
@@ -46,7 +47,6 @@ export class ExcretionTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.careGiver = localStorage.getItem('logged_in_user');
     this.selectedCareTaken$ = this.store.select(
       selectors.selectCareTakenDetails
     );
@@ -58,12 +58,12 @@ export class ExcretionTrackerComponent implements OnInit {
 
   getTrackedExcretions() {
     this.subscription = this.etService
-      .getExcretionDetails(this.careGiver, this.selCareTaken._id, 10)
+      .getExcretionDetails(this.selCareTaken._id, 10)
       .subscribe((excretionDetailsResponse) => {
         this.trackedExcretions = excretionDetailsResponse;
       });
     this.commonService
-      .getAvailableInventory(this.careGiver, this.selCareTaken._id, 'Diaper')
+      .getAvailableInventory(this.selCareTaken._id, 'Diaper')
       .subscribe((availableDiapersResp) => {
         this.diaperBrands = availableDiapersResp.body;
       });

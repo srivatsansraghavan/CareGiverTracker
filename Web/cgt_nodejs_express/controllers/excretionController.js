@@ -20,20 +20,14 @@ export async function saveTrackedExcretion(req, res, next) {
       diaper_brand: req.body.diaperBrand,
       excretion_time: excTime,
     };
-    const saveTrackedExc = await saveTrackedExcModel(insertQuery);
-    if (saveTrackedExc && Object.keys(saveTrackedExc).length > 0) {
-      await updateInventoryModel(
-        { _id: req.body.diaperBrand },
-        { inventory_used: req.body.diaperCount }
-      );
-      res
-        .status(200)
-        .json({ message: `Excretion of ${req.body.careTakenOf.name} noted!` });
-    } else {
-      res.status(404).json({
-        message: "Unable to add tracked excretion. Please try later!",
-      });
-    }
+    await saveTrackedExcModel(insertQuery);
+    await updateInventoryModel(
+      { _id: req.body.diaperBrand },
+      { inventory_used: req.body.diaperCount }
+    );
+    res
+      .status(200)
+      .json({ message: `Excretion of ${req.body.careTakenOf.name} noted!` });
   } catch (err) {
     return next(err);
   }
@@ -42,14 +36,10 @@ export async function saveTrackedExcretion(req, res, next) {
 export async function getExcretionDetails(req, res, next) {
   try {
     const getTrackedExcretion = await getExcDetailsModel({
-      care_giver: req.query.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_id: req.query.careTakenId,
     });
-    if (getTrackedExcretion && getTrackedExcretion.length > 0) {
-      res.status(200).json(getTrackedExcretion);
-    } else {
-      res.status(404).json({ message: "No tracked excretions found" });
-    }
+    res.status(200).json(getTrackedExcretion);
   } catch (err) {
     return next(err);
   }
@@ -68,18 +58,12 @@ export async function deleteExcretion(req, res, next) {
         { inventory_used: -diaperCount }
       );
     }
-    const deleteExc = await deleteExcretionModel({
+    await deleteExcretionModel({
       _id: req.params.excId,
     });
-    if (deleteExc.acknowledged && deleteExc.deletedCount === 1) {
-      res
-        .status(200)
-        .json({ message: "Tracked excretion deleted successfully" });
-    } else {
-      res.status(404).json({
-        message: "Unable to delete tracked excretion. Please try again later!",
-      });
-    }
+    res
+      .status(200)
+      .json({ message: "Tracked excretion deleted successfully" });
   } catch (err) {
     return next(err);
   }

@@ -19,7 +19,6 @@ export async function addUser(req, res, next) {
 
 export async function loginUser(req, res, next) {
   try {
-      res.cookie("sessionId", req.sessionID);
       res.redirect("/caretaken/is-first-login")
   } catch (err) {
     return next(err);
@@ -31,4 +30,15 @@ export async function logoutUser(req, res, next) {
       if(err) return next(err);
       res.status(200).json({ message: 'Logged out' });
     })
+}
+
+export async function isLoggedInUser(req, res, next) {
+  try {
+    if(req.session.cookie.expires.toISOString() > new Date().toISOString()) {
+      return res.status(200).json({ message: 'Session active' });
+    }
+    return res.status(401).json({ message: 'Session expired' });
+  } catch (err) {
+    return next(err);
+  }
 }

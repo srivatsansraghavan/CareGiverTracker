@@ -1,11 +1,12 @@
 <div class="feeding-container">
-  <button
-    class="btn btn-primary btn-add-feed"
-    (click)="addFeed(addFeedModal)"
-    *ngIf="trackedFeeds"
-  >
-    Start Feed
-  </button>
+  @if(trackedFeeds){
+    <button
+      class="btn btn-primary btn-add-feed"
+      (click)="addFeed(addFeedModal)"
+    >
+      Start Feed
+    </button>
+  }
   @if(showSpinner) {
     <span
       id="spinner"
@@ -26,93 +27,93 @@
       </li>
     } @else {
       @for(trackFeed of trackedFeeds | trackItems: 'getKeyValue'; track 'key') {
-    <li
-      class="feed-per-date"
-    >
-      <time dateTime="{{ trackFeed[0].key }}" class="feed-date"
-        >{{ trackFeed[0].key | dateDiff }}
-      </time>
-      <ul
-        class="feed-date-timeline"
-        *ngFor="
-          let eachFeed of trackFeed[0].value | trackItems : 'getValueArray'
-        "
-        [@addFeed]
-      >
         <li
-          *ngIf="eachFeed.hasOwnProperty('mode')"
-          id="{eachFeed.id}"
-          class="tracked-feed-timeline"
-          showEditDelete
+          class="feed-per-date"
         >
-          <span class="tracked-feed">
-            Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -<span
-              *ngIf="eachFeed.side !== null"
+          <time dateTime="{{ trackFeed[0].key }}" class="feed-date"
+            >{{ trackFeed[0].key | dateDiff }}
+          </time>
+        @for(eachFeed of trackFeed[0].value | trackItems: 'getValueArray'; track 'eachFeed') {
+          <ul
+            class="feed-date-timeline"
+            [@addFeed]
+          >
+          @if(eachFeed.hasOwnProperty('mode')) {
+            <li
+              id="{eachFeed.id}"
+              class="tracked-feed-timeline"
+              showEditDelete
             >
-              {{ eachFeed.side }} -</span
+              <span class="tracked-feed">
+                Feed: {{ eachFeed.type }} - {{ eachFeed.mode }} -
+                @if(eachFeed.side) {
+                  <span>
+                  {{ eachFeed.side }} -</span>
+                }
+                {{ eachFeed.quantity }} ml (<time
+                  dateTime="{{ eachFeed.startDate }}"
+                  >{{ eachFeed.startDate | date : "mediumTime" }}</time
+                >
+                -
+                <time dateTime="{{ eachFeed.endDate }}">{{
+                  eachFeed.endDate | date : "mediumTime"
+                }}</time
+                >)
+              </span>
+              <button
+                class="bi bi-pencil btn-edit-tracked-feed"
+                (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
+              ></button>
+              <button
+                class="bi bi-trash btn-delete-tracked-feed"
+                (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
+              ></button>
+            </li>
+          }
+          @if(eachFeed.hasOwnProperty('pumpedMode')) {
+            <li
+              id="{{ eachFeed.id }}"
+              [ngClass]="{
+                'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
+              }"
+              showEditDelete
             >
-            {{ eachFeed.quantity }} ml (<time
-              dateTime="{{ eachFeed.startDate }}"
-              >{{ eachFeed.startDate | date : "mediumTime" }}</time
-            >
-            -
-            <time dateTime="{{ eachFeed.endDate }}">{{
-              eachFeed.endDate | date : "mediumTime"
-            }}</time
-            >)
-          </span>
-
-          <button
-            class="bi bi-pencil btn-edit-tracked-feed"
-            (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
-          ></button>
-          <button
-            class="bi bi-trash btn-delete-tracked-feed"
-            (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
-          ></button>
-        </li>
-        <li
-          *ngIf="eachFeed.hasOwnProperty('pumpedMode')"
-          id="{{ eachFeed.id }}"
-          [ngClass]="{
-            'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
-          }"
-          showEditDelete
-        >
-          <span class="pumped-feed">
-            Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
-            {{ eachFeed.pumpedQuantity }} ml (<time
-              dateTime="{{ eachFeed.pumpedStartDate }}"
-              >{{ eachFeed.pumpedStartDate | date : "mediumTime" }}</time
-            >
-            -
-            <time dateTime="{{ eachFeed.pumpedEndDate }}">{{
-              eachFeed.pumpedEndDate | date : "mediumTime"
-            }}</time
-            >)
-            <i
-              *ngIf="
-                eachFeed.hasOwnProperty('mode') &&
-                eachFeed.endDate !== eachFeed.pumpedEndDate
-              "
-            >
-              Pumped on {{ eachFeed.pumpedEndDate }}</i
-            >
-          </span>
-          <span *ngIf="!eachFeed.hasOwnProperty('mode')">
-            <button
-              class="bi bi-pencil btn-edit-tracked-feed"
-              (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
-            ></button>
-            <button
-              class="bi bi-trash btn-delete-tracked-feed"
-              (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
-            ></button>
-          </span>
-        </li>
-      </ul>
-    </li>
-  }
+              <span class="pumped-feed">
+                Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
+                {{ eachFeed.pumpedQuantity }} ml (<time
+                  dateTime="{{ eachFeed.pumpedStartDate }}"
+                  >{{ eachFeed.pumpedStartDate | date : "mediumTime" }}</time
+                >
+                -
+                <time dateTime="{{ eachFeed.pumpedEndDate }}">{{
+                  eachFeed.pumpedEndDate | date : "mediumTime"
+                }}</time
+                >)
+                @if(eachFeed.hasOwnProperty('mode') &&
+                    eachFeed.endDate !== eachFeed.pumpedEndDate){
+                  <i>
+                    Pumped on {{ eachFeed.pumpedEndDate }}</i
+                  >
+                }
+              </span>
+              @if(!eachFeed.hasOwnProperty('mode')) {
+                <span>
+                  <button
+                    class="bi bi-pencil btn-edit-tracked-feed"
+                    (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
+                  ></button>
+                  <button
+                    class="bi bi-trash btn-delete-tracked-feed"
+                    (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
+                  ></button>
+                </span>
+              }
+            </li>
+          }
+          </ul>
+        }
+      </li>
+    }
   }
   </ul>
 
@@ -135,141 +136,171 @@
             [(ngModel)]="chosenFeedType"
             (change)="onFeedTypeChosen($event)"
           >
-            <option *ngFor="let feedType of feedTypes" [value]="feedType">
+          @for(feedType of feedTypes; track 'feedType') {
+            <option [value]="feedType">
               {{ feedType }}
             </option>
+          }
           </select>
         </div>
       </div>
 
-      <div class="row" *ngIf="chosenFeedType" [ngSwitch]="chosenFeedType">
-        <div class="col-md-2">
-          <p *ngSwitchCase="'Breast Pump'">Breast pump mode:</p>
-          <p *ngSwitchCase="'Drips'"></p>
-          <p *ngSwitchDefault>Feed mode:</p>
-        </div>
-        <div class="col-md-8">
-          <select
-            class="form-control-md w-auto"
-            name="feedingMode"
-            [(ngModel)]="chosenFeedMode"
-            (change)="onFeedModeChosen($event)"
-          >
-            <option *ngFor="let feedMode of feedModes" [value]="feedMode">
-              {{ feedMode }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row" *ngIf="chosenFeedType">
-        <div class="col-md-2" [ngSwitch]="chosenFeedType">
-          <p *ngSwitchCase="'Breast Pump'">Breast side:</p>
-          <p *ngSwitchCase="'Breast Milk'">
-            <span *ngIf="chosenFeedMode === 'Pumped Milk'; else showSide"
-              >Choose pumped feed:
-            </span>
-            <ng-template #showSide> Breast side: </ng-template>
-          </p>
-          <p *ngSwitchDefault></p>
-        </div>
-        <div class="col-md-8">
-          <span *ngIf="chosenFeedMode === 'Pumped Milk'">
+      @if(chosenFeedType){
+        <div class="row">
+          <div class="col-md-2">
+            @switch(chosenFeedType) {
+              @case('Breast Pump') {
+                <p>Breast pump mode:</p>
+              }
+              @case('Drips') {
+                <p></p>
+              }
+              @default {
+                <p>Feed mode: </p>
+              }
+            }
+          </div>
+          <div class="col-md-8">
             <select
-              name="preparedFeed"
               class="form-control-md w-auto"
-              [(ngModel)]="chosenPumpedFeed"
+              name="feedingMode"
+              [(ngModel)]="chosenFeedMode"
+              (change)="onFeedModeChosen($event)"
             >
-              <option
-                *ngFor="let pumpedFeed of pumpedFeeds"
-                [value]="pumpedFeed.id"
-              >
-                {{ pumpedFeed.pumpedSide }} - {{ pumpedFeed.pumpedMode }} (
-                {{ pumpedFeed.startDate }}
-                {{ pumpedFeed.startTime }} - {{ pumpedFeed.endDate }}
-                {{ pumpedFeed.endTime }})
+            @for(feedMode of feedModes; track 'feedMode') {
+              <option [value]="feedMode">
+                {{ feedMode }}
               </option>
+            }
             </select>
-          </span>
-          <span
-            *ngIf="
-              chosenFeedMode === 'Direct Feed' ||
-              chosenFeedMode === 'Manual Pump' ||
-              chosenFeedMode === 'Electrical Pump'
-            "
-          >
-            <div class="col-md-8">
-              <select
-                class="form-control-md w-auto"
-                name="feedingSide"
-                [(ngModel)]="chosenFeedSide"
-                (change)="onFeedSideChosen($event)"
-              >
-                <option *ngFor="let feedSide of feedSides" [value]="feedSide">
-                  {{ feedSide }}
-                </option>
-              </select>
-            </div>
-          </span>
+          </div>
         </div>
-      </div>
+      }
+
+      @if(chosenFeedType) {
+        <div class="row">
+          <div class="col-md-2">
+          @switch (chosenFeedType) {
+            @case('Breast Pump') {
+              <p>Breast side:</p>
+            }
+            @case('Breast Milk') {
+              @if(chosenFeedMode === 'Pumped Milk') {
+                <p>Choose pumped feed:</p>
+              } @else {
+                <p>Breast side: </p>
+              }
+            }
+          }
+          </div>
+          <div class="col-md-8">
+            @if(chosenFeedMode === 'Pumped Milk') {
+              <span>
+                <select
+                  name="preparedFeed"
+                  class="form-control-md w-auto"
+                  [(ngModel)]="chosenPumpedFeed"
+                >
+                @for(pumpedFeed of pumpedFeeds; track pumpedFeed) {
+                  <option
+                    [value]="pumpedFeed.id"
+                  >
+                    {{ pumpedFeed.pumpedSide }} - {{ pumpedFeed.pumpedMode }} (
+                    {{ pumpedFeed.startDate }}
+                    {{ pumpedFeed.startTime }} - {{ pumpedFeed.endDate }}
+                    {{ pumpedFeed.endTime }})
+                  </option>
+                }
+                </select>
+              </span>
+            }
+            @if(chosenFeedMode === 'Direct Feed' ||
+                chosenFeedMode === 'Manual Pump' ||
+                chosenFeedMode === 'Electrical Pump') {
+                  <span>
+                    <div class="col-md-8">
+                      <select
+                        class="form-control-md w-auto"
+                        name="feedingSide"
+                        [(ngModel)]="chosenFeedSide"
+                        (change)="onFeedSideChosen($event)"
+                      >
+                      @for(feedSide of feedSides; track feedSide){
+                        <option [value]="feedSide">
+                          {{ feedSide }}
+                        </option>
+                      }
+                      </select>
+                    </div>
+                  </span>
+                }
+          </div>
+        </div>
+      }
 
       <div class="row">
         <div class="col-md-3">
-          <button
-            name="btnStartTracking"
-            class="btn btn-primary btn-start-tracking"
-            (click)="trackFeedTime()"
-            [disabled]="disableTracking"
-            *ngIf="trackState !== 'Restart'"
-          >
-            {{ trackState }} Tracking
-          </button>
+          @if(trackState !== 'Restart'){
+            <button
+              name="btnStartTracking"
+              class="btn btn-primary btn-start-tracking"
+              (click)="trackFeedTime()"
+              [disabled]="disableTracking"
+            >
+              {{ trackState }} Tracking
+            </button>
+          }
         </div>
         <div class="col-md-6">
-          <span *ngIf="chosenFeedType === 'Breast Pump'; else feedingTime">
-            Pumping Time(hh:mm:ss)
-          </span>
-          <ng-template #feedingTime> Feeding Time(hh:mm:ss) </ng-template>
+          @if(chosenFeedType === 'Breast Pump') {
+            <span>
+              Pumping Time(hh:mm:ss)
+            </span>
+          } @else {
+          <span> Feeding Time(hh:mm:ss) </span>
+          }
           <app-timer></app-timer>
         </div>
       </div>
 
-      <div class="row mt-2" *ngIf="needQuantity && trackState === 'Restart'">
-        <div class="col-md-2">
-          <label for="feedQuantity">Feed Quantity</label>
-        </div>
-        <div class="col-md-2">
-          <div class="input-group">
-            <input
-              type="number"
-              class="form-control mx-auto"
-              name="feedQuantity"
-              id="feedQuantity"
-              [(ngModel)]="feedQuantity"
-              placeholder="0"
-              min="0"
-              step="1"
-            />
-            <span class="form-text"> ml</span>
+      @if(needQuantity && trackState === 'Restart') {
+        <div class="row mt-2">
+          <div class="col-md-2">
+            <label for="feedQuantity">Feed Quantity</label>
+          </div>
+          <div class="col-md-2">
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control mx-auto"
+                name="feedQuantity"
+                id="feedQuantity"
+                [(ngModel)]="feedQuantity"
+                placeholder="0"
+                min="0"
+                step="1"
+              />
+              <span class="form-text"> ml</span>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
     <div class="modal-footer">
-      <button
-        name="btnSaveFeed"
-        class="btn btn-primary p-3"
-        (click)="
-          chosenFeedType === 'Breast Pump'
-            ? savePumpedFeed()
-            : saveTrackedFeed()
-        "
-        [disabled]="disableTracking"
-        *ngIf="trackState === 'Restart'"
-      >
-        Save & Close
-      </button>
+      @if(trackState === 'Restart') {
+        <button
+          name="btnSaveFeed"
+          class="btn btn-primary p-3"
+          (click)="
+            chosenFeedType === 'Breast Pump'
+              ? savePumpedFeed()
+              : saveTrackedFeed()
+          "
+          [disabled]="disableTracking"
+        >
+          Save & Close
+        </button>
+      }
       <button
         class="btn btn-secondary p-3"
         name="btnCloseFeed"
@@ -321,12 +352,14 @@
         </div>
       </div>
 
-      <div class="row" *ngIf="editFeedData.hasOwnProperty('side')">
-        <div class="col-md-4">Feeding Side:</div>
-        <div class="col-md-4">
-          {{ editFeedData.side }}
+      @if(editFeedData.hasOwnProperty('side')){
+        <div class="row">
+          <div class="col-md-4">Feeding Side:</div>
+          <div class="col-md-4">
+            {{ editFeedData.side }}
+          </div>
         </div>
-      </div>
+      }
 
       <div class="row">
         <div class="col-md-4">Feeding Quantity:</div>

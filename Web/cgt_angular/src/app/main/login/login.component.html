@@ -9,11 +9,11 @@
       (ngSubmit)="doLogin()"
       title="Login"
     >
-      <div class="form-group row">
-        <div class="col-md-4">
+      <div class="form-group">
+        <div>
           <label for="loginEmail">Email</label>
         </div>
-        <div class="col-md-8">
+        <div>
           <input
             type="email"
             name="loginEmail"
@@ -40,11 +40,11 @@
         </div>
       </div>
 
-      <div class="form-group row">
-        <div class="col-md-4">
+      <div class="form-group">
+        <div>
           <label for="loginPassword">Password</label>
         </div>
-        <div class="col-md-8">
+        <div>
           <input
             type="password"
             name="loginPassword"
@@ -64,15 +64,10 @@
               }
         </div>
       </div>
-
-      <div class="row">
-        <p>Not having account? <a> Sign up now!</a></p>
-      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <div class="form-group row">
-      <div class="col-md-4">
+    <div class="form-group">
         <button
           type="submit"
           class="btn btn-secondary center"
@@ -80,8 +75,6 @@
         >
           Close
         </button>
-      </div>
-      <div class="col-md-8">
         <button
           type="submit"
           class="btn btn-primary center"
@@ -90,6 +83,5 @@
         >
           Log me In!
         </button>
-      </div>
     </div>
   </div>

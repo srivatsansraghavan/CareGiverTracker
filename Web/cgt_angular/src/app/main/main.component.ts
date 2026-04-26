@@ -46,11 +46,8 @@ const slideIntoLeft = animation(
 export class MainComponent implements OnInit {
   envName: string;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    if (this.auth.shouldAllow()) {
-      this.router.navigate(['/home']);
-    }
   }
 }

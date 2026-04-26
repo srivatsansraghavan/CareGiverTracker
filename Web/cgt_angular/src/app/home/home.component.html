@@ -1,5 +1,6 @@
-<app-first-login *ngIf="isFirstLogin; else showTabs"></app-first-login>
-<ng-template #showTabs>
+@if(isFirstLogin){
+  <app-first-login></app-first-login>
+} @else {
   <app-menubar></app-menubar>
   <div class="home-container">
     <div class="home-nav-container">
@@ -35,4 +36,4 @@
       class="care-taken-container"
     ></app-care-taken-details>
   </div>
-</ng-template>
+}

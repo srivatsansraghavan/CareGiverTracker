@@ -7,42 +7,43 @@
   </button>
 
   <ul class="inv-timeline">
-    <li
-      class="inv-per-date"
-      *ngFor="let inventory of inventories | trackItems : 'getKeyValue'"
-    >
-      <time dateTime="{{ inventory[0].key }}" class="inv-date"
-        >{{ inventory[0].key | dateDiff }}
-      </time>
-      <ul
-        class="inv-date-timeline"
-        *ngFor="
-          let eachInventory of inventory[0].value | trackItems : 'getValueArray'
-        "
+    @for(inventory of inventories | trackItems : 'getKeyValue'; track 'inventory') {
+      <li
+        class="inv-per-date"
       >
-        <li
-          *ngIf="eachInventory.hasOwnProperty('inventoryType')"
-          class="tracked-inv-timeline"
-        >
-          <span class="tracked-inv">
-            {{ eachInventory.inventoryType }}:
-            {{ eachInventory.inventoryBrand }} -
-            {{ eachInventory.inventoryRemaining }} remaining out of
-            {{ eachInventory.inventoryTotal }}. (Added on
-            {{ eachInventory.addedTime }})
-          </span>
+        <time dateTime="{{ inventory[0].key }}" class="inv-date"
+          >{{ inventory[0].key | dateDiff }}
+        </time>
+        @for(eachInventory of inventory[0].value | trackItems : 'getValueArray'; track 'eachInventory') {
+          <ul
+            class="inv-date-timeline"
+          >
+          @if(eachInventory.hasOwnProperty('inventoryType')) {
+            <li
+              class="tracked-inv-timeline"
+            >
+              <span class="tracked-inv">
+                {{ eachInventory.inventoryType }}:
+                {{ eachInventory.inventoryBrand }} -
+                {{ eachInventory.inventoryRemaining }} remaining out of
+                {{ eachInventory.inventoryTotal }}. (Added on
+                {{ eachInventory.addedTime }})
+              </span>
 
-          <!-- <button
-            class="bi bi-pencil btn-edit-tracked-exc"
-            (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
-          ></button>
-          <button
-            class="bi bi-trash btn-delete-tracked-exc"
-            (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
-          ></button> -->
-        </li>
-      </ul>
-    </li>
+              <!-- <button
+                class="bi bi-pencil btn-edit-tracked-exc"
+                (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
+              ></button>
+              <button
+                class="bi bi-trash btn-delete-tracked-exc"
+                (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
+              ></button> -->
+            </li>
+          }
+          </ul>
+        }
+      </li>
+    }
   </ul>
 
   <!-- Modal for adding inventory starts -->
@@ -63,35 +64,39 @@
             id="invType"
             [(ngModel)]="chosenInventoryType"
           >
+          @for(inventoryType of inventoryTypes; track inventoryType){
             <option
-              *ngFor="let inventoryType of inventoryTypes"
               [value]="inventoryType"
             >
               {{ inventoryType }}
             </option>
+          }
           </select>
         </div>
       </div>
 
-      <div class="row" *ngIf="chosenInventoryType === 'Medicine'">
-        <div class="col-md-2">
-          <p>Inventory Form:</p>
-        </div>
-        <div class="col-md-8">
-          <select
-            class="form-control-md w-auto"
-            id="invType"
-            [(ngModel)]="chosenInventoryForm"
-          >
-            <option
-              *ngFor="let inventoryForm of inventoryForms"
-              [value]="inventoryForm"
+      @if(chosenInventoryType === 'Medicine') {
+        <div class="row">
+          <div class="col-md-2">
+            <p>Inventory Form:</p>
+          </div>
+          <div class="col-md-8">
+            <select
+              class="form-control-md w-auto"
+              id="invType"
+              [(ngModel)]="chosenInventoryForm"
             >
-              {{ inventoryForm }}
-            </option>
-          </select>
+            @for(inventoryForm of inventoryForms; track 'inventoryForm') {
+              <option
+                [value]="inventoryForm"
+              >
+                {{ inventoryForm }}
+              </option>
+            }
+            </select>
+          </div>
         </div>
-      </div>
+      }
 
       <div class="row">
         <div class="col-md-2">
@@ -160,5 +165,4 @@
       </button>
     </div>
   </ng-template>
-  <!-- Modal for adding inventory ends -->
 </div>

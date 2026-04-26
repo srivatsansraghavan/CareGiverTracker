@@ -1,10 +1,12 @@
 import { Router } from "express";
 const router = Router();
 import passport from "passport";
-import { loginUser, addUser, logoutUser } from "../controllers/userController.js";
+import { loginUser, addUser, logoutUser, isLoggedInUser } from "../controllers/userController.js";
+import { isAuthenticated } from "../utils.js";
 
 router.post("/add-user", addUser);
 router.post("/login-user", passport.authenticate('local'), loginUser)
+router.get("/is-user-loggedin", isLoggedInUser)
 router.delete("/logout-user", logoutUser)
 
 export default router;

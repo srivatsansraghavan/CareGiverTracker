@@ -39,7 +39,6 @@ export class InventoryTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.careGiver = localStorage.getItem('logged_in_user');
     this.selectedCareTaken$ = this.store.select(
       selectors.selectCareTakenDetails
     );

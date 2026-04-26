@@ -7,49 +7,48 @@
   </button>
 
   <ul class="exc-timeline">
-    <li
-      class="exc-per-date"
-      *ngFor="
-        let trackExcretion of trackedExcretions | trackItems : 'getKeyValue'
-      "
-    >
-      <time dateTime="{{ trackExcretion[0].key }}" class="exc-date"
-        >{{ trackExcretion[0].key | dateDiff }}
-      </time>
-      <ul
-        class="exc-date-timeline"
-        *ngFor="
-          let eachExcretion of trackExcretion[0].value
-            | trackItems : 'getValueArray'
-        "
+    @for(trackExcretion of trackedExcretions | trackItems : 'getKeyValue'; track 'trackExcretion'){
+      <li
+        class="exc-per-date"
       >
-        <li
-          *ngIf="eachExcretion.hasOwnProperty('excretionType')"
-          class="tracked-exc-timeline"
-          showEditDelete
-        >
-          <span class="tracked-exc">
-            {{ eachExcretion.excretionType }}:
-            {{ eachExcretion.napkinType }} (<time
-              dateTime="{{ eachExcretion.excretionTime }}"
-              >{{ eachExcretion.excretionTime | date : "mediumTime" }}</time
-            >) -
-            <span *ngIf="eachExcretion.napkinType === 'Diaper'">
-              {{ eachExcretion.diaperCount }} Diapers used.
-            </span>
-          </span>
-
-          <button
-            class="bi bi-pencil btn-edit-tracked-exc"
-            (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
-          ></button>
-          <button
-            class="bi bi-trash btn-delete-tracked-exc"
-            (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
-          ></button>
-        </li>
-      </ul>
-    </li>
+        <time dateTime="{{ trackExcretion[0].key }}" class="exc-date"
+          >{{ trackExcretion[0].key | dateDiff }}
+        </time>
+        @for(eachExcretion of trackExcretion[0].value | trackItems : 'getValueArray'; track 'eachExcretion') {
+          <ul
+            class="exc-date-timeline"
+          >
+          @if(eachExcretion.hasOwnProperty('excretionType')) {
+            <li
+              class="tracked-exc-timeline"
+              showEditDelete
+            >
+              <span class="tracked-exc">
+                {{ eachExcretion.excretionType }}:
+                {{ eachExcretion.napkinType }} (<time
+                  dateTime="{{ eachExcretion.excretionTime }}"
+                  >{{ eachExcretion.excretionTime | date : "mediumTime" }}</time
+                >) -
+                @if(eachExcretion.napkinType === 'Diaper') {
+                  <span>
+                    {{ eachExcretion.diaperCount }} Diapers used.
+                  </span>
+                }
+              </span>
+              <button
+                class="bi bi-pencil btn-edit-tracked-exc"
+                (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
+              ></button>
+              <button
+                class="bi bi-trash btn-delete-tracked-exc"
+                (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
+              ></button>
+            </li>
+          }
+          </ul>
+        }
+      </li>
+    }
   </ul>
 
   <!-- Modal for adding excretion starts -->
@@ -70,12 +69,13 @@
             id="excType"
             [(ngModel)]="chosenExcretionType"
           >
+          @for(excretionType of excretionTypes; track 'excretionType') {
             <option
-              *ngFor="let excretionType of excretionTypes"
               [value]="excretionType"
             >
               {{ excretionType }}
             </option>
+          }
           </select>
         </div>
       </div>
@@ -90,32 +90,35 @@
             id="napkType"
             [(ngModel)]="chosenNapkinType"
           >
-            <option *ngFor="let napkinType of napkinTypes" [value]="napkinType">
+          @for(napkinType of napkinTypes; track 'napkinType') {
+            <option [value]="napkinType">
               {{ napkinType }}
             </option>
+          }
           </select>
         </div>
       </div>
 
-      <div class="row" *ngIf="chosenNapkinType === 'Diaper'">
-        <div class="col-md-2">
-          <p>Diaper Count:</p>
+      @if(chosenNapkinType === 'Diaper') {
+        <div class="row">
+          <div class="col-md-2">
+            <p>Diaper Count:</p>
+          </div>
+          <div class="col-md-2">
+            <input
+              type="number"
+              class="form-control mx-auto"
+              id="diapCount"
+              [(ngModel)]="diaperCount"
+              placeholder="0"
+              min="0"
+              step="1"
+              size="4"
+            />
+          </div>
         </div>
-        <div class="col-md-2">
-          <input
-            type="number"
-            class="form-control mx-auto"
-            id="diapCount"
-            [(ngModel)]="diaperCount"
-            placeholder="0"
-            min="0"
-            step="1"
-            size="4"
-          />
-        </div>
-      </div>
 
-      <div class="row" *ngIf="chosenNapkinType === 'Diaper'">
+      <div class="row">
         <div class="col-md-2">
           <p>Diaper Brand:</p>
         </div>
@@ -125,16 +128,18 @@
             id="diaperBrand"
             [(ngModel)]="chosenDiaperBrand"
           >
+          @for(diaperBrand of diaperBrands; track 'diaperBrand') {
             <option
-              *ngFor="let diaperBrand of diaperBrands"
               [value]="diaperBrand._id"
             >
               {{ diaperBrand.inventory_brand }} (Added on
               {{ diaperBrand.added_time }})
             </option>
+          }
           </select>
         </div>
       </div>
+      }
     </div>
     <div class="modal-footer">
       <button
@@ -149,7 +154,6 @@
       </button>
     </div>
   </ng-template>
-  <!-- Modal for adding tracked excretion ends -->
 
   <!-- Modal for deleting tracked excretion starts -->
   <ng-template #deleteExcModal>
@@ -171,7 +175,6 @@
       </button>
     </div>
   </ng-template>
-  <!-- Modal for deleting tracked excretion ends -->
 
   <!-- Modal for editing tracked excretion starts -->
   <ng-template #editExcModal>
@@ -247,5 +250,4 @@
       </button>
     </div>
   </ng-template>
-  <!-- Modal for editing tracked excretion starts -->
 </div>

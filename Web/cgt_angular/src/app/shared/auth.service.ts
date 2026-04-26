@@ -12,6 +12,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
   private jwtHelper;
   firstLogin = new Subject<boolean>();
+  loggedIn: boolean = false;
+  loggedInUser: string;
   constructor(
     private httpClient: HttpClient,
     private router: Router,
@@ -30,10 +32,7 @@ export class AuthService {
       .subscribe({
         next: (response: any) => {
           if (response.status === 200) {
-            localStorage.setItem('access_token', response.body.access_token);
-            localStorage.setItem('logged_in_email', response.body.added_email);
-            localStorage.setItem('logged_in_user', response.body.added_user);
-            this.router.navigate(['home']);
+            this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
             this.toastService.show(
               'Sign up message',
               response.body.message,
@@ -45,7 +44,7 @@ export class AuthService {
         error: (response: any) => {
           this.toastService.show(
             'Sign up message',
-            response.error,
+            response.error.message.message,
             'bg-danger text-light sign-up-toast',
             true
           );
@@ -66,6 +65,8 @@ export class AuthService {
       .subscribe({
         next: (response: any) => {
           if (response.status === 200) {
+            this.loggedIn = true;
+            this.loggedInUser = email_id;
             this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
             this.toastService.show(
               'Login message',
@@ -87,17 +88,11 @@ export class AuthService {
   }
 
   shouldAllow(): boolean {
-    return !!document.cookie;
+    return this.loggedIn;
   }
 
-  getLoginEmail(): string {
-    const loginEmail = localStorage.getItem('logged_in_email');
-    return loginEmail;
-  }
-
-  getLoginId(): string {
-    const loginId = localStorage.getItem('logged_in_user');
-    return loginId;
+  loggedInUserEmail(): string {
+    return this.loggedInUser;
   }
 
   isFirstLogin(): Observable<boolean> {
@@ -113,10 +108,15 @@ export class AuthService {
   }
 
   doLogOut(): Observable<void> {
+    this.loggedIn = false;
     return this.httpClient.delete<void>(`${environment.expressURL}/user/logout-user`);
   }
 
-  getAccessToken() {
-    return localStorage.getItem('access_token');
+  isUserLoggedIn() {
+    return this.httpClient
+      .get(
+        `${environment.expressURL}/user/is-user-loggedin`,
+        { observe: 'response', withCredentials: true }
+      )
   }
 }

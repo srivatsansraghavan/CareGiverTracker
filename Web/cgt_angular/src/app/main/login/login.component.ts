@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Output, TemplateRef } from "@angular/core";
+import { Component, EventEmitter, Output } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuthService } from "src/app/shared/auth.service";
 
 @Component({
@@ -14,7 +13,7 @@ export class LoginComponent {
     @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
     loginForm: FormGroup;
 
-    constructor(private modal: NgbModal, private authService: AuthService) { }
+    constructor(private authService: AuthService) { }
 
     ngOnInit() {
         this.loginForm = new FormGroup({

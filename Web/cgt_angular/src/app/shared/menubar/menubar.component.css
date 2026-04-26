@@ -12,12 +12,15 @@
 
 .navbar {
     display: flex;
-    background-color: #0097b2;
+    background: radial-gradient(circle at 0% 30%, #0097b2 0%, transparent 40%),
+        radial-gradient(circle at 40% 80%, #a1c4fd 0%, transparent 40%),
+        linear-gradient(135deg, #0097b2 20%, #0097b2 100%);
     justify-content: flex-end;
 }
 
 .navbar button {
-    background-color: #0097b2;
+    background: linear-gradient(135deg, #0097b2 20%, #0097b2 100%);
+    ;
     border: none;
 }
 

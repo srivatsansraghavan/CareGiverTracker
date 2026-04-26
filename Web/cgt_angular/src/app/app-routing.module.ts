@@ -5,16 +5,13 @@ import { MainComponent } from './main/main.component';
 import { AuthGuardService } from './shared/auth-guard.service';
 
 const routes: Routes = [
-  { path: '', component: MainComponent, pathMatch: 'full' },
-  {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuardService],
-  },
+  { path: 'home', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuardService] },
+  { path: 'login', component: MainComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

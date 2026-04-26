@@ -8,17 +8,16 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ExcretionTrackerService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getExcretionDetails(
-    care_giver: string,
     care_taken_id: Object,
     excretion_count: number
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/excretion/get-excretion-details?careGiver=${care_giver}&careTakenId=${care_taken_id}&excretionCount=${excretion_count}`,
-        { observe: 'response' }
+        `${environment.expressURL}/excretion/get-excretion-details?careTakenId=${care_taken_id}&excretionCount=${excretion_count}`,
+        { observe: 'response', withCredentials: true }
       )
       .pipe(
         map((response: any) => {

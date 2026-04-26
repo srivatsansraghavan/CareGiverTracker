@@ -47,15 +47,10 @@ export async function saveTrackedMedications(req, res, next) {
 export async function getMedicationDetails(req, res, next) {
   try {
     const getTrackedMedication = await getMedicationModel({
-      care_giver: req.query.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_id: req.query.careTakenId,
     });
-    console.log(getTrackedMedication);
-    if (getTrackedMedication && Object.keys(getTrackedMedication).length > 0) {
-      res.status(200).json(getTrackedMedication);
-    } else {
-      res.status(404).json({ message: "No tracked medication found" });
-    }
+    res.status(200).json(getTrackedMedication);
   } catch (err) {
     return next(err);
   }
@@ -94,13 +89,7 @@ export async function getMedForId(req, res, next) {
     const getMedForId = await getMedicationModel({
       _id: req.params.medId,
     });
-    if (getMedForId && Object.keys(getMedForId).length > 0) {
-      res.status(200).json(getMedForId);
-    } else {
-      res.status(404).json({
-        message: "Unable to get tracked medication. Please try again later!",
-      });
-    }
+    res.status(200).json(getMedForId);
   } catch (err) {
     return next(err);
   }

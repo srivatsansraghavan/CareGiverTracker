@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class InventoryTrackerService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getInventoryDetails(
     care_giver: string,
@@ -18,7 +18,7 @@ export class InventoryTrackerService {
     return this.httpClient
       .get(
         `${environment.expressURL}/inventory/get-inventories?careGiver=${care_giver}&careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
-        { observe: 'response' }
+        { observe: 'response', withCredentials: true }
       )
       .pipe(
         map((response: any) => {

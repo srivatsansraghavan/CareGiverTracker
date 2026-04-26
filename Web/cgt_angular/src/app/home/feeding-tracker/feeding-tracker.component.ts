@@ -1,7 +1,8 @@
-import { OnDestroy, Component, OnInit, TemplateRef } from '@angular/core';
+import { OnDestroy, Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 let moment = require('moment');
-import { Observable, Subscription, map, skip } from 'rxjs';
+import { Observable, map, skip } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
@@ -29,6 +30,8 @@ import { addFeedAnimation } from 'src/app/shared/animations';
 import { Store, select } from '@ngrx/store';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { Router } from '@angular/router';
+import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
+import { AuthService } from 'src/app/shared/auth.service';
 
 const slideFromTop = animation([
   style({ opacity: 0, transform: 'translateY(-100%)' }),
@@ -47,61 +50,18 @@ const slideToBottom = animation(
   animations: [trigger('addFeed', addFeedAnimation)],
   standalone: false,
 })
-export class FeedingTrackerComponent implements OnInit, OnDestroy {
+export class FeedingTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   chosenFeedType: string;
   chosenFeedMode: string;
   chosenFeedSide: string;
   chosenPumpedFeed: Object;
-  totalFeedTypes: feedTypeOptions = {
-    infant: [
-      'Breast Pump',
-      'Breast Milk',
-      'Formula feeding',
-      'Mashed food',
-      'Juices',
-      'Water',
-      'Drips',
-    ],
-    toddler: [
-      'Breast Pump',
-      'Breast Milk',
-      'Formula feeding',
-      'Normal food',
-      'Mashed food',
-      'Juices',
-      'Water',
-      'Drips',
-    ],
-    child: [
-      'Formula feeding',
-      'Normal food',
-      'Mashed food',
-      'Juices',
-      'Water',
-      'Drips',
-    ],
-    spouse: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
-    parent: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
-    friend: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
-  };
+  totalFeedTypes: feedTypeOptions = TOTAL_FEED_TYPES;
   feedTypes: string[];
-  totalFeedModes: feedModeOptions = {
-    'Breast Pump': ['Manual Pump', 'Electrical Pump'],
-    'Breast Milk': ['Pumped Milk', 'Direct Feed'],
-    'Formula feeding': ['Feeding bottle', 'Spoon', 'Other'],
-    'Normal food': ['Self-feeding', 'Others feeding'],
-    'Mashed food': ['Self-feeding', 'Others feeding'],
-    Juices: ['Feeding bottle', 'Spoon', 'Glass'],
-    Water: ['Feeding bottle', 'Spoon', 'Glass'],
-    Drips: [],
-  };
+  totalFeedModes: feedModeOptions = TOTAL_FEED_MODES;
   feedModes: string[];
-  totalFeedSides: feedSideOptions = {
-    'Breast Pump': ['Left Breast', 'Right Breast', 'Both'],
-    'Breast Milk': ['Left Breast', 'Right Breast', 'Both'],
-  };
+  totalFeedSides: feedSideOptions = TOTAL_FEED_SIDES;
   feedSides: string[];
   pumpedFeeds: pumpedFeedsData[];
   trackState: string = 'Start';
@@ -114,44 +74,57 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
   editFeedId: string;
   editFeedData: trackedFeedsData;
   deleteFeedId: string;
-  subscription: Subscription;
   showSpinner: boolean = false;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
+  destroyRef = inject(DestroyRef);
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private ftService: FeedingTrackerService,
-    private commonService: CommonService,
+    private cd: ChangeDetectorRef,
     private store: Store<{ caretakendetails: careTakenDetail[] }>,
     private router: Router,
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
-    this.showSpinner = true;
-    this.store.pipe(
-      select(selectors.selectCareTakenDetails),
-      skip(1)
-    ).subscribe((ctds) => {
-      if (Array.isArray(ctds)) {
-        if (!ctds.some((ctd) => ctd.care_last_accessed)) {
-          this.router.navigate(['home'], { state: { isFirstLogin: true } })
-        }
-        this.selCareTaken = ctds.filter((ctd) => ctd.care_last_accessed)[0];
-        this.getFeeds();
-      }
-      // this.selCareTaken = ctd[0];
+    this.authService.isUserLoggedIn().subscribe({
+      next: () => {
+        console.log("Inside first subs")
+        this.showSpinner = true;
+        this.store.pipe(
+          select(selectors.selectCareTakenDetails),
+          skip(1)
+        ).subscribe((ctds) => {
+          console.log("Inside store subs")
+          if (Array.isArray(ctds)) {
+            if (!ctds.some((ctd) => ctd.care_last_accessed)) {
+              this.router.navigate([''])
+            }
+            console.log(ctds)
+            this.selCareTaken = ctds.filter((ctd) => ctd.care_last_accessed)[0];
+            this.getFeeds();
+          }
+        });
+      }, error: (err) => {
+        this.router.navigate(['login'], { state: { sessionExpired: true } });
+      },
     });
   }
 
   getFeeds() {
-    this.subscription = this.ftService
+    console.log("Inside get feeds")
+    this.ftService
       .getFeedDetails(this.selCareTaken._id, 10)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feedDetailsResponse) => {
+          console.log("Inside get feeds subs", feedDetailsResponse)
           this.trackedFeeds = feedDetailsResponse;
           this.showSpinner = false;
+          this.cd.detectChanges();
         },
         error: (error) => {
           this.showSpinner = false;
@@ -435,9 +408,5 @@ export class FeedingTrackerComponent implements OnInit, OnDestroy {
 
   cancelEditTrackedFeed() {
     this.modal.dismissAll();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }

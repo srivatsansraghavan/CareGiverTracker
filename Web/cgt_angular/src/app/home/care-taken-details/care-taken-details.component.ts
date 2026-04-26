@@ -14,6 +14,7 @@ import { CareTakenDetailsService } from 'src/app/store/care-taken-details/care-t
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/auth.service';
 
 @Component({
   selector: 'app-care-taken-details',
@@ -47,10 +48,17 @@ export class CareTakenDetailsComponent implements OnInit {
     private actions$: Actions,
     private router: Router,
     private cd: ChangeDetectorRef,
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
-    this.loadLatestCareTaken();
+    this.authService.isUserLoggedIn().subscribe({
+      next: () => {
+        this.loadLatestCareTaken();
+      }, error: () => {
+        this.router.navigate(['login'], { state: { sessionExpired: true } });
+      },
+    });
   }
 
   loadLatestCareTaken(): void {
@@ -63,7 +71,7 @@ export class CareTakenDetailsComponent implements OnInit {
       tap(ctds => {
         if (Array.isArray(ctds)) {
           if (!ctds.some(ctd => ctd.care_last_accessed)) {
-            this.router.navigate(['home'], { state: { isFirstLogin: true } });
+            this.router.navigate(['home']);
           }
         }
       }),

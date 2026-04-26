@@ -9,14 +9,28 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import flash from "express-flash";
 import { userModel } from "./models/userModel.js"
+import { RedisStore } from "connect-redis";
+import { createClient } from "redis";
+
+const redisClient = createClient({
+  url: "redis://localhost:6379"
+});
+
+redisClient.connect().catch(console.error)
+
 
 app.use(cors({
   origin: 'http://localhost:4200',
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json());  
 app.use(cookieParser())
-app.use(session({ secret: 'secret', resave: true, saveUninitialized: false, cookie: { secure: false }}))
+app.use(session({ store: new RedisStore({
+  client: redisClient,
+  prefix: 'session:',
+}),
+name: 'sessionId', 
+secret: 'secret', resave: false, saveUninitialized: false, rolling: false, cookie: { secure: false, maxAge: 3600000 }}))
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());

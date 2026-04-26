@@ -97,7 +97,7 @@ export interface inventoryData {
 
 @Injectable({ providedIn: 'root' })
 export class CommonService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getCareTakenOfDetails(giver_email: string): Observable<careTakenDetail> {
     return this.httpClient
@@ -119,13 +119,12 @@ export class CommonService {
   }
 
   getAvailableInventory(
-    care_giver: string,
     care_taken_of: Object,
     inventory_type: string
   ): Observable<any> {
     return this.httpClient.get(
-      `${environment.expressURL}/inventory/get-available-inventory?careGiver=${care_giver}&careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
-      { observe: 'response' }
+      `${environment.expressURL}/inventory/get-available-inventory?careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
+      { observe: 'response', withCredentials: true }
     );
   }
 

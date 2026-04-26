@@ -31,17 +31,26 @@ export class FirstLoginService {
         },
         { observe: 'response', withCredentials: true }
       )
-      .subscribe((responseAddCareTaken: any) => {
-        if (responseAddCareTaken.status === 200) {
-          this.router.navigate(['/home']);
+      .subscribe({
+        next: (responseAddCareTaken: any) => {
+          this.modal.dismissAll();
           this.toastService.show(
             'Care taken Addition',
             responseAddCareTaken.body.message,
             'bg-success text-light role-addition-toast',
             true
           );
-          this.modal.dismissAll();
-        } else {
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['home'], { state: { isFirstLogin: false } });
+          });
+        },
+        error: () => {
+          this.toastService.show(
+            'Care taken Addition',
+            'Failed to add care taken',
+            'bg-danger text-light role-addition-toast',
+            true
+          );
         }
       });
   }

@@ -8,12 +8,7 @@ import { ToastService } from './shared/toast/toast.service';
   standalone: false,
 })
 export class AppComponent implements OnInit {
-  // @HostListener('window:beforeunload', ['$event'])
-  // clearLocalStorage() {
-  //   console.log('Clear local storage');
-  //   localStorage.clear();
-  // }
-  constructor(public toastService: ToastService) {}
+  constructor(public toastService: ToastService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }

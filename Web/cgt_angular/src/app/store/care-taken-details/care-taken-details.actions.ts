@@ -44,3 +44,8 @@ export const changeCareTakenPersonFailure = createAction(
   '[Care Taken Details] Change Care Taken Person Failure',
   props<{ error: Error }>()
 );
+
+export const showWorkExperienceDetail = createAction(
+  '[Experience Card] Show Work Experience Detail',
+  props<{ employer: string }>()
+);

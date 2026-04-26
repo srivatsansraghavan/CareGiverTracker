@@ -7,7 +7,6 @@
     min-height: 600px;
     width: 60%;
     height: 90%;
-    background-color: rgb(195, 191, 93);
     overflow: hidden;
 }
 
@@ -61,7 +60,7 @@ ul {
     display: none;
     width: 10%;
     height: 70px;
-} 
+}
 
 .btn-delete-tracked-exc {
     background-color: red;

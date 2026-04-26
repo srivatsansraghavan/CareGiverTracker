@@ -30,7 +30,7 @@ export async function addCareTaken(req, res, next) {
       ),
       care_taken_gender: req.body.care_taken_gender,
       care_taken_added_time: moment().format("MM/DD/YYYY HH:mm:ss"),
-      care_last_accessed: false,
+      care_last_accessed: true,
     });
     if (addCareTaken.hasOwnProperty("_id")) {
       res.status(200).json({

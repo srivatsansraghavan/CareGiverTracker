@@ -21,6 +21,7 @@ import { CookieService } from 'ngx-cookie-service';
 export class MenubarComponent implements OnInit, AfterContentChecked {
   envName: string;
   isLoggedIn: boolean;
+  loggedInUser: string;
 
   constructor(
     private changeDetector: ChangeDetectorRef,
@@ -37,6 +38,7 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
   ngOnInit(): void {
     this.envName = this.commonService.getEnvironment();
     this.isLoggedIn = this.authService.shouldAllow();
+    this.loggedInUser = this.authService.loggedInUserEmail();
   }
 
   ngAfterContentChecked(): void {
@@ -49,10 +51,6 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
       keyboard: false,
       size: 'sm',
     });
-  }
-
-  loggedInEmail(): string {
-    return this.authService.getLoginEmail();
   }
 
   openSignupModal(signup_modal: TemplateRef<any>): void {
@@ -79,7 +77,7 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
     this.authService.doLogOut().subscribe({
       next: () => {
         this.cookieService.deleteAll();
-        this.router.navigate(['']);
+        this.router.navigate(['login']);
         this.toastService.show(
           'Logout message',
           'You are now logged out',

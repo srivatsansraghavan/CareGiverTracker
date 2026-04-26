@@ -43,7 +43,6 @@ export class MedicationTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.careGiver = localStorage.getItem('logged_in_user');
     this.selectedCareTaken$ = this.store.select(
       selectors.selectCareTakenDetails
     );
@@ -55,12 +54,12 @@ export class MedicationTrackerComponent implements OnInit {
 
   getTrackedMedications() {
     this.subscription = this.mtService
-      .getMedicationDetails(this.careGiver, this.selCareTaken._id, 10)
+      .getMedicationDetails(this.selCareTaken._id, 10)
       .subscribe((medicationDetailsResponse) => {
         this.trackedMedications = medicationDetailsResponse;
       });
     this.commonService
-      .getAvailableInventory(this.careGiver, this.selCareTaken._id, 'Medicine')
+      .getAvailableInventory(this.selCareTaken._id, 'Medicine')
       .subscribe((availableMedsResp) => {
         this.medicineNames = availableMedsResp.body;
       });

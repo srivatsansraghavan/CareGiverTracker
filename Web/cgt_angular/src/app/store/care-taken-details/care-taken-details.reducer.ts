@@ -7,6 +7,7 @@ import {
   getCareTakenFailure,
   changeCareTakenPersonSuccess,
   changeCareTakenPersonFailure,
+  showWorkExperienceDetail,
 } from './care-taken-details.actions';
 import { createReducer, on } from '@ngrx/store';
 
@@ -71,4 +72,11 @@ export const careTakenDetailReducer = createReducer(
     ...state,
     action,
   }))
+);
+
+export const showExperienceReducer = createReducer(
+  [],
+  on(showWorkExperienceDetail, (state, { employer }) => ([
+    ...employer
+  ]))
 );

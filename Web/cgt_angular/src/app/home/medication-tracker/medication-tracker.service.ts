@@ -8,17 +8,16 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MedicationTrackerService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) { }
 
   getMedicationDetails(
-    care_giver: string,
     care_taken_id: Object,
     medication_count: number
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/medication/get-medication-details?careGiver=${care_giver}&careTakenId=${care_taken_id}&medicationCount=${medication_count}`,
-        { observe: 'response' }
+        `${environment.expressURL}/medication/get-medication-details?careTakenId=${care_taken_id}&medicationCount=${medication_count}`,
+        { observe: 'response', withCredentials: true }
       )
       .pipe(
         map((response: any) => {
@@ -70,7 +69,7 @@ export class MedicationTrackerService {
   getMedForId(medId: string) {
     return this.httpClient
       .get(`${environment.expressURL}/medication/get-med-for-id/${medId}`, {
-        observe: 'response',
+        observe: 'response', withCredentials: true
       })
       .pipe(
         map((response: any) => {

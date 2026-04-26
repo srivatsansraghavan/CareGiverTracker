@@ -1,23 +1,37 @@
 import { Component } from "@angular/core";
-import { interval, map, take } from "rxjs";
+import CVDetails from "../../../assets/cv_srivatsan.json";
+import { Actions, ofType } from "@ngrx/effects";
+import { showWorkExperienceDetail } from "src/app/store/care-taken-details/care-taken-details.actions";
 
 @Component({
-  selector: 'app-main-card',
-  templateUrl: './main-card.component.html',
-  styleUrls: ['./main-card.component.css'],
-  standalone: false,
+    selector: 'app-main-card',
+    templateUrl: './main-card.component.html',
+    styleUrls: ['./main-card.component.css'],
+    standalone: false,
 })
 export class MainCardComponent {
-    cards = ['main_card', 'feeding_tracker', 'excretion_tracker', 'medication_tracker', 'inventory_tracker'];
-    chosenCard: string = 'main_card';
-    constructor() {}
-
-    ngOnInit() {
-        interval(4000).pipe(take(this.cards.length),
-            map((index: number) => this.cards[index])).subscribe((card) => this.showCard(card))
+    name: string = CVDetails.name;
+    title: string = CVDetails.title;
+    email: string = CVDetails.email;
+    mobile: string = CVDetails.mobile;
+    summary: string = CVDetails.summary;
+    technicalSkills: any = CVDetails.technical_skills;
+    workExperience: { employer: string; designation: string; dateEmployed: string; details: string[] }[] = CVDetails.work_experience;
+    workExperienceDetail: string[];
+    workEmployer: string;
+    showExperienceDetail: boolean = false;
+    constructor(private actions$: Actions) {
     }
 
-    showCard(activeCard: string) {
-        this.chosenCard = activeCard;
+    ngOnInit() {
+        this.actions$.pipe(ofType(showWorkExperienceDetail)).subscribe((employer) => {
+            this.workExperienceDetail = this.workExperience.find((experience) => experience.employer === employer.employer)?.details;
+            this.workEmployer = employer.employer;
+            this.showExperienceDetail = true;
+        });
+    }
+
+    hideDetail() {
+        this.showExperienceDetail = false;
     }
 }
