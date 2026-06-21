@@ -4,6 +4,8 @@ import { map, Observable } from 'rxjs';
 import { TimerService } from 'src/app/shared/timer/timer.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
+import { FeedGrouped, FeedGroupedByDate, Feeds, PumpedGrouped } from './feeding-tracker.model';
+import { isResponsePumped } from 'src/app/shared/type-guard';
 
 @Injectable()
 export class FeedingTrackerService {
@@ -74,56 +76,46 @@ export class FeedingTrackerService {
   getFeedDetails(
     feedTaker: Object,
     feedCount: number
-  ): Observable<any> {
+  ): Observable<FeedGroupedByDate> {
     return this.httpClient
-      .get(
+      .get<Feeds[]>(
         `${environment.expressURL}/feed/get-feed-details?feed_taker=${feedTaker}&feed_count=${feedCount}`,
-        { observe: 'response', withCredentials: true }
+        { withCredentials: true }
       )
       .pipe(
-        map((response: any) => {
-          let feedGrouped = {};
-          for (let responseItem of response.body) {
-            let responseDetails = {};
+        map((response: Feeds[]) => {
+          let feedGrouped: FeedGroupedByDate = {};
+          for (let responseItem of response) {
+            let responseDetails: FeedGrouped | PumpedGrouped;
             let endDate: string;
-            responseDetails['id'] = responseItem._id;
-            if (responseItem.hasOwnProperty('pumped_mode')) {
-              endDate = responseItem.pump_end_time.split('T')[0];
-              responseDetails['pumpedMode'] = responseItem.pumped_mode;
-              responseDetails['pumpedSide'] = responseItem.pumped_side;
-              responseDetails['pumpedQuantity'] = responseItem.pumped_quantity;
-              responseDetails['pumpedStartDate'] =
-                responseItem.pump_start_time.split('T')[0];
-              responseDetails['pumpedStartTime'] =
-                responseItem.pump_start_time.split('T')[1];
-              responseDetails['pumpedEndDate'] = endDate;
-              responseDetails['pumpedEndTime'] =
-                responseItem.pump_end_time.split('T')[1];
-              responseDetails['pumpedTimeTaken'] = responseItem.pumped_time;
-            }
-            if (responseItem.hasOwnProperty('feed_taken_mode')) {
-              responseDetails['type'] = responseItem.feed_taken_type;
-              responseDetails['mode'] = responseItem.feed_taken_mode;
-              responseDetails['side'] = responseItem.feed_taken_side;
-              responseDetails['quantity'] = responseItem.feed_quantity;
-              endDate = responseItem.feed_end_time.split('T')[0];
-              // responseDetails['startDate'] = new Date(
-              //   responseItem.feed_start_time.split('T')[0]
-              // );
-              // responseDetails['startTime'] = new Date(
-              //   responseItem.feed_start_time.split('T')[1]
-              // );
-              // responseDetails['endDate'] = new Date(endDate);
-              // responseDetails['endTime'] = new Date(
-              //   responseItem.feed_end_time.split('T')[1]
-              // );
-              responseDetails['startDate'] = new Date(
-                responseItem.feed_start_time
-              ).toLocaleString();
-              responseDetails['endDate'] = new Date(
-                responseItem.feed_end_time
-              ).toLocaleString();
-              responseDetails['timeTaken'] = responseItem.feed_taken_time;
+            const { _id: id } = responseItem;
+            if (isResponsePumped(responseItem)) {
+              const { pump_end_time, pump_start_time, pumped_mode, pumped_side, pumped_quantity, pumped_time } = responseItem;
+              responseDetails = {
+                id,
+                pumpedMode: pumped_mode,
+                pumpedSide: pumped_side,
+                pumpedQuantity: pumped_quantity,
+                pumpedStartDate: pump_start_time.split('T')[0],
+                pumpedStartTime: pump_start_time.split('T')[1],
+                pumpedEndDate: pump_end_time.split('T')[0],
+                pumpedEndTime: pump_end_time.split('T')[1],
+                pumpedTimeTaken: pumped_time,
+              }
+            } else {
+              const { feed_taken_type, feed_taken_mode, feed_taken_side, feed_quantity, feed_end_time, feed_start_time, feed_taken_time } = responseItem;
+              responseDetails = {
+                id,
+                type: feed_taken_type,
+                mode: feed_taken_mode,
+                side: feed_taken_side,
+                quantity: feed_quantity,
+                startDate: responseItem.feed_start_time.split('T')[0],
+                startTime: responseItem.feed_start_time.split('T')[1],
+                endDate: responseItem.feed_end_time.split('T')[0],
+                endTime: responseItem.feed_end_time.split('T')[1],
+                timeTaken: responseItem.feed_taken_time,
+              }
             }
             if (!feedGrouped.hasOwnProperty(endDate)) {
               feedGrouped[endDate] = [];

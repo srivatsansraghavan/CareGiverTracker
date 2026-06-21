@@ -32,6 +32,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
 import { Router } from '@angular/router';
 import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
 import { AuthService } from 'src/app/shared/auth.service';
+import { FeedGroupedByDate } from './feeding-tracker.model';
 
 const slideFromTop = animation([
   style({ opacity: 0, transform: 'translateY(-100%)' }),
@@ -70,7 +71,7 @@ export class FeedingTrackerComponent implements OnInit {
   disableTracking: boolean = true;
   needQuantity: boolean = false;
   feedQuantity: number;
-  trackedFeeds: trackedFeedsData;
+  trackedFeeds: FeedGroupedByDate;
   editFeedId: string;
   editFeedData: trackedFeedsData;
   deleteFeedId: string;
@@ -115,13 +116,11 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   getFeeds() {
-    console.log("Inside get feeds")
     this.ftService
       .getFeedDetails(this.selCareTaken._id, 10)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (feedDetailsResponse) => {
-          console.log("Inside get feeds subs", feedDetailsResponse)
+        next: (feedDetailsResponse: FeedGroupedByDate) => {
           this.trackedFeeds = feedDetailsResponse;
           this.showSpinner = false;
           this.cd.detectChanges();
