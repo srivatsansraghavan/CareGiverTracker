@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDe
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 let moment = require('moment');
-import { Observable, map, skip } from 'rxjs';
+import { Observable, map, skip, take, takeUntil } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
@@ -33,6 +33,7 @@ import { Router } from '@angular/router';
 import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
 import { AuthService } from 'src/app/shared/auth.service';
 import { FeedGroupedByDate } from './feeding-tracker.model';
+import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
 
 const slideFromTop = animation([
   style({ opacity: 0, transform: 'translateY(-100%)' }),
@@ -65,7 +66,7 @@ export class FeedingTrackerComponent implements OnInit {
   totalFeedSides: feedSideOptions = TOTAL_FEED_SIDES;
   feedSides: string[];
   pumpedFeeds: pumpedFeedsData[];
-  trackState: string = 'Start';
+  trackState: TrackState = TrackState.Start;
   trackerInterval: any;
   feedTimeTaken: number;
   disableTracking: boolean = true;
@@ -93,21 +94,17 @@ export class FeedingTrackerComponent implements OnInit {
   ngOnInit(): void {
     this.authService.isUserLoggedIn().subscribe({
       next: () => {
-        console.log("Inside first subs")
         this.showSpinner = true;
         this.store.pipe(
-          select(selectors.selectCareTakenDetails),
-          skip(1)
-        ).subscribe((ctds) => {
-          console.log("Inside store subs")
-          if (Array.isArray(ctds)) {
-            if (!ctds.some((ctd) => ctd.care_last_accessed)) {
-              this.router.navigate([''])
-            }
-            console.log(ctds)
-            this.selCareTaken = ctds.filter((ctd) => ctd.care_last_accessed)[0];
-            this.getFeeds();
+          select(selectors.selectCareTakenDetail),
+          take(1)
+        ).subscribe((activeCtd) => {
+          if (!activeCtd) {
+            this.router.navigate(['']);
+            return;
           }
+          this.selCareTaken = activeCtd;
+          this.getFeeds();
         });
       }, error: (err) => {
         this.router.navigate(['login'], { state: { sessionExpired: true } });
@@ -144,13 +141,13 @@ export class FeedingTrackerComponent implements OnInit {
     this.chosenFeedType = event.target.value;
     this.feedModes = this.totalFeedModes[this.chosenFeedType];
     if (
-      this.chosenFeedType === 'Mashed food' &&
-      this.selCareTaken.care_taken_of === 'infant'
+      this.chosenFeedType === FeedTypes.MashedFood &&
+      this.selCareTaken.care_taken_of === CareTakenTypes.Infant
     ) {
-      this.feedModes = this.feedModes.filter((item) => item !== 'Self-feeding');
+      this.feedModes = this.feedModes.filter((item) => item !== FeedModes.SelfFeeding);
     }
     this.feedSides = this.totalFeedSides[this.chosenFeedType];
-    if (this.chosenFeedType === 'Drips') {
+    if (this.chosenFeedType === FeedTypes.Drips) {
       this.disableTracking = false;
       this.needQuantity = true;
     } else {
@@ -162,8 +159,8 @@ export class FeedingTrackerComponent implements OnInit {
   onFeedModeChosen(event: any) {
     this.chosenFeedMode = event.target.value;
     if (
-      this.chosenFeedType === 'Breast Milk' &&
-      this.chosenFeedMode === 'Pumped Milk'
+      this.chosenFeedType === FeedTypes.BreastMilk &&
+      this.chosenFeedMode === FeedModes.PumpedMilk
     ) {
       this.ftService
         .fetchPumpedFeeds(this.careGiver, this.selCareTaken._id)
@@ -171,7 +168,7 @@ export class FeedingTrackerComponent implements OnInit {
           this.pumpedFeeds = prepFeeds;
         });
     }
-    if (this.chosenFeedType === 'Breast Pump') {
+    if (this.chosenFeedType === FeedTypes.BreastPump) {
       this.disableTracking = true;
       this.needQuantity = true;
     } else {
@@ -186,12 +183,12 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   trackFeedTime(): void {
-    if (this.trackState !== 'Stop') {
+    if (this.trackState !== TrackState.Stop) {
       this.trackerInterval = this.ftService.startTracking();
-      this.trackState = 'Stop';
+      this.trackState = TrackState.Stop;
     } else {
       this.feedTimeTaken = this.ftService.stopTracking(this.trackerInterval);
-      this.trackState = 'Restart';
+      this.trackState = TrackState.Restart;
       this.trackerInterval = null;
     }
   }
@@ -239,8 +236,8 @@ export class FeedingTrackerComponent implements OnInit {
       this.chosenFeedSide = null;
     }
     if (
-      this.chosenFeedType === 'Breast Milk' &&
-      this.chosenFeedMode === 'Pumped Milk'
+      this.chosenFeedType === FeedTypes.BreastMilk &&
+      this.chosenFeedMode === FeedModes.PumpedMilk
     ) {
       pumpedFeedId = this.chosenPumpedFeed;
     }
@@ -280,7 +277,7 @@ export class FeedingTrackerComponent implements OnInit {
 
   cancelTrackingFeed() {
     this.modal.dismissAll();
-    this.trackState = 'Start';
+    this.trackState = TrackState.Start;
     this.feedTimeTaken = 0;
     this.disableTracking = true;
     this.needQuantity = false;

@@ -1,17 +1,19 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, skip, Subscription } from 'rxjs';
 import {
   CommonService,
   trackedExcretionData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { ExcretionTrackerService } from './excretion-tracker.service';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 let moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { DIAPER_BRANDS, EXCRETION_TYPES, NAPKIN_TYPES } from 'src/app/shared/constants';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/auth.service';
 
 @Component({
   selector: 'app-excretion-tracker',
@@ -37,22 +39,36 @@ export class ExcretionTrackerComponent implements OnInit {
   editTrackedExcData: trackedExcretionData;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
+  showSpinner: boolean = false;
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private etService: ExcretionTrackerService,
     private commonService: CommonService,
-    private store: Store<{ caretakendetails: careTakenDetail[] }>
+    private store: Store<{ caretakendetails: careTakenDetail[] }>,
+    private router: Router,
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
-    this.selectedCareTaken$ = this.store.select(
-      selectors.selectCareTakenDetails
-    );
-    this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd[0];
-      this.getTrackedExcretions();
+    this.authService.isUserLoggedIn().subscribe({
+      next: () => {
+        this.showSpinner = true;
+        this.store.pipe(
+          select(selectors.selectCareTakenDetail),
+          skip(1)
+        ).subscribe((activeCtd) => {
+          if (!activeCtd) {
+            this.router.navigate(['']);
+            return;
+          }
+          this.selCareTaken = activeCtd;
+          this.getTrackedExcretions();
+        });
+      }, error: (err) => {
+        this.router.navigate(['login'], { state: { sessionExpired: true } });
+      },
     });
   }
 

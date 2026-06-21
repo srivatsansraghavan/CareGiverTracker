@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, skip, Subscription } from 'rxjs';
 import {
   CommonService,
   trackedMedicationData,
@@ -8,9 +8,11 @@ import {
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MedicationTrackerService } from './medication-tracker.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 let moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/auth.service';
 
 @Component({
   selector: 'app-medication-tracker',
@@ -33,22 +35,36 @@ export class MedicationTrackerComponent implements OnInit {
   editTrackedMedData: trackedMedicationData;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
+  showSpinner: boolean = false;
 
   constructor(
     private modal: NgbModal,
     private toastService: ToastService,
     private mtService: MedicationTrackerService,
     private commonService: CommonService,
-    private store: Store<{ caretakendetails: careTakenDetail[] }>
+    private store: Store<{ caretakendetails: careTakenDetail[] }>,
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.selectedCareTaken$ = this.store.select(
-      selectors.selectCareTakenDetails
-    );
-    this.selectedCareTaken$.subscribe((ctd) => {
-      this.selCareTaken = ctd[0];
-      this.getTrackedMedications();
+    this.authService.isUserLoggedIn().subscribe({
+      next: () => {
+        this.showSpinner = true;
+        this.store.pipe(
+          select(selectors.selectCareTakenDetail),
+          skip(1)
+        ).subscribe((activeCtd) => {
+          if (!activeCtd) {
+            this.router.navigate(['']);
+            return;
+          }
+          this.selCareTaken = activeCtd;
+          this.getTrackedMedications();
+        });
+      }, error: (err) => {
+        this.router.navigate(['login'], { state: { sessionExpired: true } });
+      },
     });
   }
 

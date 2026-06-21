@@ -1,51 +1,52 @@
+import { CareTakenTypes, DiaperTypes, ExcretionTypes, FeedModes, FeedSides, FeedTypes } from "./enums";
 
 export const TOTAL_FEED_TYPES = {
-    infant: [
-        'Breast Pump',
-        'Breast Milk',
-        'Formula feeding',
-        'Mashed food',
-        'Juices',
-        'Water',
-        'Drips',
+    [CareTakenTypes.Infant]: [
+        FeedTypes.BreastPump,
+        FeedTypes.BreastMilk,
+        FeedTypes.FormulaFeeding,
+        FeedTypes.MashedFood,
+        FeedTypes.Juices,
+        FeedTypes.Water,
+        FeedTypes.Drips,
     ],
-    toddler: [
-        'Breast Pump',
-        'Breast Milk',
-        'Formula feeding',
-        'Normal food',
-        'Mashed food',
-        'Juices',
-        'Water',
-        'Drips',
+    [CareTakenTypes.Toddler]: [
+        FeedTypes.BreastPump,
+        FeedTypes.BreastMilk,
+        FeedTypes.FormulaFeeding,
+        FeedTypes.NormalFood,
+        FeedTypes.MashedFood,
+        FeedTypes.Juices,
+        FeedTypes.Water,
+        FeedTypes.Drips,
     ],
-    child: [
-        'Formula feeding',
-        'Normal food',
-        'Mashed food',
-        'Juices',
-        'Water',
-        'Drips',
+    [CareTakenTypes.Child]: [
+        FeedTypes.FormulaFeeding,
+        FeedTypes.NormalFood,
+        FeedTypes.MashedFood,
+        FeedTypes.Juices,
+        FeedTypes.Water,
+        FeedTypes.Drips,
     ],
-    spouse: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
-    parent: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
-    friend: ['Normal food', 'Mashed food', 'Juices', 'Water', 'Drips'],
+    [CareTakenTypes.Spouse]: [FeedTypes.NormalFood, FeedTypes.MashedFood, FeedTypes.Juices, FeedTypes.Water, FeedTypes.Drips],
+    [CareTakenTypes.Parent]: [FeedTypes.NormalFood, FeedTypes.MashedFood, FeedTypes.Juices, FeedTypes.Water, FeedTypes.Drips],
+    [CareTakenTypes.Friend]: [FeedTypes.NormalFood, FeedTypes.MashedFood, FeedTypes.Juices, FeedTypes.Water, FeedTypes.Drips],
 };
 export const TOTAL_FEED_MODES = {
-    'Breast Pump': ['Manual Pump', 'Electrical Pump'],
-    'Breast Milk': ['Pumped Milk', 'Direct Feed'],
-    'Formula feeding': ['Feeding bottle', 'Spoon', 'Other'],
-    'Normal food': ['Self-feeding', 'Others feeding'],
-    'Mashed food': ['Self-feeding', 'Others feeding'],
-    Juices: ['Feeding bottle', 'Spoon', 'Glass'],
-    Water: ['Feeding bottle', 'Spoon', 'Glass'],
-    Drips: [],
+    [FeedTypes.BreastPump]: [FeedModes.ManualPump, FeedModes.ElectricalPump],
+    [FeedTypes.BreastMilk]: [FeedModes.PumpedMilk, FeedModes.DirectFeed],
+    [FeedTypes.FormulaFeeding]: [FeedModes.FeedingBottle, FeedModes.Spoon, FeedModes.Other],
+    [FeedTypes.NormalFood]: [FeedModes.SelfFeeding, FeedModes.OthersFeeding],
+    [FeedTypes.MashedFood]: [FeedModes.SelfFeeding, FeedModes.OthersFeeding],
+    [FeedTypes.Juices]: [FeedModes.FeedingBottle, FeedModes.Spoon, FeedModes.Glass],
+    [FeedTypes.Water]: [FeedModes.FeedingBottle, FeedModes.Spoon, FeedModes.Glass],
+    [FeedTypes.Drips]: [],
 };
 export const TOTAL_FEED_SIDES = {
-    'Breast Pump': ['Left Breast', 'Right Breast', 'Both'],
-    'Breast Milk': ['Left Breast', 'Right Breast', 'Both'],
+    [FeedTypes.BreastPump]: [FeedSides.LeftBreast, FeedSides.RightBreast, FeedSides.Both],
+    [FeedTypes.BreastMilk]: [FeedSides.LeftBreast, FeedSides.RightBreast, FeedSides.Both],
 };
 
-export const EXCRETION_TYPES = ['Urine', 'Stools', 'Urine and Stools'];
-export const NAPKIN_TYPES = ['Diaper', 'Others'];
+export const EXCRETION_TYPES = [ExcretionTypes.Urine, ExcretionTypes.Stools, ExcretionTypes.UrineAndStools];
+export const NAPKIN_TYPES = [DiaperTypes.Diaper, DiaperTypes.Others];
 export const DIAPER_BRANDS = ['ABC', 'DEF', 'GHI', 'JKL'];

@@ -1,14 +1,18 @@
-import { createSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { careTakenDetail } from './care-taken-details.model';
 
 export interface AppState {
   caretakendetails: careTakenDetail[];
 }
 
-export const selectCareTakenDetail = (state: AppState) =>
-  state.caretakendetails;
+export const selectCareTakenDetailsFeature = createFeatureSelector<careTakenDetail[]>('caretakendetails');
+
+export const selectCareTakenDetail = createSelector(
+  selectCareTakenDetailsFeature,
+  (details: careTakenDetail[]) => details ? details.find(ctd => ctd.care_last_accessed) : null,
+);
 
 export const selectCareTakenDetails = createSelector(
-  selectCareTakenDetail,
-  (state: careTakenDetail[]) => state
+  selectCareTakenDetailsFeature,
+  (details: careTakenDetail[]) => details,
 );

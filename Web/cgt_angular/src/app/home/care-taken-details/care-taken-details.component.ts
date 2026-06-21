@@ -40,7 +40,7 @@ export class CareTakenDetailsComponent implements OnInit {
     'parent',
     'friend',
   ];
-  selectedCareTaken$: Observable<careTakenDetail[]>;
+  selectedCareTaken$: Observable<careTakenDetail>;
   constructor(
     private modal: NgbModal,
     private careTakenDetailService: CareTakenDetailsService,
@@ -68,14 +68,12 @@ export class CareTakenDetailsComponent implements OnInit {
     );
     this.careTakenDetails$ = this.store.pipe(
       select(selectors.selectCareTakenDetails),
-      tap(ctds => {
-        if (Array.isArray(ctds)) {
-          if (!ctds.some(ctd => ctd.care_last_accessed)) {
-            this.router.navigate(['home']);
-          }
+      tap(activeCtd => {
+        if (!activeCtd) {
+          this.router.navigate(['home']);
         }
       }),
-      map(ctds => ctds.filter(ctd => ctd._id))
+      map(activeCtd => activeCtd)
     );
   }
 
