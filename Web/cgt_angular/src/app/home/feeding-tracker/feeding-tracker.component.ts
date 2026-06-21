@@ -2,7 +2,7 @@ import { OnDestroy, Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDe
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 let moment = require('moment');
-import { Observable, map, skip, take, takeUntil } from 'rxjs';
+import { Observable, filter, map, skip, take, takeUntil } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
@@ -92,23 +92,18 @@ export class FeedingTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe({
-      next: () => {
-        this.showSpinner = true;
-        this.store.pipe(
-          select(selectors.selectCareTakenDetail),
-          take(1)
-        ).subscribe((activeCtd) => {
-          if (!activeCtd) {
-            this.router.navigate(['']);
-            return;
-          }
-          this.selCareTaken = activeCtd;
-          this.getFeeds();
-        });
-      }, error: (err) => {
-        this.router.navigate(['login'], { state: { sessionExpired: true } });
-      },
+    this.showSpinner = true;
+    this.store.pipe(
+      select(selectors.selectCareTakenDetail),
+      filter(data => !!data),
+      take(1)
+    ).subscribe((activeCtd) => {
+      if (!activeCtd) {
+        this.router.navigate(['']);
+        return;
+      }
+      this.selCareTaken = activeCtd;
+      this.getFeeds();
     });
   }
 

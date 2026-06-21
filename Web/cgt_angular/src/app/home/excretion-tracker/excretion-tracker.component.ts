@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, skip, Subscription } from 'rxjs';
+import { filter, Observable, skip, Subscription, take } from 'rxjs';
 import {
   CommonService,
   trackedExcretionData,
@@ -52,23 +52,18 @@ export class ExcretionTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe({
-      next: () => {
-        this.showSpinner = true;
-        this.store.pipe(
-          select(selectors.selectCareTakenDetail),
-          skip(1)
-        ).subscribe((activeCtd) => {
-          if (!activeCtd) {
-            this.router.navigate(['']);
-            return;
-          }
-          this.selCareTaken = activeCtd;
-          this.getTrackedExcretions();
-        });
-      }, error: (err) => {
-        this.router.navigate(['login'], { state: { sessionExpired: true } });
-      },
+    this.showSpinner = true;
+    this.store.pipe(
+      select(selectors.selectCareTakenDetail),
+      filter(data => !!data),
+      take(1)
+    ).subscribe((activeCtd) => {
+      if (!activeCtd) {
+        this.router.navigate(['']);
+        return;
+      }
+      this.selCareTaken = activeCtd;
+      this.getTrackedExcretions();
     });
   }
 

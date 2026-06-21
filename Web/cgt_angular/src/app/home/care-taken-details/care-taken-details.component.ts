@@ -52,13 +52,7 @@ export class CareTakenDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.isUserLoggedIn().subscribe({
-      next: () => {
-        this.loadLatestCareTaken();
-      }, error: () => {
-        this.router.navigate(['login'], { state: { sessionExpired: true } });
-      },
-    });
+    this.loadLatestCareTaken();
   }
 
   loadLatestCareTaken(): void {

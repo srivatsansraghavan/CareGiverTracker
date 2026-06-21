@@ -91,6 +91,7 @@ export class FeedingTrackerService {
             const { _id: id } = responseItem;
             if (isResponsePumped(responseItem)) {
               const { pump_end_time, pump_start_time, pumped_mode, pumped_side, pumped_quantity, pumped_time } = responseItem;
+              endDate = pump_end_time.split('T')[0];
               responseDetails = {
                 id,
                 pumpedMode: pumped_mode,
@@ -98,23 +99,24 @@ export class FeedingTrackerService {
                 pumpedQuantity: pumped_quantity,
                 pumpedStartDate: pump_start_time.split('T')[0],
                 pumpedStartTime: pump_start_time.split('T')[1],
-                pumpedEndDate: pump_end_time.split('T')[0],
+                pumpedEndDate: endDate,
                 pumpedEndTime: pump_end_time.split('T')[1],
                 pumpedTimeTaken: pumped_time,
               }
             } else {
               const { feed_taken_type, feed_taken_mode, feed_taken_side, feed_quantity, feed_end_time, feed_start_time, feed_taken_time } = responseItem;
+              endDate = feed_end_time.split('T')[0];
               responseDetails = {
                 id,
                 type: feed_taken_type,
                 mode: feed_taken_mode,
                 side: feed_taken_side,
                 quantity: feed_quantity,
-                startDate: responseItem.feed_start_time.split('T')[0],
-                startTime: responseItem.feed_start_time.split('T')[1],
-                endDate: responseItem.feed_end_time.split('T')[0],
-                endTime: responseItem.feed_end_time.split('T')[1],
-                timeTaken: responseItem.feed_taken_time,
+                startDate: feed_start_time.split('T')[0],
+                startTime: feed_start_time.split('T')[1],
+                endDate,
+                endTime: feed_end_time.split('T')[1],
+                timeTaken: feed_taken_time,
               }
             }
             if (!feedGrouped.hasOwnProperty(endDate)) {
@@ -172,7 +174,7 @@ export class FeedingTrackerService {
   getFeedForId(feedId: string) {
     return this.httpClient
       .get(`${environment.expressURL}/feed/get-feed-for-id/${feedId}`, {
-        observe: 'response',
+        withCredentials: true,
       })
       .pipe(
         map((response: any) => {
