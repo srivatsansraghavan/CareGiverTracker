@@ -28,13 +28,17 @@ export async function loginUser(req, res, next) {
 export async function logoutUser(req, res, next) {
     req.logout((err) => {
       if(err) return next(err);
-      res.status(200).json({ message: 'Logged out' });
+      req.session.destroy((err) => {
+        if(err) return next(err);
+        res.clearCookie('sessionId');
+        res.status(200).json({ message: 'Logged out' });
+      })
     })
 }
 
 export async function isLoggedInUser(req, res, next) {
   try {
-    if(req.session.cookie.expires.toISOString() > new Date().toISOString()) {
+    if(req.session.passport && req.session.passport.user) {
       return res.status(200).json({ message: 'Session active' });
     }
     return res.status(401).json({ message: 'Session expired' });

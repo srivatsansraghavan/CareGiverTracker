@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, 
 import { NgbModal, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, filter, map, skip, take, takeLast, tap } from 'rxjs';
+import { Observable, catchError, filter, map, skip, take, takeLast, tap } from 'rxjs';
 import {
   addCareTakenPerson,
   addCareTakenPersonSuccess,
@@ -67,7 +67,12 @@ export class CareTakenDetailsComponent implements OnInit {
           this.router.navigate(['home']);
         }
       }),
-      map(activeCtd => activeCtd)
+      map(activeCtd => activeCtd),
+      catchError((error) => {
+        console.error('Error fetching care taken details:', error);
+        this.router.navigate(['login']);
+        return [];
+      })
     );
   }
 

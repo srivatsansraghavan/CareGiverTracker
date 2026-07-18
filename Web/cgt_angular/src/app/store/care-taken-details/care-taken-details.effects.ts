@@ -91,24 +91,4 @@ export class CareTakenDetailsEffects {
     private careTakenDetailService: CareTakenDetailsService,
     private modal: NgbModal
   ) { }
-  //     this.actions$.pipe(ofType(getCareTakenOfDetails), withLatestFrom(this.store.pipe(select(selectCareTakenDetails))), mergeMap((action) => {
-  //     return this.httpClient
-  //     .get<careTakenDetail>(
-  //       `${environment.expressURL}/role/get-role-details?giver_email=${this.giverEmail}`
-  //     )
-  //     .pipe(
-  //       map((response) => {
-  //         getCareTakenOfDetails({
-  //           careTakenofDetails: {
-  //             id: response['_id'],
-  //             name: response['care_taken_name'],
-  //             dob: response['care_taken_dob'],
-  //             gender: response['care_taken_gender'],
-  //             type: response['care_taken_of'],
-  //           },
-  //         });
-  //       })
-  //     );
-  //     }))
-  //   );
 }

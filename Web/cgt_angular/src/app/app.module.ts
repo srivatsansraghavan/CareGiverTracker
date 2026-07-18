@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
@@ -54,7 +54,12 @@ import { MainModule } from './main/main.module';
         //     useClass: AuthConfigInterceptor,
         //     multi: true,
         // },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withInterceptors([(req, next) => {
+            const withCredReq = req.clone({
+                withCredentials: true,
+            });
+            return next(withCredReq);
+        }])),
     ]
 })
 export class AppModule { }

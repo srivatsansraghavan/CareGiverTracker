@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, Subject, tap } from 'rxjs';
 import { ToastService } from './toast/toast.service';
 import { environment } from 'src/environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -12,14 +12,18 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
   private jwtHelper;
   firstLogin = new Subject<boolean>();
-  loggedIn: boolean = false;
+  private loggedIn$ = new BehaviorSubject<boolean>(false);
   loggedInUser: string;
   constructor(
     private httpClient: HttpClient,
     private router: Router,
-    private toastService: ToastService
+    private toastService: ToastService,
   ) {
     this.jwtHelper = new JwtHelperService();
+  }
+
+  get isLoggedIn$(): Observable<boolean> {
+    return this.loggedIn$.asObservable();
   }
 
   signUpUser(email_id: string, pass_word: string, full_name: string) {
@@ -65,7 +69,7 @@ export class AuthService {
       .subscribe({
         next: (response: any) => {
           if (response.status === 200) {
-            this.loggedIn = true;
+            this.loggedIn$.next(true);
             this.loggedInUser = email_id;
             this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
             this.toastService.show(
@@ -88,7 +92,8 @@ export class AuthService {
   }
 
   shouldAllow(): boolean {
-    return this.loggedIn;
+    console.log('Logged in status:', this.loggedIn$.value);
+    return this.loggedIn$.value;
   }
 
   loggedInUserEmail(): string {
@@ -107,9 +112,19 @@ export class AuthService {
     return this.firstLogin.asObservable();
   }
 
-  doLogOut(): Observable<void> {
-    this.loggedIn = false;
-    return this.httpClient.delete<void>(`${environment.expressURL}/user/logout-user`);
+  doLogOut() {
+    this.httpClient.delete(`${environment.expressURL}/user/logout-user`).subscribe({
+      next: () => {
+        this.loggedIn$.next(false);
+        this.router.navigate(['login']);
+        this.toastService.show(
+          'Logout message',
+          'You are now logged out',
+          'bg-warning text-light logout-toast',
+          true
+        );
+      }
+    });
   }
 
   isUserLoggedIn() {
@@ -117,6 +132,14 @@ export class AuthService {
       .get(
         `${environment.expressURL}/user/is-user-loggedin`,
         { observe: 'response', withCredentials: true }
+      ).pipe(
+        tap(() => this.loggedIn$.next(true)),
+        map(() => true),
+        catchError((error) => {
+          console.error('Error checking user login status:', error);
+          this.loggedIn$.next(false);
+          return of(false);
+        })
       )
   }
 }

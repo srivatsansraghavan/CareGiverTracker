@@ -69,16 +69,6 @@ export class FirstLoginComponent implements OnInit {
 
   closeModalLogOut(): void {
     this.modal.dismissAll();
-    this.authService.doLogOut().subscribe({
-      next: () => {
-        this.router.navigate(['']);
-        this.toastService.show(
-          'Logout message',
-          'You are now logged out',
-          'bg-warning text-light logout-toast',
-          true
-        );
-      }
-    });
+    this.authService.doLogOut();
   }
 }

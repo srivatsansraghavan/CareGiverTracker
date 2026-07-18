@@ -99,25 +99,6 @@ export interface inventoryData {
 export class CommonService {
   constructor(private httpClient: HttpClient) { }
 
-  getCareTakenOfDetails(giver_email: string): Observable<careTakenDetail> {
-    return this.httpClient
-      .get(
-        `${environment.expressURL}/caretaken/get-care-taken-details?giver_email=${giver_email}`,
-        { observe: 'response' }
-      )
-      .pipe(
-        map((response) => {
-          return {
-            id: response.body['_id'],
-            name: response.body['care_taken_name'],
-            dob: response.body['care_taken_dob'],
-            gender: response.body['care_taken_gender'],
-            type: response.body['care_taken_of'],
-          };
-        })
-      );
-  }
-
   getAvailableInventory(
     care_taken_of: Object,
     inventory_type: string

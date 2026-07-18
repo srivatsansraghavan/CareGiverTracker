@@ -74,17 +74,6 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
   }
 
   doLogout(): void {
-    this.authService.doLogOut().subscribe({
-      next: () => {
-        this.cookieService.deleteAll();
-        this.router.navigate(['login']);
-        this.toastService.show(
-          'Logout message',
-          'You are now logged out',
-          'bg-warning text-light logout-toast',
-          true
-        );
-      }
-    })
+    this.authService.doLogOut();
   }
 }

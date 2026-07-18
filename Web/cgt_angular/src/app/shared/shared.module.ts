@@ -12,11 +12,12 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { SignupComponent } from "../main/signup/signup.component";
 import { LoginComponent } from "../main/login/login.component";
 import { RouterModule } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
 
 @NgModule({
     declarations: [MenubarComponent, ShowEditDeleteDirective, TimerComponent, ToastComponent, TrackItemsPipe, DateDiffPipe],
     imports: [NgbModule, SignupComponent, LoginComponent, RouterModule],
-    providers: [AuthService, AuthGuardService, ToastService],
+    providers: [AuthService, AuthGuardService, ToastService, CookieService],
     exports: [ToastComponent, TrackItemsPipe, DateDiffPipe, MenubarComponent, TimerComponent],
 })
 export class SharedModule { }

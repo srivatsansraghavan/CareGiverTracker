@@ -7,6 +7,6 @@ import { isAuthenticated } from "../utils.js";
 router.post("/add-user", addUser);
 router.post("/login-user", passport.authenticate('local'), loginUser)
 router.get("/is-user-loggedin", isLoggedInUser)
-router.delete("/logout-user", logoutUser)
+router.delete("/logout-user", isAuthenticated, logoutUser)
 
 export default router;

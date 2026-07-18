@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { catchError, firstValueFrom, Observable, of, switchMap } from 'rxjs';
+import { catchError, firstValueFrom, map, Observable, of, switchMap, take } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -17,15 +17,27 @@ export class AuthGuardService {
     | UrlTree
     | Observable<boolean | UrlTree>
     | Promise<boolean | UrlTree> {
-    return this.auth.isUserLoggedIn().pipe(
-      switchMap(() => {
-        return of(true)
+    const destinationUrl = state.url;
+    return this.auth.isLoggedIn$.pipe(
+      take(1),
+      switchMap((isLoggedIn) => {
+        console.log('AuthGuardService: isLoggedIn =', isLoggedIn);
+        if (!isLoggedIn) {
+          return this.auth.isUserLoggedIn();
+        }
+        return of(isLoggedIn);
       }),
-      catchError(() => {
-        console.log("User is not logged in, redirecting to login page.");
-        this.router.navigate(['/login'])
-        return of(false);
-      }),
-    )
+      map((isLoggedIn) => {
+        console.log('AuthGuardService: isLoggedIn after check =', isLoggedIn);
+        if (isLoggedIn && destinationUrl === '/login') {
+          this.router.navigate(['/home']);
+          return false;
+        }
+        if (!isLoggedIn && destinationUrl !== '/login') {
+          this.router.navigate(['/login']);
+          return false;
+        }
+        return true;
+      }));
   }
 }
