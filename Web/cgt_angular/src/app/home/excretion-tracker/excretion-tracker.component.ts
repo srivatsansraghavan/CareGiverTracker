@@ -9,7 +9,7 @@ import { ToastService } from 'src/app/shared/toast/toast.service';
 import { ExcretionTrackerService } from './excretion-tracker.service';
 import { select, Store } from '@ngrx/store';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
-const moment = require('moment');
+// const moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { EXCRETION_TYPES, NAPKIN_TYPES } from 'src/app/shared/constants';
 import { Router } from '@angular/router';
@@ -28,7 +28,7 @@ export class ExcretionTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   subscription: Subscription;
-  trackedExcretions: trackedExcretionData[];
+  trackedExcretions: Record<string, trackedExcretionData[]>;
   excretionTypes: string[] = EXCRETION_TYPES;
   napkinTypes: string[] = NAPKIN_TYPES;
   diaperBrands: inventoryData[];
@@ -165,22 +165,22 @@ export class ExcretionTrackerComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  editTrackedExc(editedData: trackedExcretionData) {
-    const excDateString =
-      editedData.excretionDate['day'] +
-      '/' +
-      editedData.excretionDate['month'] +
-      '/' +
-      editedData.excretionDate['year'] +
-      ' ' +
-      editedData.excretionTime['hour'] +
-      ':' +
-      editedData.excretionTime['minute'] +
-      ':' +
-      editedData.excretionTime['second'];
-    const excDate = moment(excDateString, 'DD/MM/YYYY HH:mm:ss').format(
-      'DD/MM/YYYY HH:mm:ss'
-    );
+  editTrackedExc() {
+    // const excDateString =
+    //   editedData.excretionDate['day'] +
+    //   '/' +
+    //   editedData.excretionDate['month'] +
+    //   '/' +
+    //   editedData.excretionDate['year'] +
+    //   ' ' +
+    //   editedData.excretionTime['hour'] +
+    //   ':' +
+    //   editedData.excretionTime['minute'] +
+    //   ':' +
+    //   editedData.excretionTime['second'];
+    // const excDate = moment(excDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    //   'DD/MM/YYYY HH:mm:ss'
+    // );
     // this.etService.saveEditedTrackedExc(editedData.id, excDate).subscribe({
     //   next: (response: HttpResponse<trackedExcretionData>) => {
     //     this.toastService.show(
@@ -204,7 +204,7 @@ export class ExcretionTrackerComponent implements OnInit {
     // });
   }
 
-  deleteTrackedExc(excId: string) {
+  deleteTrackedExc() {
     // this.etService.deleteExc(excId).subscribe({
     //   next: (response: HttpResponse<trackedExcretionData>) => {
     //     this.toastService.show(

@@ -36,10 +36,12 @@
                 }
               </span>
               <button
+                aria-label="Edit Tracked Excretion"
                 class="bi bi-pencil btn-edit-tracked-exc"
                 (click)="editTrackedExcModal(editExcModal, eachExcretion.id)"
               ></button>
               <button
+                aria-label="Delete Tracked Excretion"
                 class="bi bi-trash btn-delete-tracked-exc"
                 (click)="deleteTrackedExcModal(deleteExcModal, eachExcretion.id)"
               ></button>
@@ -166,7 +168,7 @@
     <div class="modal-footer">
       <button
         class="btn btn-primary p-3"
-        (click)="deleteTrackedExc(deleteExcId)"
+        (click)="deleteTrackedExc()"
       >
         Delete
       </button>
@@ -224,6 +226,7 @@
           />
           <button
             class="btn btn-outline-secondary bi bi-calendar3"
+            aria-label="Toggle Datepicker"
             (click)="d.toggle()"
             type="button"
           ></button>
@@ -241,7 +244,7 @@
     <div class="modal-footer">
       <button
         class="btn btn-primary p-3"
-        (click)="editTrackedExc(editTrackedExcData)"
+        (click)="editTrackedExc()"
       >
         Save & Close
       </button>

@@ -233,8 +233,8 @@ export class FeedingTrackerService {
 
   saveEditedFeed(
     feedId: object,
-    feedStart: Date,
-    feedEnd: Date,
+    feedStart: string,
+    feedEnd: string,
     feedQuantity: number
   ): Observable<object> {
     return this.httpClient.post(

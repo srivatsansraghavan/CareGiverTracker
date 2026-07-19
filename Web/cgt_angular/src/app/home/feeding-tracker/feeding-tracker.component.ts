@@ -1,8 +1,8 @@
-import { OnDestroy, Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-const moment = require('moment');
-import { Observable, filter, map, skip, take, takeUntil } from 'rxjs';
+// const moment = require('moment');
+import { Observable, filter, take } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
@@ -15,17 +15,8 @@ import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-det
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { FeedingTrackerService } from './feeding-tracker.service';
 import {
-  animate,
-  animation,
-  query,
-  stagger,
-  state,
-  style,
-  transition,
   trigger,
-  useAnimation,
 } from '@angular/animations';
-
 import { addFeedAnimation } from 'src/app/shared/animations';
 import { Store, select } from '@ngrx/store';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
@@ -34,15 +25,6 @@ import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/sh
 import { AuthService } from 'src/app/shared/auth.service';
 import { FeedGroupedByDate } from './feeding-tracker.model';
 import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
-
-const slideFromTop = animation([
-  style({ opacity: 0, transform: 'translateY(-100%)' }),
-  animate('1s', style({ opacity: 1, transform: 'translateY(0%)' })),
-]);
-
-const slideToBottom = animation(
-  animate('1s', style({ opacity: 0, transform: 'translateY(100%)' }))
-);
 
 @Component({
   selector: 'app-feeding-tracker',
@@ -123,7 +105,7 @@ export class FeedingTrackerComponent implements OnInit {
       });
   }
 
-  addFeed(add_feed_modal: TemplateRef<any>): void {
+  addFeed(add_feed_modal: TemplateRef<null>): void {
     this.feedTypes = this.totalFeedTypes[this.selCareTaken.care_taken_of];
     this.modal.open(add_feed_modal, {
       backdrop: 'static',
@@ -354,9 +336,9 @@ export class FeedingTrackerComponent implements OnInit {
       editedData.startTime['minute'] +
       ':' +
       editedData.startTime['second'];
-    const startDate = moment(startDateString, 'DD/MM/YYYY HH:mm:ss').format(
-      'DD/MM/YYYY HH:mm:ss'
-    );
+    // const startDate = moment(startDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    //   'DD/MM/YYYY HH:mm:ss'
+    // );
     const endDateString =
       editedData.endDate['day'] +
       '/' +
@@ -369,11 +351,11 @@ export class FeedingTrackerComponent implements OnInit {
       editedData.endTime['minute'] +
       ':' +
       editedData.endTime['second'];
-    const endDate = moment(endDateString, 'DD/MM/YYYY HH:mm:ss').format(
-      'DD/MM/YYYY HH:mm:ss'
-    );
+    // const endDate = moment(endDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    //   'DD/MM/YYYY HH:mm:ss'
+    // );
     this.ftService
-      .saveEditedFeed(editedData.id, startDate, endDate, editedData.quantity)
+      .saveEditedFeed(editedData.id, startDateString, endDateString, editedData.quantity)
       .subscribe({
         next: (response: any) => {
           this.toastService.show(

@@ -14,33 +14,22 @@ export class ExcretionTrackerService {
   getExcretionDetails(
     care_taken_id: string,
     excretion_count: number
-  ): Observable<any> {
+  ): Observable<Record<string, trackedExcretionData[]>> {
     return this.httpClient
-      .get(
+      .get<trackedExcretionData[]>(
         `${environment.expressURL}/excretion/get-excretion-details?careTakenId=${care_taken_id}&excretionCount=${excretion_count}`,
-        { observe: 'response', withCredentials: true }
+        { observe: 'response' }
       )
       .pipe(
-        map((response: any) => {
-          const excretionGrouped = {};
+        map((response: HttpResponse<trackedExcretionData[]>) => {
+          const excretionGrouped: Record<string, trackedExcretionData[]> = {};
           for (const responseItem of response.body) {
-            const responseDetails = {};
-            let endDate;
-            responseDetails['id'] = responseItem._id;
-            responseDetails['excretionType'] = responseItem.excretion_type;
-            responseDetails['napkinType'] = responseItem.napkin_type;
-            responseDetails['diaperCount'] = responseItem.diaper_count;
-            responseDetails['diaperBrand'] = responseItem.diaper_brand;
-            endDate = responseItem.excretion_time.split('T')[0];
-            responseDetails['excretionTime'] = new Date(
-              responseItem.excretion_time
-            ).toLocaleString();
-            //responseDetails['excretionDate'] = endDate;
-            if (!excretionGrouped.hasOwnProperty(endDate)) {
-              excretionGrouped[endDate] = [];
-            }
+            const endDate = responseItem.excretionTime.toISOString();
+            // if (!excretionGrouped.hasOwnProperty(endDate)) {
+            //   excretionGrouped[endDate] = [];
+            // }
             const excretionGroupSize = excretionGrouped[endDate].length;
-            excretionGrouped[endDate][excretionGroupSize] = responseDetails;
+            excretionGrouped[endDate][excretionGroupSize] = responseItem;
           }
           return excretionGrouped;
         })

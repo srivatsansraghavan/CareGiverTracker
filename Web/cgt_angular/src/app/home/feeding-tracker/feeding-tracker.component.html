@@ -62,10 +62,12 @@
               </span>
               <button
                 class="bi bi-pencil btn-edit-tracked-feed"
+                aria-label="Edit Tracked Feed"
                 (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
               ></button>
               <button
                 class="bi bi-trash btn-delete-tracked-feed"
+                aria-label="Delete Tracked Feed"
                 (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
               ></button>
             </li>
@@ -100,10 +102,12 @@
                 <span>
                   <button
                     class="bi bi-pencil btn-edit-tracked-feed"
+                    aria-label="Edit Tracked Feed"
                     (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
                   ></button>
                   <button
                     class="bi bi-trash btn-delete-tracked-feed"
+                    aria-label="Delete Tracked Feed"
                     (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
                   ></button>
                 </span>
@@ -390,6 +394,7 @@
             />
             <button
               class="btn btn-outline-secondary bi bi-calendar3"
+              aria-label="Toggle Datepicker"
               (click)="d.toggle()"
               type="button"
             ></button>
@@ -417,6 +422,7 @@
             />
             <button
               class="btn btn-outline-secondary bi bi-calendar3"
+              aria-label="Toggle Datepicker"
               (click)="d.toggle()"
               type="button"
             ></button>
