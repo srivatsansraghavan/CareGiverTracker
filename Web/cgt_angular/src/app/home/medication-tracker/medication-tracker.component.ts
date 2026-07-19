@@ -9,7 +9,7 @@ import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MedicationTrackerService } from './medication-tracker.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { select, Store } from '@ngrx/store';
-let moment = require('moment');
+const moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
@@ -30,12 +30,12 @@ export class MedicationTrackerComponent implements OnInit {
   chosenMedicineName: string;
   medicineForm: string;
   disableSaving: boolean;
-  medicineQuantity: number = 0;
+  medicineQuantity = 0;
   deleteMedId: string;
   editTrackedMedData: trackedMedicationData;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
-  showSpinner: boolean = false;
+  showSpinner = false;
 
   constructor(
     private modal: NgbModal,
@@ -171,7 +171,7 @@ export class MedicationTrackerComponent implements OnInit {
   }
 
   editTrackedMed(editedData: trackedMedicationData) {
-    let medDateString =
+    const medDateString =
       editedData.medicationDate['day'] +
       '/' +
       editedData.medicationDate['month'] +
@@ -183,7 +183,7 @@ export class MedicationTrackerComponent implements OnInit {
       editedData.medicationTime['minute'] +
       ':' +
       editedData.medicationTime['second'];
-    let medDate = moment(medDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    const medDate = moment(medDateString, 'DD/MM/YYYY HH:mm:ss').format(
       'DD/MM/YYYY HH:mm:ss'
     );
     this.mtService.saveEditedTrackedMed(editedData.id, medDate).subscribe({

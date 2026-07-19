@@ -66,7 +66,7 @@
               }
           @if( !isSignupPasswordOk() &&
               signUpForm.get('signUpPassword').touched &&
-              signUpForm.get('signUpPassword').value != '') {
+              signUpForm.get('signUpPassword').value !== '') {
                 <span
                   class="signup-form-error"
                   id="signUpPasswordError"
@@ -132,7 +132,7 @@
           }
           @if(!isFullNameOk() &&
               signUpForm.get('signUpFullName').touched &&
-              signUpForm.get('signUpFullName').value != ''){
+              signUpForm.get('signUpFullName').value !== ''){
                 <span
                   class="signup-form-error"
                   id="signUpFullNameError"
@@ -167,7 +167,7 @@
               }
               @if(!isAddVerifyOk() &&
               signUpForm.get('signUpAddVerify').touched &&
-              signUpForm.get('signUpAddVerify').value != '') {
+              signUpForm.get('signUpAddVerify').value !== '') {
                 <span
                   class="signup-form-error"
                   id="signUpAddVerifyError"

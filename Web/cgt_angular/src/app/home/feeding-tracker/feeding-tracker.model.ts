@@ -42,9 +42,7 @@ export interface FeedGrouped {
     timeTaken: string;
 }
 
-export interface FeedGroupedByDate {
-    [date: string]: (FeedGrouped | PumpedGrouped)[];
-}
+export type FeedGroupedByDate = Record<string, (FeedGrouped | PumpedGrouped)[]>;
 
 interface CareTakenDetail {
     _id: string;

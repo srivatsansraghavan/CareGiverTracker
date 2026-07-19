@@ -1,6 +1,5 @@
 import { careTakenDetail } from './care-taken-details.model';
 import {
-  addCareTakenPerson,
   addCareTakenPersonSuccess,
   addCareTakenPersonFailure,
   getCareTakenSuccess,

@@ -1,7 +1,7 @@
 import { OnDestroy, Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-let moment = require('moment');
+const moment = require('moment');
 import { Observable, filter, map, skip, take, takeUntil } from 'rxjs';
 import {
   CommonService,
@@ -58,7 +58,7 @@ export class FeedingTrackerComponent implements OnInit {
   chosenFeedType: string;
   chosenFeedMode: string;
   chosenFeedSide: string;
-  chosenPumpedFeed: Object;
+  chosenPumpedFeed: object;
   totalFeedTypes: feedTypeOptions = TOTAL_FEED_TYPES;
   feedTypes: string[];
   totalFeedModes: feedModeOptions = TOTAL_FEED_MODES;
@@ -69,14 +69,14 @@ export class FeedingTrackerComponent implements OnInit {
   trackState: TrackState = TrackState.Start;
   trackerInterval: any;
   feedTimeTaken: number;
-  disableTracking: boolean = true;
-  needQuantity: boolean = false;
+  disableTracking = true;
+  needQuantity = false;
   feedQuantity: number;
   trackedFeeds: FeedGroupedByDate;
   editFeedId: string;
   editFeedData: trackedFeedsData;
   deleteFeedId: string;
-  showSpinner: boolean = false;
+  showSpinner = false;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
   destroyRef = inject(DestroyRef);
@@ -342,7 +342,7 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   editTrackedFeed(editedData: trackedFeedsData) {
-    let startDateString =
+    const startDateString =
       editedData.startDate['day'] +
       '/' +
       editedData.startDate['month'] +
@@ -354,10 +354,10 @@ export class FeedingTrackerComponent implements OnInit {
       editedData.startTime['minute'] +
       ':' +
       editedData.startTime['second'];
-    let startDate = moment(startDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    const startDate = moment(startDateString, 'DD/MM/YYYY HH:mm:ss').format(
       'DD/MM/YYYY HH:mm:ss'
     );
-    let endDateString =
+    const endDateString =
       editedData.endDate['day'] +
       '/' +
       editedData.endDate['month'] +
@@ -369,7 +369,7 @@ export class FeedingTrackerComponent implements OnInit {
       editedData.endTime['minute'] +
       ':' +
       editedData.endTime['second'];
-    let endDate = moment(endDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    const endDate = moment(endDateString, 'DD/MM/YYYY HH:mm:ss').format(
       'DD/MM/YYYY HH:mm:ss'
     );
     this.ftService

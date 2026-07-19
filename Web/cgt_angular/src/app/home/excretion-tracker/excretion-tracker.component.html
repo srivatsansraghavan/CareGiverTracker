@@ -130,10 +130,10 @@
           >
           @for(diaperBrand of diaperBrands; track 'diaperBrand') {
             <option
-              [value]="diaperBrand._id"
+              [value]="diaperBrand.id"
             >
-              {{ diaperBrand.inventory_brand }} (Added on
-              {{ diaperBrand.added_time }})
+              {{ diaperBrand.inventoryBrand }} (Added on
+              {{ diaperBrand.boughtDate }})
             </option>
           }
           </select>

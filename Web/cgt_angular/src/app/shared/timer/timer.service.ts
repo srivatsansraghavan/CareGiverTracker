@@ -4,27 +4,26 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class TimerService {
-  elapsedHour: string = '00';
-  elapsedMinute: string = '00';
-  elapsedSecond: string = '00';
-  totalSeconds: number = 0;
+  elapsedHour = '00';
+  elapsedMinute = '00';
+  elapsedSecond = '00';
+  totalSeconds = 0;
   currentTime: Date;
-  constructor() {}
 
   start(startedTime: Date) {
     this.elapsedHour = '00';
     this.elapsedMinute = '00';
     this.elapsedSecond = '00';
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       this.currentTime = new Date();
-      let diffTimeSecond = Math.floor(
+      const diffTimeSecond = Math.floor(
         (this.currentTime.getTime() - startedTime.getTime()) / 1000
       );
       this.totalSeconds = diffTimeSecond;
-      let diffTimeMinute = Math.floor(
+      const diffTimeMinute = Math.floor(
         (this.currentTime.getTime() - startedTime.getTime()) / 60000
       );
-      let diffTimeHour = Math.floor(
+      const diffTimeHour = Math.floor(
         (this.currentTime.getTime() - startedTime.getTime()) / 3600000
       );
       this.elapsedSecond = (

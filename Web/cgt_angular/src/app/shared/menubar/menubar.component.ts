@@ -45,7 +45,7 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
     this.changeDetector.detectChanges();
   }
 
-  openProfileModal(profile_modal: TemplateRef<any>): void {
+  openProfileModal(profile_modal: TemplateRef<null>): void {
     this.modal.open(profile_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -53,7 +53,7 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  openSignupModal(signup_modal: TemplateRef<any>): void {
+  openSignupModal(signup_modal: TemplateRef<null>): void {
     this.modal.open(signup_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -61,7 +61,7 @@ export class MenubarComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  openLoginModal(login_modal: TemplateRef<any>): void {
+  openLoginModal(login_modal: TemplateRef<null>): void {
     this.modal.open(login_modal, {
       backdrop: 'static',
       keyboard: false,

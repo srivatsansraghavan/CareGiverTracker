@@ -5,14 +5,13 @@ import { TimerService } from 'src/app/shared/timer/timer.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 import { FeedGrouped, FeedGroupedByDate, Feeds, PumpedGrouped } from './feeding-tracker.model';
-import { isResponsePumped } from 'src/app/shared/type-guard';
 
 @Injectable()
 export class FeedingTrackerService {
   constructor(private httpClient: HttpClient, private timer: TimerService) { }
 
   startTracking() {
-    let interval = this.timer.start(new Date());
+    const interval = this.timer.start(new Date());
     return interval;
   }
 
@@ -29,7 +28,7 @@ export class FeedingTrackerService {
     feedTime: number,
     feedQuantity: number,
     pumpedFeedId: string
-  ): Observable<Object> {
+  ): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/feed/save-tracking-feed`,
       {
@@ -51,13 +50,13 @@ export class FeedingTrackerService {
 
   savePumpingFeed(
     feedGiver: string,
-    feedTaker: Object,
+    feedTaker: object,
     feedType: string,
     feedMode: string,
     feedSide: string,
     feedTime: number,
     feedQuantity: number
-  ): Observable<Object> {
+  ): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/feed/save-pumping-feed`,
       {
@@ -74,7 +73,7 @@ export class FeedingTrackerService {
   }
 
   getFeedDetails(
-    feedTaker: Object,
+    feedTaker: string,
     feedCount: number
   ): Observable<FeedGroupedByDate> {
     return this.httpClient
@@ -84,12 +83,12 @@ export class FeedingTrackerService {
       )
       .pipe(
         map((response: Feeds[]) => {
-          let feedGrouped: FeedGroupedByDate = {};
-          for (let responseItem of response) {
+          const feedGrouped: FeedGroupedByDate = {};
+          for (const responseItem of response) {
             let responseDetails: FeedGrouped | PumpedGrouped;
             let endDate: string;
             const { _id: id } = responseItem;
-            if (isResponsePumped(responseItem)) {
+            if (responseItem.pumped_mode !== undefined) {
               const { pump_end_time, pump_start_time, pumped_mode, pumped_side, pumped_quantity, pumped_time } = responseItem;
               endDate = pump_end_time.split('T')[0];
               responseDetails = {
@@ -122,7 +121,7 @@ export class FeedingTrackerService {
             if (!feedGrouped.hasOwnProperty(endDate)) {
               feedGrouped[endDate] = [];
             }
-            let feedGroupSize = feedGrouped[endDate].length;
+            const feedGroupSize = feedGrouped[endDate].length;
             feedGrouped[endDate][feedGroupSize] = responseDetails;
           }
           return feedGrouped;
@@ -130,7 +129,7 @@ export class FeedingTrackerService {
       );
   }
 
-  fetchPumpedFeeds(feedGiver: string, feedTaker: Object): Observable<any> {
+  fetchPumpedFeeds(feedGiver: string, feedTaker: string): Observable<any> {
     return this.httpClient
       .get(
         `${environment.expressURL}/feed/get-pumped-feeds?feed_giver=${feedGiver}&feed_taker=${feedTaker}`,
@@ -138,9 +137,9 @@ export class FeedingTrackerService {
       )
       .pipe(
         map((response: any) => {
-          let feedPumped = [];
-          for (let responseItem of response.body) {
-            let responseFeeds = {};
+          const feedPumped = [];
+          for (const responseItem of response.body) {
+            const responseFeeds = {};
             responseFeeds['id'] = responseItem._id;
             responseFeeds['pumpedMode'] = responseItem.pumped_mode;
             responseFeeds['pumpedSide'] = responseItem.pumped_side;
@@ -178,18 +177,18 @@ export class FeedingTrackerService {
       })
       .pipe(
         map((response: any) => {
-          let responseFeed = {};
+          const responseFeed = {};
           responseFeed['id'] = response.body._id;
           responseFeed['type'] = response.body.feed_taken_type;
           responseFeed['mode'] = response.body.feed_taken_mode;
           responseFeed['side'] = response.body.feed_taken_side;
           responseFeed['quantity'] = response.body.feed_quantity;
-          let startDateTime = new Date(response.body.feed_start_time)
+          const startDateTime = new Date(response.body.feed_start_time)
             .toLocaleString()
             .split(' ');
           console.log(startDateTime);
-          let startDate = startDateTime[0].split('/');
-          let startTime = startDateTime[1].split(':');
+          const startDate = startDateTime[0].split('/');
+          const startTime = startDateTime[1].split(':');
           responseFeed['startDate'] = {
             year: parseInt(startDate[2]),
             month: parseInt(startDate[1]),
@@ -207,12 +206,12 @@ export class FeedingTrackerService {
             minute: parseInt(startTime[1]),
             second: parseInt(startTime[2]),
           };
-          let endDateTime = new Date(response.body.feed_end_time)
+          const endDateTime = new Date(response.body.feed_end_time)
             .toLocaleString()
             .split(' ');
           console.log(endDateTime);
-          let endDate = endDateTime[0].split('/');
-          let endTime = endDateTime[1].split(':');
+          const endDate = endDateTime[0].split('/');
+          const endTime = endDateTime[1].split(':');
           // let endDate = response.body.feed_end_time.split('T')[0].split('-');
           responseFeed['endDate'] = {
             year: parseInt(endDate[2]),
@@ -233,11 +232,11 @@ export class FeedingTrackerService {
   }
 
   saveEditedFeed(
-    feedId: Object,
+    feedId: object,
     feedStart: Date,
     feedEnd: Date,
     feedQuantity: number
-  ): Observable<Object> {
+  ): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/feed/save-edited-feed`,
       {

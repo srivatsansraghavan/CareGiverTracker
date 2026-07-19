@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 export interface careTakenDetail {
-  id: Object;
+  id: object;
   name: string;
   dob: Date;
   gender: string;
@@ -36,7 +36,7 @@ export interface feedSideOptions {
 }
 
 export interface trackedFeedsData {
-  id: Object;
+  id: object;
   type: string;
   pumpedMode?: string;
   mode: string;
@@ -57,7 +57,7 @@ export interface trackedFeedsData {
 }
 
 export interface pumpedFeedsData {
-  id: Object;
+  id: object;
   pumpedSide: string;
   pumpedMode: string;
   startDate: string;
@@ -67,18 +67,8 @@ export interface pumpedFeedsData {
   pumpedTimeTaken: number;
 }
 
-export interface trackedExcretionData {
-  id: Object;
-  excretionType: string;
-  napkinType: string;
-  diaperCount: number;
-  diaperBrand: string;
-  excretionDate: string;
-  excretionTime: Date;
-}
-
 export interface trackedMedicationData {
-  id: Object;
+  id: object;
   medicineName: string;
   medicineQuantity: number;
   medicationDate: string;
@@ -86,7 +76,7 @@ export interface trackedMedicationData {
 }
 
 export interface inventoryData {
-  id: Object;
+  id: object;
   inventoryType: string;
   inventoryBrand: string;
   inventoryTotal: number;
@@ -100,13 +90,11 @@ export class CommonService {
   constructor(private httpClient: HttpClient) { }
 
   getAvailableInventory(
-    care_taken_of: Object,
+    care_taken_of: string,
     inventory_type: string
-  ): Observable<any> {
-    return this.httpClient.get(
-      `${environment.expressURL}/inventory/get-available-inventory?careTakenId=${care_taken_of}&inventoryType=${inventory_type}`,
-      { observe: 'response', withCredentials: true }
-    );
+  ): Observable<HttpResponse<inventoryData[]>> {
+    return this.httpClient.get<HttpResponse<inventoryData[]>>(
+      `${environment.expressURL}/inventory/get-available-inventory?careTakenId=${care_taken_of}&inventoryType=${inventory_type}`);
   }
 
   getEnvironment() {

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import CVDetails from "../../../assets/cv_srivatsan.json";
 import { Actions, ofType } from "@ngrx/effects";
 import { showWorkExperienceDetail } from "src/app/store/care-taken-details/care-taken-details.actions";
@@ -9,17 +9,24 @@ import { showWorkExperienceDetail } from "src/app/store/care-taken-details/care-
     styleUrls: ['./main-card.component.css'],
     standalone: false,
 })
-export class MainCardComponent {
+export class MainCardComponent implements OnInit {
     name: string = CVDetails.name;
     title: string = CVDetails.title;
     email: string = CVDetails.email;
     mobile: string = CVDetails.mobile;
     summary: string = CVDetails.summary;
-    technicalSkills: any = CVDetails.technical_skills;
+    technicalSkills: {
+        frameworks: string[];
+        programming_languages: string[];
+        cloud_platforms: string[];
+        databases: string[];
+        message_brokers: string[];
+        tools: string[];
+    } = CVDetails.technical_skills;
     workExperience: { employer: string; designation: string; dateEmployed: string; details: string[] }[] = CVDetails.work_experience;
     workExperienceDetail: string[];
     workEmployer: string;
-    showExperienceDetail: boolean = false;
+    showExperienceDetail = false;
     constructor(private actions$: Actions) {
     }
 

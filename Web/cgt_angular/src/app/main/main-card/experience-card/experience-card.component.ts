@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { interval, map, take } from "rxjs";
 import { showWorkExperienceDetail } from "src/app/store/care-taken-details/care-taken-details.actions";
 
 @Component({
@@ -10,9 +9,9 @@ import { showWorkExperienceDetail } from "src/app/store/care-taken-details/care-
     standalone: false,
 })
 export class ExperienceCardComponent {
-    showHeader: boolean = true;
+    showHeader = true;
     cards = ['main_card', 'feeding_tracker', 'excretion_tracker', 'medication_tracker', 'inventory_tracker'];
-    chosenCard: string = 'main_card';
+    chosenCard = 'main_card';
     @Input() employer: string;
     @Input() designation: string;
     @Input() dateEmployed: string;

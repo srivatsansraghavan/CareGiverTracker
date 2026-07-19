@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuthService } from "src/app/shared/auth.service";
@@ -12,7 +12,7 @@ import { AuthService } from "src/app/shared/auth.service";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignupComponent implements OnInit {
-    @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
+    @Output() closeModal = new EventEmitter<boolean>();
     signUpForm: FormGroup;
     num1: number;
     num2: number;

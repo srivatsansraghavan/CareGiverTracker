@@ -1,19 +1,21 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter, Observable, skip, Subscription, take } from 'rxjs';
+import { filter, Observable, Subscription, take } from 'rxjs';
 import {
   CommonService,
-  trackedExcretionData,
+  inventoryData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { ExcretionTrackerService } from './excretion-tracker.service';
 import { select, Store } from '@ngrx/store';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
-let moment = require('moment');
+const moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
-import { DIAPER_BRANDS, EXCRETION_TYPES, NAPKIN_TYPES } from 'src/app/shared/constants';
+import { EXCRETION_TYPES, NAPKIN_TYPES } from 'src/app/shared/constants';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
+import { HttpResponse } from '@angular/common/http';
+import { trackedExcretionData } from './excretion-tracker.model';
 
 @Component({
   selector: 'app-excretion-tracker',
@@ -26,20 +28,20 @@ export class ExcretionTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   subscription: Subscription;
-  trackedExcretions: trackedExcretionData;
+  trackedExcretions: trackedExcretionData[];
   excretionTypes: string[] = EXCRETION_TYPES;
   napkinTypes: string[] = NAPKIN_TYPES;
-  diaperBrands: { _id: string; inventory_brand: string; added_time: string; }[];
+  diaperBrands: inventoryData[];
   chosenExcretionType: string;
   chosenNapkinType: string;
   chosenDiaperBrand: string;
   disableSaving: boolean;
-  diaperCount: number = 0;
+  diaperCount = 0;
   deleteExcId: string;
   editTrackedExcData: trackedExcretionData;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
-  showSpinner: boolean = false;
+  showSpinner = false;
 
   constructor(
     private modal: NgbModal,
@@ -80,7 +82,7 @@ export class ExcretionTrackerComponent implements OnInit {
       });
   }
 
-  addExcretion(add_excretion_modal: TemplateRef<any>): void {
+  addExcretion(add_excretion_modal: TemplateRef<null>): void {
     this.modal.open(add_excretion_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -99,7 +101,7 @@ export class ExcretionTrackerComponent implements OnInit {
         this.chosenDiaperBrand
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Tracked Excretion',
             response.body.message,
@@ -109,7 +111,7 @@ export class ExcretionTrackerComponent implements OnInit {
           this.modal.dismissAll();
           this.getTrackedExcretions();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Tracked Excretion',
             response.body.message,
@@ -125,17 +127,17 @@ export class ExcretionTrackerComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  editTrackedExcModal(edit_exc_modal: TemplateRef<any>, excId: string) {
+  editTrackedExcModal(edit_exc_modal: TemplateRef<null>, excId: string) {
     this.modal.open(edit_exc_modal, {
       backdrop: 'static',
       keyboard: false,
       size: 'lg',
     });
     this.etService.getExcForId(excId).subscribe({
-      next: (excData: any) => {
+      next: (excData: trackedExcretionData) => {
         this.editTrackedExcData = excData;
       },
-      error: (err: any) => {
+      error: () => {
         this.toastService.show(
           'Edit Tracked Excretion',
           'Unable to fetch excretion data. Please try again!',
@@ -150,7 +152,7 @@ export class ExcretionTrackerComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  deleteTrackedExcModal(delete_exc_modal: TemplateRef<any>, excId: string) {
+  deleteTrackedExcModal(delete_exc_modal: TemplateRef<null>, excId: string) {
     this.modal.open(delete_exc_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -164,7 +166,7 @@ export class ExcretionTrackerComponent implements OnInit {
   }
 
   editTrackedExc(editedData: trackedExcretionData) {
-    let excDateString =
+    const excDateString =
       editedData.excretionDate['day'] +
       '/' +
       editedData.excretionDate['month'] +
@@ -176,53 +178,53 @@ export class ExcretionTrackerComponent implements OnInit {
       editedData.excretionTime['minute'] +
       ':' +
       editedData.excretionTime['second'];
-    let excDate = moment(excDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    const excDate = moment(excDateString, 'DD/MM/YYYY HH:mm:ss').format(
       'DD/MM/YYYY HH:mm:ss'
     );
-    this.etService.saveEditedTrackedExc(editedData.id, excDate).subscribe({
-      next: (response: any) => {
-        this.toastService.show(
-          'Edit Tracked Excretion',
-          response.body.message,
-          'bg-success text-light',
-          true
-        );
-        this.modal.dismissAll();
-        this.getTrackedExcretions();
-      },
-      error: (response: any) => {
-        this.toastService.show(
-          'Edit Tracked Excretion',
-          response.body.message,
-          'bg-danger text-light',
-          true
-        );
-        this.modal.dismissAll();
-      },
-    });
+    // this.etService.saveEditedTrackedExc(editedData.id, excDate).subscribe({
+    //   next: (response: HttpResponse<trackedExcretionData>) => {
+    //     this.toastService.show(
+    //       'Edit Tracked Excretion',
+    //       response.body.message,
+    //       'bg-success text-light',
+    //       true
+    //     );
+    //     this.modal.dismissAll();
+    //     this.getTrackedExcretions();
+    //   },
+    //   error: (response: HttpResponse<trackedExcretionData>) => {
+    //     this.toastService.show(
+    //       'Edit Tracked Excretion',
+    //       response.body.message,
+    //       'bg-danger text-light',
+    //       true
+    //     );
+    //     this.modal.dismissAll();
+    //   },
+    // });
   }
 
   deleteTrackedExc(excId: string) {
-    this.etService.deleteExc(excId).subscribe({
-      next: (response: any) => {
-        this.toastService.show(
-          'Delete Tracked Excretion',
-          response.message,
-          'bg-success text-light',
-          true
-        );
-        this.modal.dismissAll();
-        this.getTrackedExcretions();
-      },
-      error: (response: any) => {
-        this.toastService.show(
-          'Delete Tracked Excretion',
-          response.message,
-          'bg-error text-light',
-          true
-        );
-        this.modal.dismissAll();
-      },
-    });
+    // this.etService.deleteExc(excId).subscribe({
+    //   next: (response: HttpResponse<trackedExcretionData>) => {
+    //     this.toastService.show(
+    //       'Delete Tracked Excretion',
+    //       response.body.message,
+    //       'bg-success text-light',
+    //       true
+    //     );
+    //     this.modal.dismissAll();
+    //     this.getTrackedExcretions();
+    //   },
+    //   error: (response: HttpResponse<trackedExcretionData>) => {
+    //     this.toastService.show(
+    //       'Delete Tracked Excretion',
+    //       response.body.message,
+    //       'bg-error text-light',
+    //       true
+    //     );
+    //     this.modal.dismissAll();
+    //   },
+    // });
   }
 }

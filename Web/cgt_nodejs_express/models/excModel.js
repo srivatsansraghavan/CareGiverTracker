@@ -53,7 +53,16 @@ export const getExcDetailsModel = async function (finder) {
     .find(finder, null)
     .sort({ _id: -1 })
     .exec();
-  return getExcDetails;
+  return getExcDetails.map((exc) => {
+    return {
+      id: exc._id,
+      excretionType: exc.excretion_type,
+      napkinType: exc.napkin_type,
+      diaperCount: exc.diaper_count,
+      diaperBrand: exc.diaper_brand,
+      excretionTime: exc.excretion_time,
+    };
+  });
 };
 
 export const deleteExcretionModel = async function (finder) {

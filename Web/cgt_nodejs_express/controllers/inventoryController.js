@@ -11,7 +11,7 @@ export async function addToInventory(req, res, next) {
     const inventoryTotal =
       req.body.inventoryCount * req.body.inventoryEachContains;
     const insertQuery = {
-      care_giver: req.body.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_name: req.body.careTakenOf.name,
       care_taken_of_id: req.body.careTakenOf.id,
       inventory_type: req.body.inventoryType,
@@ -32,8 +32,8 @@ export async function addToInventory(req, res, next) {
 
 export async function getInventories(req, res, next) {
   try {
-    await getInventoriesModel({
-      care_giver: req.query.careGiver,
+    const getInventories = await getInventoriesModel({
+      care_giver: req.user.user_email,
       care_taken_of_id: req.query.careTakenId,
     });
     res.status(200).json(getInventories);
@@ -45,7 +45,7 @@ export async function getInventories(req, res, next) {
 export async function getAvailableInventory(req, res, next) {
   try {
     const getAvlInventory = await getAvailableInventoryModel({
-      care_giver: req.query.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_id: req.query.careTakenId,
       inventory_type: req.query.inventoryType,
       $expr: { $gt: ["$inventory_total", "$inventory_used"] },

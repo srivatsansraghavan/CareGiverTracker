@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, skip, Subscription } from 'rxjs';
+import { filter, Observable, skip, Subscription, take } from 'rxjs';
 import { CommonService, inventoryData } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { InventoryTrackerService } from './inventory-tracker.service';
@@ -24,14 +24,14 @@ export class InventoryTrackerComponent implements OnInit {
   inventories: inventoryData;
   inventoryTypes: string[] = ['Diaper', 'Wet Wipes', 'Medicine'];
   inventoryForms: string[] = ['Drops', 'Syrup', 'Pill', 'Tablet'];
-  chosenInventoryType: string = '';
-  chosenInventoryForm: string = '';
-  enteredInventoryBrand: string = '';
-  enteredInventoryCount: number = 0;
-  enteredInventoryEachContains: number = 0;
+  chosenInventoryType = '';
+  chosenInventoryForm = '';
+  enteredInventoryBrand = '';
+  enteredInventoryCount = 0;
+  enteredInventoryEachContains = 0;
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
-  showSpinner: boolean = false;
+  showSpinner = false;
 
   constructor(
     private modal: NgbModal,
@@ -49,7 +49,8 @@ export class InventoryTrackerComponent implements OnInit {
         this.showSpinner = true;
         this.store.pipe(
           select(selectors.selectCareTakenDetail),
-          skip(1)
+          filter(data => !!data),
+          take(1)
         ).subscribe((activeCtd) => {
           if (!activeCtd) {
             this.router.navigate(['']);
@@ -58,7 +59,7 @@ export class InventoryTrackerComponent implements OnInit {
           this.selCareTaken = activeCtd;
           this.getInventories();
         });
-      }, error: (err) => {
+      }, error: () => {
         this.router.navigate(['login'], { state: { sessionExpired: true } });
       },
     });
@@ -66,7 +67,7 @@ export class InventoryTrackerComponent implements OnInit {
 
   getInventories() {
     this.itService
-      .getInventoryDetails(this.careGiver, this.selCareTaken._id, 10)
+      .getInventoryDetails(this.selCareTaken._id, 10)
       .subscribe((inventoryDetailsResponse) => {
         this.inventories = inventoryDetailsResponse;
       });
@@ -83,7 +84,6 @@ export class InventoryTrackerComponent implements OnInit {
   saveInventory() {
     this.itService
       .addToInventory(
-        this.careGiver,
         this.selCareTaken,
         this.chosenInventoryType,
         this.chosenInventoryForm,

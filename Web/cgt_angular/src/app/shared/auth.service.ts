@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, map, Observable, of, Subject, tap } from 'rxjs';
@@ -34,21 +34,21 @@ export class AuthService {
         { observe: 'response' }
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<boolean>) => {
           if (response.status === 200) {
             this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
             this.toastService.show(
               'Sign up message',
-              response.body.message,
+              'Signed up successfully',
               'bg-success text-light sign-up-toast',
               true
             );
           }
         },
-        error: (response: any) => {
+        error: () => {
           this.toastService.show(
             'Sign up message',
-            response.error.message.message,
+            'Sign up failed',
             'bg-danger text-light sign-up-toast',
             true
           );
@@ -67,7 +67,7 @@ export class AuthService {
         { observe: 'response', withCredentials: true }
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<boolean>) => {
           if (response.status === 200) {
             this.loggedIn$.next(true);
             this.loggedInUser = email_id;
@@ -80,7 +80,7 @@ export class AuthService {
             );
           }
         },
-        error: (response: any) => {
+        error: (response: HttpErrorResponse) => {
           this.toastService.show(
             'Login message',
             response.error,
@@ -106,7 +106,7 @@ export class AuthService {
         `${environment.expressURL}/caretaken/is-first-login`,
         { withCredentials: true }
       )
-      .subscribe((firstLogin: any) => {
+      .subscribe((firstLogin: boolean) => {
         this.firstLogin.next(firstLogin);
       });
     return this.firstLogin.asObservable();

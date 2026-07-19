@@ -11,7 +11,7 @@ export class MedicationTrackerService {
   constructor(private httpClient: HttpClient) { }
 
   getMedicationDetails(
-    care_taken_id: Object,
+    care_taken_id: string,
     medication_count: number
   ): Observable<any> {
     return this.httpClient
@@ -21,9 +21,9 @@ export class MedicationTrackerService {
       )
       .pipe(
         map((response: any) => {
-          let medicationGrouped = {};
-          for (let responseItem of response.body) {
-            let responseDetails = {};
+          const medicationGrouped = {};
+          for (const responseItem of response.body) {
+            const responseDetails = {};
             let endDate;
             responseDetails['id'] = responseItem._id;
             responseDetails['medicineName'] = responseItem.medicine_name;
@@ -37,7 +37,7 @@ export class MedicationTrackerService {
             if (!medicationGrouped.hasOwnProperty(endDate)) {
               medicationGrouped[endDate] = [];
             }
-            let medicationGroupSize = medicationGrouped[endDate].length;
+            const medicationGroupSize = medicationGrouped[endDate].length;
             medicationGrouped[endDate][medicationGroupSize] = responseDetails;
           }
           return medicationGrouped;
@@ -50,7 +50,7 @@ export class MedicationTrackerService {
     careTakenOf: careTakenDetail,
     medicineId: string,
     medicineQuantity: number
-  ): Observable<Object> {
+  ): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/medication/save-tracked-medication`,
       {
@@ -73,18 +73,18 @@ export class MedicationTrackerService {
       })
       .pipe(
         map((response: any) => {
-          let responseMed = {};
+          const responseMed = {};
           responseMed['id'] = response.body._id;
           responseMed['medicineName'] = response.body.medicine_name;
           responseMed['medicineForm'] = response.body.medicine_form;
           responseMed['medicineQuantity'] = response.body.medicine_quantity;
-          let endDate = response.body.medication_time.split(' ')[0].split('/');
+          const endDate = response.body.medication_time.split(' ')[0].split('/');
           responseMed['medicationDate'] = {
             year: parseInt(endDate[2]),
             month: parseInt(endDate[1]),
             day: parseInt(endDate[0]),
           };
-          let endTime = response.body.medication_time.split(' ')[1].split(':');
+          const endTime = response.body.medication_time.split(' ')[1].split(':');
           responseMed['medicationTime'] = {
             hour: parseInt(endTime[0]),
             minute: parseInt(endTime[1]),
@@ -95,7 +95,7 @@ export class MedicationTrackerService {
       );
   }
 
-  saveEditedTrackedMed(medId: Object, medDate: Date): Observable<Object> {
+  saveEditedTrackedMed(medId: object, medDate: Date): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/medication/save-edited-med`,
       {

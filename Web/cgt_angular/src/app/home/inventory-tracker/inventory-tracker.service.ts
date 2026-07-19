@@ -11,20 +11,19 @@ export class InventoryTrackerService {
   constructor(private httpClient: HttpClient) { }
 
   getInventoryDetails(
-    care_giver: string,
     care_taken_id: string,
     inventory_count: number
   ): Observable<any> {
     return this.httpClient
       .get(
-        `${environment.expressURL}/inventory/get-inventories?careGiver=${care_giver}&careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
-        { observe: 'response', withCredentials: true }
+        `${environment.expressURL}/inventory/get-inventories?careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
+        { observe: 'response' }
       )
       .pipe(
         map((response: any) => {
-          let inventoryGrouped = {};
-          for (let responseItem of response.body) {
-            let responseDetails = {};
+          const inventoryGrouped = {};
+          for (const responseItem of response.body) {
+            const responseDetails = {};
             let addedDate;
             responseDetails['id'] = responseItem._id;
             responseDetails['inventoryType'] = responseItem.inventory_type;
@@ -42,7 +41,7 @@ export class InventoryTrackerService {
             if (!inventoryGrouped.hasOwnProperty(addedDate)) {
               inventoryGrouped[addedDate] = [];
             }
-            let inventoryGroupSize = inventoryGrouped[addedDate].length;
+            const inventoryGroupSize = inventoryGrouped[addedDate].length;
             inventoryGrouped[addedDate][inventoryGroupSize] = responseDetails;
           }
           return inventoryGrouped;
@@ -51,7 +50,6 @@ export class InventoryTrackerService {
   }
 
   addToInventory(
-    careGiver: string,
     careTakenOf: careTakenDetail,
     inventoryType: string,
     inventoryForm: string,
@@ -62,7 +60,6 @@ export class InventoryTrackerService {
     return this.httpClient.post(
       `${environment.expressURL}/inventory/add-to-inventory`,
       {
-        careGiver,
         careTakenOf: {
           id: careTakenOf._id,
           name: careTakenOf.care_taken_name,

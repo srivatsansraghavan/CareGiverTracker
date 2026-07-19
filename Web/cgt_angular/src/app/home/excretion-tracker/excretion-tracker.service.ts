@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
+import { trackedExcretionData } from './excretion-tracker.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class ExcretionTrackerService {
   constructor(private httpClient: HttpClient) { }
 
   getExcretionDetails(
-    care_taken_id: Object,
+    care_taken_id: string,
     excretion_count: number
   ): Observable<any> {
     return this.httpClient
@@ -21,9 +22,9 @@ export class ExcretionTrackerService {
       )
       .pipe(
         map((response: any) => {
-          let excretionGrouped = {};
-          for (let responseItem of response.body) {
-            let responseDetails = {};
+          const excretionGrouped = {};
+          for (const responseItem of response.body) {
+            const responseDetails = {};
             let endDate;
             responseDetails['id'] = responseItem._id;
             responseDetails['excretionType'] = responseItem.excretion_type;
@@ -38,7 +39,7 @@ export class ExcretionTrackerService {
             if (!excretionGrouped.hasOwnProperty(endDate)) {
               excretionGrouped[endDate] = [];
             }
-            let excretionGroupSize = excretionGrouped[endDate].length;
+            const excretionGroupSize = excretionGrouped[endDate].length;
             excretionGrouped[endDate][excretionGroupSize] = responseDetails;
           }
           return excretionGrouped;
@@ -53,8 +54,8 @@ export class ExcretionTrackerService {
     napkinType: string,
     diaperCount: number,
     diaperBrand: string
-  ): Observable<Object> {
-    return this.httpClient.post(
+  ): Observable<HttpResponse<{ message: string }>> {
+    return this.httpClient.post<{ message: string }>(
       `${environment.expressURL}/excretion/save-tracked-excretion`,
       {
         careGiver,
@@ -71,37 +72,12 @@ export class ExcretionTrackerService {
     );
   }
 
-  getExcForId(excId: string) {
+  getExcForId(excId: string): Observable<trackedExcretionData> {
     return this.httpClient
-      .get(`${environment.expressURL}/excretion/get-exc-for-id/${excId}`, {
-        observe: 'response',
-      })
-      .pipe(
-        map((response: any) => {
-          let responseExc = {};
-          responseExc['id'] = response.body._id;
-          responseExc['excretionType'] = response.body.excretion_type;
-          responseExc['napkinType'] = response.body.napkin_type;
-          responseExc['diaperCount'] = response.body.diaper_count;
-          responseExc['diaperBrand'] = response.body.diaper_brand;
-          let endDate = response.body.excretion_time.split(' ')[0].split('/');
-          responseExc['excretionDate'] = {
-            year: parseInt(endDate[2]),
-            month: parseInt(endDate[1]),
-            day: parseInt(endDate[0]),
-          };
-          let endTime = response.body.excretion_time.split(' ')[1].split(':');
-          responseExc['excretionTime'] = {
-            hour: parseInt(endTime[0]),
-            minute: parseInt(endTime[1]),
-            second: parseInt(endTime[2]),
-          };
-          return responseExc;
-        })
-      );
+      .get<trackedExcretionData>(`${environment.expressURL}/excretion/get-exc-for-id/${excId}`);
   }
 
-  saveEditedTrackedExc(excId: Object, excDate: Date): Observable<Object> {
+  saveEditedTrackedExc(excId: object, excDate: Date): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/excretion/save-edited-exc`,
       {

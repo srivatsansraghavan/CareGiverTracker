@@ -1,10 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../shared/auth.service';
+import { Component } from '@angular/core';
 import {
   animate,
   animation,
-  state,
   style,
   transition,
   trigger,
@@ -43,11 +40,6 @@ const slideIntoLeft = animation(
     ]),
   ],
 })
-export class MainComponent implements OnInit {
+export class MainComponent {
   envName: string;
-
-  constructor(private auth: AuthService, private router: Router) { }
-
-  ngOnInit(): void {
-  }
 }

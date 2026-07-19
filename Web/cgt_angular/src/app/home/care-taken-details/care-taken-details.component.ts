@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, 
 import { NgbModal, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Observable, catchError, filter, map, skip, take, takeLast, tap } from 'rxjs';
+import { Observable, catchError, map, tap } from 'rxjs';
 import {
   addCareTakenPerson,
   addCareTakenPersonSuccess,
@@ -76,13 +76,13 @@ export class CareTakenDetailsComponent implements OnInit {
     );
   }
 
-  open(content: TemplateRef<any>) {
+  open(content: TemplateRef<null>) {
     this.ctdService.open(content, {
       position: 'end'
-    }).result.then((result) => this.closeResult.set('Closed'))
+    }).result.then(() => this.closeResult.set('Closed'))
   }
 
-  addCareTakenPerson(add_care_taken_person_modal: TemplateRef<any>): void {
+  addCareTakenPerson(add_care_taken_person_modal: TemplateRef<null>): void {
     this.modal.open(add_care_taken_person_modal, {
       backdrop: 'static',
       keyboard: false,

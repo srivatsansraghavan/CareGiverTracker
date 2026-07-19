@@ -11,7 +11,7 @@ import { ToastService } from './toast.service';
   },
 })
 export class ToastComponent {
-  loggedIn: boolean = false;
+  loggedIn = false;
 
   constructor(public toastService: ToastService) {}
 }

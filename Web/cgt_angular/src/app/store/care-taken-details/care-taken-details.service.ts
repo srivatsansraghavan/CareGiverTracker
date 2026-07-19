@@ -10,10 +10,7 @@ export class CareTakenDetailsService {
 
   getCareTakenDetails(): Observable<careTakenDetail[]> {
     return this.httpClient.get<careTakenDetail[]>(
-      `${environment.expressURL}/caretaken/get-care-taken-details`, {
-      withCredentials: true
-    }
-    );
+      `${environment.expressURL}/caretaken/get-care-taken-details`);
   }
 
   addCareTakenPerson(
@@ -23,23 +20,20 @@ export class CareTakenDetailsService {
       .post(
         `${environment.expressURL}/caretaken/add-care-taken`,
         care_taken_details,
-        { withCredentials: true }
       )
       .pipe(
-        map((responseAddRole: any) => {
-          return responseAddRole.addedRole;
+        map((response: careTakenDetail) => {
+          return response;
         })
       );
   }
 
   changeCareTakenPerson(
     care_taken_id: string,
-    care_giver: string
   ): Observable<careTakenDetail> {
     return this.httpClient.post<careTakenDetail>(
       `${environment.expressURL}/caretaken/change-care-taken`,
       { care_taken_id },
-      { withCredentials: true }
     );
   }
 }

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToastService } from './shared/toast/toast.service';
 
 @Component({
@@ -7,8 +7,6 @@ import { ToastService } from './shared/toast/toast.service';
   styleUrls: ['./app.component.css'],
   standalone: false,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   constructor(public toastService: ToastService) { }
-
-  ngOnInit() { }
 }

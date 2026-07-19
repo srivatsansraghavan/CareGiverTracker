@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ToastService {
-  toasts: any[] = [];
+  toasts: Toast[] = [];
 
   show(header: string, text: string, toastClass: string, autohide: boolean) {
     this.toasts.push({
@@ -14,4 +14,11 @@ export class ToastService {
       autohide: autohide,
     });
   }
+}
+
+interface Toast {
+  headertext: string;
+  displaytext: string;
+  classname: string;
+  autohide: boolean;
 }

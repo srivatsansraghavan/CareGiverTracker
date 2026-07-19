@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, OnInit } from "@angular/core";
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AuthService } from "src/app/shared/auth.service";
 
@@ -9,8 +9,8 @@ import { AuthService } from "src/app/shared/auth.service";
     standalone: true,
     imports: [FormsModule, ReactiveFormsModule]
 })
-export class LoginComponent {
-    @Output() closeModal: EventEmitter<boolean> = new EventEmitter();
+export class LoginComponent implements OnInit {
+    @Output() closeModal = new EventEmitter<boolean>();
     loginForm: FormGroup;
 
     constructor(private authService: AuthService) { }

@@ -1,24 +1,16 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { select, Store, Action } from '@ngrx/store';
 import * as ctdActions from './care-taken-details.actions';
 import {
   switchMap,
-  EMPTY,
   map,
-  withLatestFrom,
-  mergeMap,
   tap,
-  Observable,
   of,
-  exhaustMap,
   catchError,
 } from 'rxjs';
 import { careTakenDetail } from './care-taken-details.model';
 import { CareTakenDetailsService } from './care-taken-details.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-// import { selectCareTakenDetails } from './care-taken-details.selector';
 
 @Injectable()
 export class CareTakenDetailsEffects {
@@ -47,7 +39,7 @@ export class CareTakenDetailsEffects {
   getCareTakenDetails$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ctdActions.getCareTaken),
-      switchMap((action) =>
+      switchMap(() =>
         this.careTakenDetailService.getCareTakenDetails().pipe(
           map((response: careTakenDetail[]) =>
             ctdActions.getCareTakenSuccess({
@@ -70,7 +62,6 @@ export class CareTakenDetailsEffects {
         this.careTakenDetailService
           .changeCareTakenPerson(
             action.changecaretakenid,
-            action.changecaregiver
           )
           .pipe(
             map((response) =>

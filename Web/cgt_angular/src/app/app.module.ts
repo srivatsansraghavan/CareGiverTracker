@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
@@ -49,11 +49,6 @@ import { MainModule } from './main/main.module';
         SharedModule,
         MainModule,],
     providers: [
-        // {
-        //     provide: HTTP_INTERCEPTORS,
-        //     useClass: AuthConfigInterceptor,
-        //     multi: true,
-        // },
         provideHttpClient(withInterceptors([(req, next) => {
             const withCredReq = req.clone({
                 withCredentials: true,

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TimerService } from './timer.service';
 
 @Component({
@@ -7,8 +7,6 @@ import { TimerService } from './timer.service';
   styleUrls: ['./timer.component.css'],
   standalone: false,
 })
-export class TimerComponent implements OnInit {
-  constructor(public timer: TimerService) {}
-
-  ngOnInit(): void {}
+export class TimerComponent {
+  constructor(public timer: TimerService) { }
 }
