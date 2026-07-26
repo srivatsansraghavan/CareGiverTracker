@@ -1,4 +1,4 @@
-name: Push trigger
+name: Linting Angular
 
 on:
   push:
