@@ -42,10 +42,12 @@
 
           <button
             class="bi bi-pencil btn-edit-tracked-med"
+            aria-label="Edit Tracked Medication"
             (click)="editTrackedMedModal(editMedModal, eachMedication.id)"
           ></button>
           <button
             class="bi bi-trash btn-delete-tracked-med"
+            aria-label="Delete Tracked Medication"
             (click)="deleteTrackedMedModal(deleteMedModal, eachMedication.id)"
           ></button>
         </li>
@@ -70,14 +72,14 @@
             class="form-control-md w-auto"
             id="medName"
             [(ngModel)]="chosenMedicineName"
-            (change)="medicineChosen($event)"
+            (change)="medicineChosen()"
           >
             <option
               *ngFor="let medicineName of medicineNames"
-              [value]="medicineName._id"
+              [value]="medicineName.id"
             >
-              {{ medicineName.inventory_brand }} (Added on
-              {{ medicineName.added_time }})
+              {{ medicineName.inventoryBrand }} (Added on
+              {{ medicineName.boughtDate }})
             </option>
           </select>
         </div>
@@ -181,6 +183,7 @@
           <button
             class="btn btn-outline-secondary bi bi-calendar3"
             (click)="d.toggle()"
+            aria-label="Toggle Date Picker"
             type="button"
           ></button>
         </div>

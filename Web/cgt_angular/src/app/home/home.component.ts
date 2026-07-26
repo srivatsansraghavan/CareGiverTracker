@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router, RouterEvent } from '@angular/router';
-import { AuthService } from '../shared/auth.service';
+import { Router } from '@angular/router';
 import { CommonService } from '../shared/common.service';
-import { filter, takeUntil } from 'rxjs';
-import { NavigationEvent } from '@ng-bootstrap/ng-bootstrap/datepicker/datepicker-view-model';
 
 @Component({
   selector: 'app-home',
@@ -16,7 +13,6 @@ export class HomeComponent implements OnInit {
   isFirstLogin: boolean;
 
   constructor(
-    private authService: AuthService,
     private router: Router,
     private commonService: CommonService
   ) {

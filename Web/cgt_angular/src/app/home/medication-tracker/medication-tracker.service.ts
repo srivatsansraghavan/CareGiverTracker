@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { trackedMedicationData } from 'src/app/shared/common.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
@@ -13,28 +14,27 @@ export class MedicationTrackerService {
   getMedicationDetails(
     care_taken_id: string,
     medication_count: number
-  ): Observable<any> {
+  ): Observable<Record<string, trackedMedicationData[]>> {
     return this.httpClient
       .get(
         `${environment.expressURL}/medication/get-medication-details?careTakenId=${care_taken_id}&medicationCount=${medication_count}`,
         { observe: 'response', withCredentials: true }
       )
       .pipe(
-        map((response: any) => {
+        map((response: HttpResponse<trackedMedicationData[]>) => {
           const medicationGrouped = {};
           for (const responseItem of response.body) {
             const responseDetails = {};
-            let endDate;
-            responseDetails['id'] = responseItem._id;
-            responseDetails['medicineName'] = responseItem.medicine_name;
-            responseDetails['medicineForm'] = responseItem.medicine_form;
+            responseDetails['id'] = responseItem.id;
+            responseDetails['medicineName'] = responseItem.medicineName;
+            responseDetails['medicineForm'] = responseItem.medicineName;
             responseDetails['medicineQuantity'] =
-              responseItem.medicine_quantity;
-            endDate = responseItem.medication_time.split('T')[0];
+              responseItem.medicineQuantity;
+            const endDate = responseItem.medicationTime.split('T')[0];
             responseDetails['medicationTime'] = new Date(
-              responseItem.medication_time
+              responseItem.medicationTime
             ).toLocaleString();
-            if (!medicationGrouped.hasOwnProperty(endDate)) {
+            if (!medicationGrouped[endDate]) {
               medicationGrouped[endDate] = [];
             }
             const medicationGroupSize = medicationGrouped[endDate].length;
@@ -72,19 +72,19 @@ export class MedicationTrackerService {
         observe: 'response', withCredentials: true
       })
       .pipe(
-        map((response: any) => {
+        map((response: HttpResponse<trackedMedicationData>) => {
           const responseMed = {};
-          responseMed['id'] = response.body._id;
-          responseMed['medicineName'] = response.body.medicine_name;
-          responseMed['medicineForm'] = response.body.medicine_form;
-          responseMed['medicineQuantity'] = response.body.medicine_quantity;
-          const endDate = response.body.medication_time.split(' ')[0].split('/');
+          responseMed['id'] = response.body.id;
+          responseMed['medicineName'] = response.body.medicineName;
+          responseMed['medicineForm'] = response.body.medicineName;
+          responseMed['medicineQuantity'] = response.body.medicineQuantity;
+          const endDate = response.body.medicationTime.split(' ')[0].split('/');
           responseMed['medicationDate'] = {
             year: parseInt(endDate[2]),
             month: parseInt(endDate[1]),
             day: parseInt(endDate[0]),
           };
-          const endTime = response.body.medication_time.split(' ')[1].split(':');
+          const endTime = response.body.medicationTime.split(' ')[1].split(':');
           responseMed['medicationTime'] = {
             hour: parseInt(endTime[0]),
             minute: parseInt(endTime[1]),
@@ -95,7 +95,7 @@ export class MedicationTrackerService {
       );
   }
 
-  saveEditedTrackedMed(medId: object, medDate: Date): Observable<object> {
+  saveEditedTrackedMed(medId: object, medDate: string): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/medication/save-edited-med`,
       {

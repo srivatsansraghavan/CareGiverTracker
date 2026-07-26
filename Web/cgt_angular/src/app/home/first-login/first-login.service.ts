@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -32,7 +32,7 @@ export class FirstLoginService {
         { observe: 'response', withCredentials: true }
       )
       .subscribe({
-        next: (responseAddCareTaken: any) => {
+        next: (responseAddCareTaken: HttpResponse<{ message: string }>) => {
           this.modal.dismissAll();
           this.toastService.show(
             'Care taken Addition',

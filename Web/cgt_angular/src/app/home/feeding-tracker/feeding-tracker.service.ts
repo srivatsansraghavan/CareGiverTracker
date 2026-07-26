@@ -15,7 +15,7 @@ export class FeedingTrackerService {
     return interval;
   }
 
-  stopTracking(trackerInterval: any) {
+  stopTracking(trackerInterval: NodeJS.Timeout) {
     return this.timer.stop(trackerInterval);
   }
 
@@ -118,7 +118,7 @@ export class FeedingTrackerService {
                 timeTaken: feed_taken_time,
               }
             }
-            if (!feedGrouped.hasOwnProperty(endDate)) {
+            if (!feedGrouped[endDate]) {
               feedGrouped[endDate] = [];
             }
             const feedGroupSize = feedGrouped[endDate].length;

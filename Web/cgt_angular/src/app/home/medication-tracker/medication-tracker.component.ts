@@ -3,16 +3,18 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, skip, Subscription } from 'rxjs';
 import {
   CommonService,
+  inventoryData,
   trackedMedicationData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MedicationTrackerService } from './medication-tracker.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { select, Store } from '@ngrx/store';
-const moment = require('moment');
+// const moment = require('moment');
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-medication-tracker',
@@ -25,8 +27,8 @@ export class MedicationTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   subscription: Subscription;
-  trackedMedications: trackedMedicationData;
-  medicineNames: any[];
+  trackedMedications: Record<string, trackedMedicationData[]>;
+  medicineNames: inventoryData[];
   chosenMedicineName: string;
   medicineForm: string;
   disableSaving: boolean;
@@ -62,7 +64,7 @@ export class MedicationTrackerComponent implements OnInit {
           this.selCareTaken = activeCtd;
           this.getTrackedMedications();
         });
-      }, error: (err) => {
+      }, error: () => {
         this.router.navigate(['login'], { state: { sessionExpired: true } });
       },
     });
@@ -81,7 +83,7 @@ export class MedicationTrackerComponent implements OnInit {
       });
   }
 
-  addMedication(add_medication_modal: TemplateRef<any>): void {
+  addMedication(add_medication_modal: TemplateRef<null>): void {
     this.modal.open(add_medication_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -89,9 +91,9 @@ export class MedicationTrackerComponent implements OnInit {
     });
   }
 
-  medicineChosen(event: any) {
+  medicineChosen() {
     this.mtService.getMedicineForm(this.chosenMedicineName).subscribe({
-      next: (response: any) => {
+      next: (response: string) => {
         this.medicineForm = response;
       },
     });
@@ -106,7 +108,7 @@ export class MedicationTrackerComponent implements OnInit {
         this.medicineQuantity
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Tracked Medication',
             response.body.message,
@@ -116,7 +118,7 @@ export class MedicationTrackerComponent implements OnInit {
           this.modal.dismissAll();
           this.getTrackedMedications();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Tracked Medication',
             response.body.message,
@@ -132,17 +134,17 @@ export class MedicationTrackerComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  editTrackedMedModal(edit_med_modal: TemplateRef<any>, medId: string) {
+  editTrackedMedModal(edit_med_modal: TemplateRef<null>, medId: string) {
     this.modal.open(edit_med_modal, {
       backdrop: 'static',
       keyboard: false,
       size: 'lg',
     });
     this.mtService.getMedForId(medId).subscribe({
-      next: (medData: any) => {
+      next: (medData: trackedMedicationData) => {
         this.editTrackedMedData = medData;
       },
-      error: (err: any) => {
+      error: () => {
         this.toastService.show(
           'Edit Tracked Medication',
           'Unable to fetch medication data. Please try again!',
@@ -157,7 +159,7 @@ export class MedicationTrackerComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  deleteTrackedMedModal(delete_med_modal: TemplateRef<any>, medId: string) {
+  deleteTrackedMedModal(delete_med_modal: TemplateRef<null>, medId: string) {
     this.modal.open(delete_med_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -183,11 +185,11 @@ export class MedicationTrackerComponent implements OnInit {
       editedData.medicationTime['minute'] +
       ':' +
       editedData.medicationTime['second'];
-    const medDate = moment(medDateString, 'DD/MM/YYYY HH:mm:ss').format(
-      'DD/MM/YYYY HH:mm:ss'
-    );
-    this.mtService.saveEditedTrackedMed(editedData.id, medDate).subscribe({
-      next: (response: any) => {
+    // const medDate = moment(medDateString, 'DD/MM/YYYY HH:mm:ss').format(
+    //   'DD/MM/YYYY HH:mm:ss'
+    // );
+    this.mtService.saveEditedTrackedMed(editedData.id, medDateString).subscribe({
+      next: (response: HttpResponse<{ message: string }>) => {
         this.toastService.show(
           'Edit Tracked Medication',
           response.body.message,
@@ -197,7 +199,7 @@ export class MedicationTrackerComponent implements OnInit {
         this.modal.dismissAll();
         this.getTrackedMedications();
       },
-      error: (response: any) => {
+      error: (response: HttpResponse<{ message: string }>) => {
         this.toastService.show(
           'Edit Tracked Medication',
           response.body.message,
@@ -211,7 +213,7 @@ export class MedicationTrackerComponent implements OnInit {
 
   deleteTrackedMed(medId: string) {
     this.mtService.deleteMed(medId).subscribe({
-      next: (response: any) => {
+      next: (response: { message: string }) => {
         this.toastService.show(
           'Delete Tracked Medication',
           response.message,
@@ -221,7 +223,7 @@ export class MedicationTrackerComponent implements OnInit {
         this.modal.dismissAll();
         this.getTrackedMedications();
       },
-      error: (response: any) => {
+      error: (response: { message: string }) => {
         this.toastService.show(
           'Delete Tracked Medication',
           response.message,

@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { inventoryData } from 'src/app/shared/common.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 
@@ -13,36 +14,27 @@ export class InventoryTrackerService {
   getInventoryDetails(
     care_taken_id: string,
     inventory_count: number
-  ): Observable<any> {
+  ): Observable<Record<string, inventoryData[]>> {
     return this.httpClient
       .get(
         `${environment.expressURL}/inventory/get-inventories?careTakenId=${care_taken_id}&inventoryCount=${inventory_count}`,
         { observe: 'response' }
       )
       .pipe(
-        map((response: any) => {
+        map((response: HttpResponse<inventoryData[]>) => {
           const inventoryGrouped = {};
           for (const responseItem of response.body) {
             const responseDetails = {};
-            let addedDate;
-            responseDetails['id'] = responseItem._id;
-            responseDetails['inventoryType'] = responseItem.inventory_type;
-            responseDetails['inventoryBrand'] = responseItem.inventory_brand;
-            responseDetails['inventoryForm'] = responseItem.inventory_form;
-            responseDetails['inventoryTotal'] = responseItem.inventory_total;
-            responseDetails['inventoryUsed'] = responseItem.inventory_used;
-            responseDetails['inventoryRemaining'] =
-              responseItem.inventory_total - responseItem.inventory_used;
-            addedDate = responseItem.added_time.split('T')[0];
+            const addedDate = responseItem.boughtDate.split('T')[0];
             responseDetails['addedTime'] = new Date(
-              responseItem.added_time
+              responseItem.boughtDate
             ).toLocaleString();
             responseDetails['addedDate'] = addedDate;
-            if (!inventoryGrouped.hasOwnProperty(addedDate)) {
+            if (!inventoryGrouped[addedDate]) {
               inventoryGrouped[addedDate] = [];
             }
             const inventoryGroupSize = inventoryGrouped[addedDate].length;
-            inventoryGrouped[addedDate][inventoryGroupSize] = responseDetails;
+            inventoryGrouped[addedDate][inventoryGroupSize] = { ...responseItem, ...responseDetails };
           }
           return inventoryGrouped;
         })
@@ -56,8 +48,8 @@ export class InventoryTrackerService {
     inventoryBrand: string,
     inventoryCount: number,
     inventoryEachContains: number
-  ): Observable<any> {
-    return this.httpClient.post(
+  ): Observable<HttpResponse<{ message: string }>> {
+    return this.httpClient.post<{ message: string }>(
       `${environment.expressURL}/inventory/add-to-inventory`,
       {
         careTakenOf: {

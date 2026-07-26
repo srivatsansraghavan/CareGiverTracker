@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { filter, Observable, skip, Subscription, take } from 'rxjs';
+import { filter, Observable, Subscription, take } from 'rxjs';
 import { CommonService, inventoryData } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { InventoryTrackerService } from './inventory-tracker.service';
@@ -9,6 +9,7 @@ import { select, Store } from '@ngrx/store';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { AuthService } from 'src/app/shared/auth.service';
 import { Router } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-inventory-tracker',
@@ -21,7 +22,7 @@ export class InventoryTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   subscription: Subscription;
-  inventories: inventoryData;
+  inventories: Record<string, inventoryData[]>;
   inventoryTypes: string[] = ['Diaper', 'Wet Wipes', 'Medicine'];
   inventoryForms: string[] = ['Drops', 'Syrup', 'Pill', 'Tablet'];
   chosenInventoryType = '';
@@ -73,7 +74,7 @@ export class InventoryTrackerComponent implements OnInit {
       });
   }
 
-  addInventory(add_inventory_modal: TemplateRef<any>): void {
+  addInventory(add_inventory_modal: TemplateRef<null>): void {
     this.modal.open(add_inventory_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -92,7 +93,7 @@ export class InventoryTrackerComponent implements OnInit {
         this.enteredInventoryEachContains
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Inventory',
             response.body.message,
@@ -102,7 +103,7 @@ export class InventoryTrackerComponent implements OnInit {
           this.modal.dismissAll();
           this.getInventories();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Inventory',
             response.body.message,

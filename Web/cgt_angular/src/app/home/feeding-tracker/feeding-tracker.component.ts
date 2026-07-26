@@ -25,6 +25,7 @@ import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/sh
 import { AuthService } from 'src/app/shared/auth.service';
 import { FeedGroupedByDate } from './feeding-tracker.model';
 import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-feeding-tracker',
@@ -40,7 +41,7 @@ export class FeedingTrackerComponent implements OnInit {
   chosenFeedType: string;
   chosenFeedMode: string;
   chosenFeedSide: string;
-  chosenPumpedFeed: object;
+  chosenPumpedFeed: string;
   totalFeedTypes: feedTypeOptions = TOTAL_FEED_TYPES;
   feedTypes: string[];
   totalFeedModes: feedModeOptions = TOTAL_FEED_MODES;
@@ -49,7 +50,7 @@ export class FeedingTrackerComponent implements OnInit {
   feedSides: string[];
   pumpedFeeds: pumpedFeedsData[];
   trackState: TrackState = TrackState.Start;
-  trackerInterval: any;
+  trackerInterval: NodeJS.Timeout;
   feedTimeTaken: number;
   disableTracking = true;
   needQuantity = false;
@@ -99,7 +100,7 @@ export class FeedingTrackerComponent implements OnInit {
           this.showSpinner = false;
           this.cd.detectChanges();
         },
-        error: (error) => {
+        error: () => {
           this.showSpinner = false;
         },
       });
@@ -114,8 +115,8 @@ export class FeedingTrackerComponent implements OnInit {
     });
   }
 
-  onFeedTypeChosen(event: any) {
-    this.chosenFeedType = event.target.value;
+  onFeedTypeChosen(event: Event) {
+    this.chosenFeedType = (event.target as HTMLSelectElement).value;
     this.feedModes = this.totalFeedModes[this.chosenFeedType];
     if (
       this.chosenFeedType === FeedTypes.MashedFood &&
@@ -133,8 +134,8 @@ export class FeedingTrackerComponent implements OnInit {
     }
   }
 
-  onFeedModeChosen(event: any) {
-    this.chosenFeedMode = event.target.value;
+  onFeedModeChosen(event: Event) {
+    this.chosenFeedMode = (event.target as HTMLSelectElement).value;
     if (
       this.chosenFeedType === FeedTypes.BreastMilk &&
       this.chosenFeedMode === FeedModes.PumpedMilk
@@ -154,8 +155,8 @@ export class FeedingTrackerComponent implements OnInit {
     }
   }
 
-  onFeedSideChosen(event: any) {
-    this.chosenFeedSide = event.target.value;
+  onFeedSideChosen(event: Event) {
+    this.chosenFeedSide = (event.target as HTMLSelectElement).value;
     this.disableTracking = false;
   }
 
@@ -182,7 +183,7 @@ export class FeedingTrackerComponent implements OnInit {
         this.feedQuantity
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Pumped Milk',
             response.body.message,
@@ -192,7 +193,7 @@ export class FeedingTrackerComponent implements OnInit {
           this.cancelTrackingFeed();
           this.getFeeds();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Pumped Milk',
             response.body.message,
@@ -205,7 +206,7 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   saveTrackedFeed() {
-    let pumpedFeedId: any = new Object(null);
+    let pumpedFeedId: string;
     if (!this.chosenFeedMode) {
       this.chosenFeedMode = null;
     }
@@ -230,7 +231,7 @@ export class FeedingTrackerComponent implements OnInit {
         pumpedFeedId
       )
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Feed',
             response.body.message,
@@ -240,7 +241,7 @@ export class FeedingTrackerComponent implements OnInit {
           this.cancelTrackingFeed();
           this.getFeeds();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Add Feed',
             response.body.message,
@@ -265,7 +266,7 @@ export class FeedingTrackerComponent implements OnInit {
     this.feedQuantity = 0;
   }
 
-  editTrackedFeedModal(edit_feed_modal: TemplateRef<any>, feedId: string) {
+  editTrackedFeedModal(edit_feed_modal: TemplateRef<null>, feedId: string) {
     this.modal.open(edit_feed_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -275,7 +276,7 @@ export class FeedingTrackerComponent implements OnInit {
       next: (feedData: trackedFeedsData) => {
         this.editFeedData = feedData;
       },
-      error: (err: any) => {
+      error: () => {
         this.toastService.show(
           'Edit Feed',
           'Unable to fetch feed data. Please try again!',
@@ -286,7 +287,7 @@ export class FeedingTrackerComponent implements OnInit {
     });
   }
 
-  deleteTrackedFeedModal(delete_feed_modal: TemplateRef<any>, feedId: string) {
+  deleteTrackedFeedModal(delete_feed_modal: TemplateRef<null>, feedId: string) {
     this.modal.open(delete_feed_modal, {
       backdrop: 'static',
       keyboard: false,
@@ -297,7 +298,7 @@ export class FeedingTrackerComponent implements OnInit {
 
   deleteTrackedFeed(feedId: string) {
     this.ftService.deleteFeed(feedId).subscribe({
-      next: (response: any) => {
+      next: (response: { message: string }) => {
         this.toastService.show(
           'Delete Feed',
           response.message,
@@ -307,7 +308,7 @@ export class FeedingTrackerComponent implements OnInit {
         this.modal.dismissAll();
         this.getFeeds();
       },
-      error: (response: any) => {
+      error: (response: { message: string }) => {
         this.toastService.show(
           'Delete Feed',
           response.message,
@@ -357,7 +358,7 @@ export class FeedingTrackerComponent implements OnInit {
     this.ftService
       .saveEditedFeed(editedData.id, startDateString, endDateString, editedData.quantity)
       .subscribe({
-        next: (response: any) => {
+        next: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Edit Feed',
             response.body.message,
@@ -367,7 +368,7 @@ export class FeedingTrackerComponent implements OnInit {
           this.modal.dismissAll();
           this.getFeeds();
         },
-        error: (response: any) => {
+        error: (response: HttpResponse<{ message: string }>) => {
           this.toastService.show(
             'Edit Feed',
             response.body.message,

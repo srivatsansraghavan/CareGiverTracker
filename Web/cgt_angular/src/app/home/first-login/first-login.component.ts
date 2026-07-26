@@ -1,10 +1,7 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/shared/auth.service';
 import { FirstLoginService } from './first-login.service';
-import * as moment from 'moment';
-import { ToastService } from 'src/app/shared/toast/toast.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-first-login',
@@ -13,8 +10,8 @@ import { Router } from '@angular/router';
   providers: [FirstLoginService],
   standalone: false,
 })
-export class FirstLoginComponent implements OnInit {
-  @ViewChild('firstloginmodal') firstLoginModal: TemplateRef<any>;
+export class FirstLoginComponent {
+  @ViewChild('firstloginmodal') firstLoginModal: TemplateRef<null>;
 
   careTakenOf: string;
   careTakenName: string;
@@ -34,15 +31,10 @@ export class FirstLoginComponent implements OnInit {
     private modal: NgbModal,
     private flService: FirstLoginService,
     public authService: AuthService,
-    private toastService: ToastService,
-    private router: Router,
   ) {
     setTimeout(() => {
       this.showFirstLoginModal();
     }, 500);
-  }
-
-  ngOnInit(): void {
   }
 
   showFirstLoginModal(): void {
