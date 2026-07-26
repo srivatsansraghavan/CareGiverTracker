@@ -179,7 +179,18 @@ export const getPumpedDetailsModel = async function (
     )
     .sort({ _id: -1 })
     .exec();
-  return getPumpedDetails;
+  return getPumpedDetails.map((getPumpedDetail) => ({
+      id: getPumpedDetail._id,
+      pumpedBy: getPumpedDetail.pumped_by,
+      pumpedForName: getPumpedDetail.pumped_for_name,
+      pumpedForId: getPumpedDetail.pumped_for_id,
+      pumpedMode: getPumpedDetail.pumped_mode,
+      pumpedSide: getPumpedDetail.pumped_side,
+      pumpedTime: getPumpedDetail.pumped_time,
+      pumpedQuantity: getPumpedDetail.pumped_quantity,
+      pumpStartTime: getPumpedDetail.pump_start_time,
+      pumpEndTime: getPumpedDetail.pump_end_time,
+    }));
 };
 
 export const deleteTrackedFeedModel = async function (feedId) {

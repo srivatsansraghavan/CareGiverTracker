@@ -68,7 +68,18 @@ export const getInventoriesModel = async function (finder) {
     .find(finder, null)
     .sort({ _id: -1 })
     .exec();
-  return getInvDetails;
+  return getInvDetails.map((getInvDetail) => ({
+      id: getInvDetail._id,
+      careGiver: getInvDetail.care_giver,
+      careTakenOfName: getInvDetail.care_taken_of_name,
+      careTakenOfId: getInvDetail.care_taken_of_id,
+      inventoryType: getInvDetail.inventory_type,
+      inventoryBrand: getInvDetail.inventory_brand,
+      inventoryForm: getInvDetail.inventory_form,
+      inventoryTotal: getInvDetail.inventory_total,
+      inventoryUsed: getInvDetail.inventory_used,
+      addedTime: getInvDetail.added_time,
+  }));
 };
 
 export const getAvailableInventoryModel = async function (finder) {
@@ -77,5 +88,16 @@ export const getAvailableInventoryModel = async function (finder) {
     .find(finder)
     .sort({ _id: -1 })
     .exec();
-  return getAvailableInventoryDetails;
+  return getAvailableInventoryDetails.map((getAvailableInventoryDetail) => ({
+      id: getAvailableInventoryDetail._id,
+      careGiver: getAvailableInventoryDetail.care_giver,
+      careTakenOfName: getAvailableInventoryDetail.care_taken_of_name,
+      careTakenOfId: getAvailableInventoryDetail.care_taken_of_id,
+      inventoryType: getAvailableInventoryDetail.inventory_type,
+      inventoryBrand: getAvailableInventoryDetail.inventory_brand,
+      inventoryForm: getAvailableInventoryDetail.inventory_form,
+      inventoryTotal: getAvailableInventoryDetail.inventory_total,
+      inventoryUsed: getAvailableInventoryDetail.inventory_used,
+      addedTime: getAvailableInventoryDetail.added_time,
+  }));
 };

@@ -11,7 +11,7 @@ export async function saveTrackedExcretion(req, res, next) {
   try {
     let excTime = moment().format("MM/DD/YYYY HH:mm:ss");
     const insertQuery = {
-      care_giver: req.body.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_name: req.body.careTakenOf.name,
       care_taken_of_id: req.body.careTakenOf.id,
       excretion_type: req.body.excretionType,
