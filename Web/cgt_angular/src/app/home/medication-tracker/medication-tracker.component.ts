@@ -79,7 +79,7 @@ export class MedicationTrackerComponent implements OnInit {
     this.commonService
       .getAvailableInventory(this.selCareTaken._id, 'Medicine')
       .subscribe((availableMedsResp) => {
-        this.medicineNames = availableMedsResp.body;
+        this.medicineNames = availableMedsResp;
       });
   }
 

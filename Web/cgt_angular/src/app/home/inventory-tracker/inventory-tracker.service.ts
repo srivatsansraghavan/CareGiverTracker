@@ -25,9 +25,9 @@ export class InventoryTrackerService {
           const inventoryGrouped = {};
           for (const responseItem of response.body) {
             const responseDetails = {};
-            const addedDate = responseItem.boughtDate.split('T')[0];
+            const addedDate = responseItem.addedTime.split('T')[0];
             responseDetails['addedTime'] = new Date(
-              responseItem.boughtDate
+              responseItem.addedTime
             ).toLocaleString();
             responseDetails['addedDate'] = addedDate;
             if (!inventoryGrouped[addedDate]) {

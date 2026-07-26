@@ -78,7 +78,7 @@ export class ExcretionTrackerComponent implements OnInit {
     this.commonService
       .getAvailableInventory(this.selCareTaken._id, 'Diaper')
       .subscribe((availableDiapersResp) => {
-        this.diaperBrands = availableDiapersResp.body;
+        this.diaperBrands = availableDiapersResp;
       });
   }
 

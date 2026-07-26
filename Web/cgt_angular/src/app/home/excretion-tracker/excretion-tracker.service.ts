@@ -24,10 +24,10 @@ export class ExcretionTrackerService {
         map((response: HttpResponse<trackedExcretionData[]>) => {
           const excretionGrouped: Record<string, trackedExcretionData[]> = {};
           for (const responseItem of response.body) {
-            const endDate = responseItem.excretionTime.toISOString();
-            // if (!excretionGrouped.hasOwnProperty(endDate)) {
-            //   excretionGrouped[endDate] = [];
-            // }
+            const endDate = responseItem.excretionTime.toString();
+            if (!excretionGrouped[endDate]) {
+              excretionGrouped[endDate] = [];
+            }
             const excretionGroupSize = excretionGrouped[endDate].length;
             excretionGrouped[endDate][excretionGroupSize] = responseItem;
           }

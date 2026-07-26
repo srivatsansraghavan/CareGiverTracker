@@ -8,7 +8,6 @@ import {
   feedTypeOptions,
   feedModeOptions,
   feedSideOptions,
-  pumpedFeedsData,
   trackedFeedsData,
 } from 'src/app/shared/common.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
@@ -23,7 +22,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
 import { Router } from '@angular/router';
 import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
 import { AuthService } from 'src/app/shared/auth.service';
-import { FeedGroupedByDate } from './feeding-tracker.model';
+import { FeedGroupedByDate, PumpedGrouped } from './feeding-tracker.model';
 import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
 import { HttpResponse } from '@angular/common/http';
 
@@ -48,7 +47,7 @@ export class FeedingTrackerComponent implements OnInit {
   feedModes: string[];
   totalFeedSides: feedSideOptions = TOTAL_FEED_SIDES;
   feedSides: string[];
-  pumpedFeeds: pumpedFeedsData[];
+  pumpedFeeds: PumpedGrouped[];
   trackState: TrackState = TrackState.Start;
   trackerInterval: NodeJS.Timeout;
   feedTimeTaken: number;

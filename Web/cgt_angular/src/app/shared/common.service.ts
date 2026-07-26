@@ -1,4 +1,4 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -77,12 +77,15 @@ export interface trackedMedicationData {
 
 export interface inventoryData {
   id: object;
+  careGiver: string;
+  careTakenOfName: string;
+  careTakenOfId: string;
   inventoryType: string;
   inventoryBrand: string;
+  inventoryForm: string;
   inventoryTotal: number;
-  inventoryRemaining: number;
-  boughtDate: string;
-  boughtTime: string;
+  inventoryUsed: number;
+  addedTime: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -92,9 +95,10 @@ export class CommonService {
   getAvailableInventory(
     care_taken_of: string,
     inventory_type: string
-  ): Observable<HttpResponse<inventoryData[]>> {
-    return this.httpClient.get<HttpResponse<inventoryData[]>>(
-      `${environment.expressURL}/inventory/get-available-inventory?careTakenId=${care_taken_of}&inventoryType=${inventory_type}`);
+  ): Observable<inventoryData[]> {
+    return this.httpClient.get<inventoryData[]>(
+      `${environment.expressURL}/inventory/get-available-inventory?careTakenId=${care_taken_of}&inventoryType=${inventory_type}`
+    );
   }
 
   getEnvironment() {

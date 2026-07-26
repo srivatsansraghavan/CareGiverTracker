@@ -7,7 +7,7 @@
   </button>
 
   <ul class="inv-timeline">
-    @for(inventory of inventories | trackItems : 'getKeyValue'; track 'inventory') {
+    @for(inventory of inventories | trackItems : 'getKeyValue'; track inventory[0].key) {
       <li
         class="inv-per-date"
       >

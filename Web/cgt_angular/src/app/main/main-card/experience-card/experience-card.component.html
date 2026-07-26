@@ -1,6 +1,6 @@
 <div class="experience-card">
     @if(showHeader) {
-        <div class="experience-header" (click)="showDetail()">
+        <div class="experience-header" (click)="showDetail()" (keydown)="showDetail()" role="button">
             <h3>{{ employer }}</h3>
             <h4> {{ designation }}  </h4>
             <h4> {{ dateEmployed}} </h4>

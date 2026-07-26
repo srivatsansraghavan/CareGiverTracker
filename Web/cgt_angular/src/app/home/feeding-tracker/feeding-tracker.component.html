@@ -26,7 +26,7 @@
         </button>
       </li>
     } @else {
-      @for(trackFeed of trackedFeeds | trackItems: 'getKeyValue'; track 'key') {
+      @for(trackFeed of trackedFeeds | trackItems: 'getKeyValue'; track trackFeed[0].key) {
         <li
           class="feed-per-date"
         >
@@ -210,9 +210,9 @@
                     [value]="pumpedFeed.id"
                   >
                     {{ pumpedFeed.pumpedSide }} - {{ pumpedFeed.pumpedMode }} (
-                    {{ pumpedFeed.startDate }}
-                    {{ pumpedFeed.startTime }} - {{ pumpedFeed.endDate }}
-                    {{ pumpedFeed.endTime }})
+                    {{ pumpedFeed.pumpedStartDate }}
+                    {{ pumpedFeed.pumpedStartTime }} - {{ pumpedFeed.pumpedEndDate }}
+                    {{ pumpedFeed.pumpedEndTime }})
                   </option>
                 }
                 </select>

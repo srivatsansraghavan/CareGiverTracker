@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { TimerService } from 'src/app/shared/timer/timer.service';
@@ -129,35 +129,17 @@ export class FeedingTrackerService {
       );
   }
 
-  fetchPumpedFeeds(feedGiver: string, feedTaker: string): Observable<any> {
+  fetchPumpedFeeds(feedGiver: string, feedTaker: string): Observable<PumpedGrouped[]> {
     return this.httpClient
-      .get(
+      .get<PumpedGrouped[]>(
         `${environment.expressURL}/feed/get-pumped-feeds?feed_giver=${feedGiver}&feed_taker=${feedTaker}`,
         { observe: 'response' }
       )
       .pipe(
-        map((response: any) => {
+        map((response: HttpResponse<PumpedGrouped[]>) => {
           const feedPumped = [];
           for (const responseItem of response.body) {
-            const responseFeeds = {};
-            responseFeeds['id'] = responseItem._id;
-            responseFeeds['pumpedMode'] = responseItem.pumped_mode;
-            responseFeeds['pumpedSide'] = responseItem.pumped_side;
-            responseFeeds['quantity'] = responseItem.pumped_quantity;
-            // responseFeeds['startDate'] =
-            //   responseItem.pump_start_time.split('T')[0];
-            // responseFeeds['startTime'] =
-            //   responseItem.pump_start_time.split('T')[1];
-            // responseFeeds['endDate'] = responseItem.pump_end_time.split('-')[0];
-            // responseFeeds['endTime'] = responseItem.pump_end_time.split('-')[1];
-            responseFeeds['startDate'] = new Date(
-              responseItem.pump_start_time
-            ).toString();
-            responseFeeds['endDate'] = new Date(
-              responseItem.pump_end_time
-            ).toString();
-            responseFeeds['timeTaken'] = responseItem.pumped_time;
-            feedPumped.push(responseFeeds);
+            feedPumped.push(responseItem);
           }
           return feedPumped;
         })

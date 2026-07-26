@@ -71,7 +71,7 @@
             id="excType"
             [(ngModel)]="chosenExcretionType"
           >
-          @for(excretionType of excretionTypes; track 'excretionType') {
+          @for(excretionType of excretionTypes; track excretionType) {
             <option
               [value]="excretionType"
             >
@@ -92,7 +92,7 @@
             id="napkType"
             [(ngModel)]="chosenNapkinType"
           >
-          @for(napkinType of napkinTypes; track 'napkinType') {
+          @for(napkinType of napkinTypes; track napkinType) {
             <option [value]="napkinType">
               {{ napkinType }}
             </option>
@@ -130,12 +130,12 @@
             id="diaperBrand"
             [(ngModel)]="chosenDiaperBrand"
           >
-          @for(diaperBrand of diaperBrands; track 'diaperBrand') {
+          @for(diaperBrand of diaperBrands; track diaperBrand.id) {
             <option
               [value]="diaperBrand.id"
             >
               {{ diaperBrand.inventoryBrand }} (Added on
-              {{ diaperBrand.boughtDate }})
+              {{ diaperBrand.addedTime }})
             </option>
           }
           </select>
