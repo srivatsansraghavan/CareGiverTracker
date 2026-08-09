@@ -148,8 +148,8 @@ export async function getFeedForId(req, res, next) {
 
 export async function saveEditedFeed(req, res, next) {
   try {
-    const feedTimeTaken = moment(req.body.feedEnd, "DD/MM/YYYY HH:mm:ss").diff(
-      moment(req.body.feedStart, "DD/MM/YYYY HH:mm:ss"),
+    const feedTimeTaken = moment(req.body.feedEnd).diff(
+      moment(req.body.feedStart),
       "seconds"
     );
     const updateQuery = {
