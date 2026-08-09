@@ -26,19 +26,19 @@
         </button>
       </li>
     } @else {
-      @for(trackFeed of trackedFeeds | trackItems: 'getKeyValue'; track trackFeed[0].key) {
+      @for(trackFeed of trackedFeeds; track trackFeed.date) {
         <li
           class="feed-per-date"
         >
-          <time dateTime="{{ trackFeed[0].key }}" class="feed-date"
-            >{{ trackFeed[0].key | dateDiff }}
+          <time dateTime="{{ trackFeed.date }}" class="feed-date"
+            >{{ trackFeed.date | dateDiff }}
           </time>
-        @for(eachFeed of trackFeed[0].value | trackItems: 'getValueArray'; track 'eachFeed') {
+        @for(eachFeed of trackFeed.items; track eachFeed) {
           <ul
             class="feed-date-timeline"
             [@addFeed]
           >
-          @if(eachFeed['mode']) {
+          @if(isFeedGrouped(eachFeed)) {
             <li
               id="{eachFeed.id}"
               class="tracked-feed-timeline"
@@ -69,8 +69,7 @@
                 (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
               ></button>
             </li>
-          }
-          @if(eachFeed['pumpedMode']) {
+          } @else {
             <li
               id="{{ eachFeed.id }}"
               [ngClass]="{
@@ -89,13 +88,10 @@
                   eachFeed.pumpedEndDate
                 }} {{ eachFeed.pumpedEndTime }}</time
                 >)
-                @if(eachFeed['mode'] && eachFeed.endDate !== eachFeed.pumpedEndDate){
                   <i>
                     Pumped on {{ eachFeed.pumpedEndDate }}</i
                   >
-                }
               </span>
-              @if(!eachFeed['mode']) {
                 <span>
                   <button
                     class="bi bi-pencil btn-edit-tracked-feed"
@@ -108,7 +104,6 @@
                     (click)="deleteTrackedFeedModal(deleteFeedModal, eachFeed.id)"
                   ></button>
                 </span>
-              }
             </li>
           }
           </ul>

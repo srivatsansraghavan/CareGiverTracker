@@ -3,7 +3,7 @@ import moment from 'moment';
 
 @Pipe({ name: 'dateDiff', pure: true })
 export class DateDiffPipe implements PipeTransform {
-  transform(pipeValue: any) {
+  transform(pipeValue: string) {
     if (!pipeValue) return [];
     return moment(pipeValue, 'YYYY-MM-DD').fromNow();
   }

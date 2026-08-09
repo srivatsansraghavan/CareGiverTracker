@@ -158,7 +158,7 @@ export class FeedingTrackerService {
     return this.httpClient
       .get(`${environment.expressURL}/feed/get-feed-for-id/${feedId}`)
       .pipe(
-        map((response: any) => {
+        map((response: Feeds) => {
           const responseFeed = {};
           responseFeed['id'] = response._id;
           responseFeed['type'] = response.feed_taken_type;

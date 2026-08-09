@@ -22,7 +22,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
 import { Router } from '@angular/router';
 import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
 import { AuthService } from 'src/app/shared/auth.service';
-import { FeedGroupedByDate, PumpedGrouped, trackedFeedsData } from './feeding-tracker.model';
+import { FeedGrouped, FeedGroupedByDate, isFeedGrouped, PumpedGrouped, trackedFeedsData } from './feeding-tracker.model';
 import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
 import { HttpResponse } from '@angular/common/http';
 
@@ -54,7 +54,7 @@ export class FeedingTrackerComponent implements OnInit {
   disableTracking = true;
   needQuantity = false;
   feedQuantity: number;
-  trackedFeeds: FeedGroupedByDate;
+  trackedFeeds: { date: string; items: (FeedGrouped | PumpedGrouped)[] }[];
   editFeedId: string;
   editFeedData: trackedFeedsData;
   deleteFeedId: string;
@@ -62,6 +62,7 @@ export class FeedingTrackerComponent implements OnInit {
   selectedCareTaken$: Observable<careTakenDetail[]>;
   selCareTaken: careTakenDetail;
   destroyRef = inject(DestroyRef);
+  public isFeedGrouped = isFeedGrouped;
 
   constructor(
     private modal: NgbModal,
@@ -95,7 +96,11 @@ export class FeedingTrackerComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (feedDetailsResponse: FeedGroupedByDate) => {
-          this.trackedFeeds = feedDetailsResponse;
+          const feedDetailsGrouped = Object.entries(feedDetailsResponse).map(([date, items]) => ({
+            date,
+            items
+          }));
+          this.trackedFeeds = feedDetailsGrouped;
           this.showSpinner = false;
           this.cd.detectChanges();
         },

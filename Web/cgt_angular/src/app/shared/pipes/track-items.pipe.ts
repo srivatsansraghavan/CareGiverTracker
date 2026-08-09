@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'trackItems', pure: true })
 export class TrackItemsPipe implements PipeTransform {
-  transform(pipeValue: any, trackLevel?: any) {
+  transform(pipeValue: unknown, trackLevel?: unknown) {
     if (!pipeValue) return [];
     switch (trackLevel) {
       case 'getKeyValue':

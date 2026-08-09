@@ -11,7 +11,7 @@
         </div>
     </div>
     @if(showExperienceDetail) {
-            <div class="emp-work-experience" role="button" (click)="hideDetail()" (keydown)="hideDetail()">
+            <div class="emp-work-experience" role="button" (click)="hideDetail()" (keydown)="hideDetail()" (keyup.enter)="hideDetail()" tabindex="0">
                 <h3>Experience Detail - {{ workEmployer }}</h3>
                 <ul>
                     @for(detail of workExperienceDetail; track detail) {
