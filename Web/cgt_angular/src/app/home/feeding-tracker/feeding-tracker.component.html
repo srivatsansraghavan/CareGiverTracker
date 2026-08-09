@@ -38,7 +38,7 @@
             class="feed-date-timeline"
             [@addFeed]
           >
-          @if(eachFeed.hasOwnProperty('mode')) {
+          @if(eachFeed['mode']) {
             <li
               id="{eachFeed.id}"
               class="tracked-feed-timeline"
@@ -51,13 +51,11 @@
                   {{ eachFeed.side }} -</span>
                 }
                 {{ eachFeed.quantity }} ml (<time
-                  dateTime="{{ eachFeed.startDate }}"
-                  >{{ eachFeed.startDate | date : "mediumTime" }}</time
+                  dateTime="{{ eachFeed.startDate }} {{ eachFeed.startTime}}"
+                  >{{ eachFeed.startTime }}</time
                 >
                 -
-                <time dateTime="{{ eachFeed.endDate }}">{{
-                  eachFeed.endDate | date : "mediumTime"
-                }}</time
+                <time dateTime="{{ eachFeed.endDate }} {{ eachFeed.endTime}}"> {{ eachFeed.endTime }}</time
                 >)
               </span>
               <button
@@ -72,38 +70,37 @@
               ></button>
             </li>
           }
-          @if(eachFeed.hasOwnProperty('pumpedMode')) {
+          @if(eachFeed['pumpedMode']) {
             <li
               id="{{ eachFeed.id }}"
               [ngClass]="{
-                'pumped-feed-timeline': eachFeed.hasOwnProperty('pumpedMode')
+                'pumped-feed-timeline': eachFeed['pumpedMode']
               }"
               showEditDelete
             >
               <span class="pumped-feed">
                 Pumped: {{ eachFeed.pumpedMode }} - {{ eachFeed.pumpedSide }} -
                 {{ eachFeed.pumpedQuantity }} ml (<time
-                  dateTime="{{ eachFeed.pumpedStartDate }}"
-                  >{{ eachFeed.pumpedStartDate | date : "mediumTime" }}</time
+                  dateTime="{{ eachFeed.pumpedStartDate }} {{ eachFeed.pumpedStartTime }}"
+                  >{{ eachFeed.pumpedStartDate }} {{ eachFeed.pumpedStartTime }}</time
                 >
                 -
-                <time dateTime="{{ eachFeed.pumpedEndDate }}">{{
-                  eachFeed.pumpedEndDate | date : "mediumTime"
-                }}</time
+                <time dateTime="{{ eachFeed.pumpedEndDate }} {{ eachFeed.pumpedEndTime }}">{{
+                  eachFeed.pumpedEndDate
+                }} {{ eachFeed.pumpedEndTime }}</time
                 >)
-                @if(eachFeed.hasOwnProperty('mode') &&
-                    eachFeed.endDate !== eachFeed.pumpedEndDate){
+                @if(eachFeed['mode'] && eachFeed.endDate !== eachFeed.pumpedEndDate){
                   <i>
                     Pumped on {{ eachFeed.pumpedEndDate }}</i
                   >
                 }
               </span>
-              @if(!eachFeed.hasOwnProperty('mode')) {
+              @if(!eachFeed['mode']) {
                 <span>
                   <button
                     class="bi bi-pencil btn-edit-tracked-feed"
                     aria-label="Edit Tracked Feed"
-                    (click)="editTrackedFeedModal(editFeedModal, eachFeed.id)"
+                    (click)="editTrackedFeedModal(addFeedModal, eachFeed.id)"
                   ></button>
                   <button
                     class="bi bi-trash btn-delete-tracked-feed"
@@ -343,14 +340,14 @@
     </div>
     <div class="modal-body">
       <div class="row">
-        <div class="col-md-4">Feeding Type:</div>
+        <div class="col-md-2">Feeding Type:</div>
         <div class="col-md-4">
           {{ editFeedData.type }}
         </div>
       </div>
 
       <div class="row">
-        <div class="col-md-4">Feeding Mode:</div>
+        <div class="col-md-2">Feeding Mode:</div>
         <div class="col-md-4">
           {{ editFeedData.mode }}
         </div>
@@ -358,7 +355,7 @@
 
       @if(editFeedData.hasOwnProperty('side')){
         <div class="row">
-          <div class="col-md-4">Feeding Side:</div>
+          <div class="col-md-2">Feeding Side:</div>
           <div class="col-md-4">
             {{ editFeedData.side }}
           </div>
@@ -366,8 +363,8 @@
       }
 
       <div class="row">
-        <div class="col-md-4">Feeding Quantity:</div>
-        <div class="col-md-4">
+        <div class="col-md-2">Feeding Quantity:</div>
+        <div class="col-md-2">
           <div class="input-group">
             <input
               type="number"
@@ -382,8 +379,8 @@
       </div>
 
       <div class="row mt-2">
-        <div class="col-md-3">Feeding Start:</div>
-        <div class="col-md-4">
+        <div class="col-md-2">Feeding Start:</div>
+        <div class="col-md-3">
           <div class="input-group">
             <input
               class="form-control w-10"
@@ -410,8 +407,8 @@
       </div>
 
       <div class="row mt-2">
-        <div class="col-md-3">Feeding End:</div>
-        <div class="col-md-4">
+        <div class="col-md-2">Feeding End:</div>
+        <div class="col-md-3">
           <div class="input-group">
             <input
               class="form-control w-10"

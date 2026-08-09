@@ -5,6 +5,7 @@ import { TimerService } from 'src/app/shared/timer/timer.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
 import { FeedGrouped, FeedGroupedByDate, Feeds, PumpedGrouped } from './feeding-tracker.model';
+import moment from 'moment';
 
 @Injectable()
 export class FeedingTrackerService {
@@ -90,31 +91,31 @@ export class FeedingTrackerService {
             const { _id: id } = responseItem;
             if (responseItem.pumped_mode !== undefined) {
               const { pump_end_time, pump_start_time, pumped_mode, pumped_side, pumped_quantity, pumped_time } = responseItem;
-              endDate = pump_end_time.split('T')[0];
+              endDate = moment(pump_end_time).format('YYYY-MM-DD');
               responseDetails = {
                 id,
                 pumpedMode: pumped_mode,
                 pumpedSide: pumped_side,
                 pumpedQuantity: pumped_quantity,
-                pumpedStartDate: pump_start_time.split('T')[0],
-                pumpedStartTime: pump_start_time.split('T')[1],
+                pumpedStartDate: moment(pump_start_time).format('YYYY-MM-DD'),
+                pumpedStartTime: moment(pump_start_time).format('HH:mm:ss'),
                 pumpedEndDate: endDate,
-                pumpedEndTime: pump_end_time.split('T')[1],
+                pumpedEndTime: moment(pump_end_time).format('HH:mm:ss'),
                 pumpedTimeTaken: pumped_time,
               }
             } else {
               const { feed_taken_type, feed_taken_mode, feed_taken_side, feed_quantity, feed_end_time, feed_start_time, feed_taken_time } = responseItem;
-              endDate = feed_end_time.split('T')[0];
+              endDate = moment(feed_end_time).format('YYYY-MM-DD');
               responseDetails = {
                 id,
                 type: feed_taken_type,
                 mode: feed_taken_mode,
                 side: feed_taken_side,
                 quantity: feed_quantity,
-                startDate: feed_start_time.split('T')[0],
-                startTime: feed_start_time.split('T')[1],
+                startDate: moment(feed_start_time).format('YYYY-MM-DD'),
+                startTime: moment(feed_start_time).format('HH:mm:ss'),
                 endDate,
-                endTime: feed_end_time.split('T')[1],
+                endTime: moment(feed_end_time).format('HH:mm:ss'),
                 timeTaken: feed_taken_time,
               }
             }
@@ -124,6 +125,7 @@ export class FeedingTrackerService {
             const feedGroupSize = feedGrouped[endDate].length;
             feedGrouped[endDate][feedGroupSize] = responseDetails;
           }
+          console.log("feedGrouped", feedGrouped);
           return feedGrouped;
         })
       );
@@ -154,60 +156,46 @@ export class FeedingTrackerService {
 
   getFeedForId(feedId: string) {
     return this.httpClient
-      .get(`${environment.expressURL}/feed/get-feed-for-id/${feedId}`, {
-        withCredentials: true,
-      })
+      .get(`${environment.expressURL}/feed/get-feed-for-id/${feedId}`)
       .pipe(
         map((response: any) => {
           const responseFeed = {};
-          responseFeed['id'] = response.body._id;
-          responseFeed['type'] = response.body.feed_taken_type;
-          responseFeed['mode'] = response.body.feed_taken_mode;
-          responseFeed['side'] = response.body.feed_taken_side;
-          responseFeed['quantity'] = response.body.feed_quantity;
-          const startDateTime = new Date(response.body.feed_start_time)
+          responseFeed['id'] = response._id;
+          responseFeed['type'] = response.feed_taken_type;
+          responseFeed['mode'] = response.feed_taken_mode;
+          responseFeed['side'] = response.feed_taken_side;
+          responseFeed['quantity'] = response.feed_quantity;
+          const startDateTime = new Date(response.feed_start_time)
             .toLocaleString()
             .split(' ');
-          console.log(startDateTime);
           const startDate = startDateTime[0].split('/');
           const startTime = startDateTime[1].split(':');
           responseFeed['startDate'] = {
             year: parseInt(startDate[2]),
-            month: parseInt(startDate[1]),
-            day: parseInt(startDate[0]),
+            month: parseInt(startDate[0]),
+            day: parseInt(startDate[1]),
           };
-          // let startDate = response.body.feed_start_time
-          //   .split('T')[0]
-          //   .split('-');
-
-          // let startTime = response.body.feed_start_time
-          //   .split('T')[1]
-          //   .split(':');
           responseFeed['startTime'] = {
             hour: parseInt(startTime[0]),
             minute: parseInt(startTime[1]),
             second: parseInt(startTime[2]),
           };
-          const endDateTime = new Date(response.body.feed_end_time)
+          const endDateTime = new Date(response.feed_end_time)
             .toLocaleString()
             .split(' ');
-          console.log(endDateTime);
           const endDate = endDateTime[0].split('/');
           const endTime = endDateTime[1].split(':');
-          // let endDate = response.body.feed_end_time.split('T')[0].split('-');
           responseFeed['endDate'] = {
             year: parseInt(endDate[2]),
-            month: parseInt(endDate[1]),
-            day: parseInt(endDate[0]),
+            month: parseInt(endDate[0]),
+            day: parseInt(endDate[1]),
           };
-          // let endTime = response.body.feed_end_time.split('T')[1].split(':');
           responseFeed['endTime'] = {
             hour: parseInt(endTime[0]),
             minute: parseInt(endTime[1]),
             second: parseInt(endTime[2]),
           };
-          responseFeed['timeTaken'] = response.body.feed_taken_time;
-          console.log(responseFeed);
+          responseFeed['timeTaken'] = response.feed_taken_time;
           return responseFeed;
         })
       );
@@ -215,16 +203,16 @@ export class FeedingTrackerService {
 
   saveEditedFeed(
     feedId: object,
-    feedStart: string,
-    feedEnd: string,
+    feedStart: Date,
+    feedEnd: Date,
     feedQuantity: number
   ): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/feed/save-edited-feed`,
       {
         feedId,
-        feedStart,
-        feedEnd,
+        feedStart: new Date(feedStart),
+        feedEnd: new Date(feedEnd),
         feedQuantity,
       },
       { observe: 'response' }

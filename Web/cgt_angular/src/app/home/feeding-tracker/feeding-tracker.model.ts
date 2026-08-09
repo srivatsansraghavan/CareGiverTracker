@@ -48,3 +48,40 @@ interface CareTakenDetail {
     _id: string;
     care_taken_name: string;
 }
+
+export interface trackedFeedsData {
+  id: object;
+  type: string;
+  pumpedMode?: string;
+  mode: string;
+  pumpedSide?: string;
+  side?: string;
+  pumpedQuantity?: number;
+  quantity: number;
+  pumpedStartDate?: Date;
+  startDate: {
+    year: number;
+    month: number;
+    day: number;
+  };
+  pumpedStartTime?: Date;
+  startTime: {
+    hour: number;
+    minute: number;
+    second: number;
+  };
+  pumpedEndDate?: Date;
+  endDate: {
+    year: number;
+    month: number;
+    day: number;
+  };
+  pumpedEndTime?: Date;
+  endTime: {
+    hour: number;
+    minute: number;
+    second: number;
+  };
+  pumpedTimeTaken?: number;
+  timeTaken: number;
+}

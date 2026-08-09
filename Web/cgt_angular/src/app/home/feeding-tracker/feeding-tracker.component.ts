@@ -2,13 +2,13 @@ import { Component, OnInit, TemplateRef, DestroyRef, inject, ChangeDetectorRef }
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // const moment = require('moment');
+import moment from 'moment';
 import { Observable, filter, take } from 'rxjs';
 import {
   CommonService,
   feedTypeOptions,
   feedModeOptions,
   feedSideOptions,
-  trackedFeedsData,
 } from 'src/app/shared/common.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { ToastService } from 'src/app/shared/toast/toast.service';
@@ -22,7 +22,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
 import { Router } from '@angular/router';
 import { TOTAL_FEED_MODES, TOTAL_FEED_SIDES, TOTAL_FEED_TYPES } from 'src/app/shared/constants';
 import { AuthService } from 'src/app/shared/auth.service';
-import { FeedGroupedByDate, PumpedGrouped } from './feeding-tracker.model';
+import { FeedGroupedByDate, PumpedGrouped, trackedFeedsData } from './feeding-tracker.model';
 import { CareTakenTypes, FeedModes, FeedTypes, TrackState } from 'src/app/shared/enums';
 import { HttpResponse } from '@angular/common/http';
 
@@ -266,14 +266,15 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   editTrackedFeedModal(edit_feed_modal: TemplateRef<null>, feedId: string) {
-    this.modal.open(edit_feed_modal, {
-      backdrop: 'static',
-      keyboard: false,
-      size: 'lg',
-    });
     this.ftService.getFeedForId(feedId).subscribe({
       next: (feedData: trackedFeedsData) => {
+        console.log('feedData', feedData);
         this.editFeedData = feedData;
+        this.modal.open(edit_feed_modal, {
+          backdrop: 'static',
+          keyboard: false,
+          size: 'lg',
+        });
       },
       error: () => {
         this.toastService.show(
@@ -324,36 +325,23 @@ export class FeedingTrackerComponent implements OnInit {
   }
 
   editTrackedFeed(editedData: trackedFeedsData) {
-    const startDateString =
-      editedData.startDate['day'] +
-      '/' +
-      editedData.startDate['month'] +
-      '/' +
-      editedData.startDate['year'] +
-      ' ' +
-      editedData.startTime['hour'] +
-      ':' +
-      editedData.startTime['minute'] +
-      ':' +
-      editedData.startTime['second'];
-    // const startDate = moment(startDateString, 'DD/MM/YYYY HH:mm:ss').format(
-    //   'DD/MM/YYYY HH:mm:ss'
-    // );
-    const endDateString =
-      editedData.endDate['day'] +
-      '/' +
-      editedData.endDate['month'] +
-      '/' +
-      editedData.endDate['year'] +
-      ' ' +
-      editedData.endTime['hour'] +
-      ':' +
-      editedData.endTime['minute'] +
-      ':' +
-      editedData.endTime['second'];
-    // const endDate = moment(endDateString, 'DD/MM/YYYY HH:mm:ss').format(
-    //   'DD/MM/YYYY HH:mm:ss'
-    // );
+    const { startDate, endDate, startTime, endTime } = editedData;
+    const startDateString = moment({
+      year: startDate.year,
+      month: startDate.month - 1,
+      day: startDate.day,
+      hour: startTime.hour,
+      minute: startTime.minute,
+      second: startTime.second,
+    }).toDate();
+    const endDateString = moment({
+      year: endDate.year,
+      month: endDate.month - 1,
+      day: endDate.day,
+      hour: endTime.hour,
+      minute: endTime.minute,
+      second: endTime.second,
+    }).toDate();
     this.ftService
       .saveEditedFeed(editedData.id, startDateString, endDateString, editedData.quantity)
       .subscribe({

@@ -35,27 +35,6 @@ export interface feedSideOptions {
   'Breast Milk': string[];
 }
 
-export interface trackedFeedsData {
-  id: object;
-  type: string;
-  pumpedMode?: string;
-  mode: string;
-  pumpedSide?: string;
-  side?: string;
-  pumpedQuantity?: number;
-  quantity: number;
-  pumpedStartDate?: Date;
-  startDate: Date;
-  pumpedStartTime?: Date;
-  startTime: Date;
-  pumpedEndDate?: Date;
-  endDate: Date;
-  pumpedEndTime?: Date;
-  endTime: Date;
-  pumpedTimeTaken?: number;
-  timeTaken: number;
-}
-
 export interface pumpedFeedsData {
   id: object;
   pumpedSide: string;
