@@ -1,9 +1,9 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { trackedMedicationData } from 'src/app/shared/common.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import { environment } from 'src/environments/environment';
+import { medicationData, trackedMedicationData } from './medication-tracker.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,23 +16,23 @@ export class MedicationTrackerService {
     medication_count: number
   ): Observable<Record<string, trackedMedicationData[]>> {
     return this.httpClient
-      .get(
+      .get<medicationData[]>(
         `${environment.expressURL}/medication/get-medication-details?careTakenId=${care_taken_id}&medicationCount=${medication_count}`,
-        { observe: 'response', withCredentials: true }
+        { withCredentials: true }
       )
       .pipe(
-        map((response: HttpResponse<trackedMedicationData[]>) => {
+        map((response: medicationData[]) => {
           const medicationGrouped = {};
-          for (const responseItem of response.body) {
+          for (const responseItem of response) {
             const responseDetails = {};
-            responseDetails['id'] = responseItem.id;
-            responseDetails['medicineName'] = responseItem.medicineName;
-            responseDetails['medicineForm'] = responseItem.medicineName;
+            responseDetails['id'] = responseItem._id;
+            responseDetails['medicineName'] = responseItem.medicine_name;
+            responseDetails['medicineForm'] = responseItem.medicine_form;
             responseDetails['medicineQuantity'] =
-              responseItem.medicineQuantity;
-            const endDate = responseItem.medicationTime.split('T')[0];
+              responseItem.medicine_quantity;
+            const endDate = responseItem.medication_time.split('T')[0];
             responseDetails['medicationTime'] = new Date(
-              responseItem.medicationTime
+              responseItem.medication_time
             ).toLocaleString();
             if (!medicationGrouped[endDate]) {
               medicationGrouped[endDate] = [];
@@ -95,7 +95,7 @@ export class MedicationTrackerService {
       );
   }
 
-  saveEditedTrackedMed(medId: object, medDate: string): Observable<object> {
+  saveEditedTrackedMed(medId: string, medDate: string): Observable<object> {
     return this.httpClient.post(
       `${environment.expressURL}/medication/save-edited-med`,
       {

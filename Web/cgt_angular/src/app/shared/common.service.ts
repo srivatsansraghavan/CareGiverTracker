@@ -46,13 +46,6 @@ export interface pumpedFeedsData {
   pumpedTimeTaken: number;
 }
 
-export interface trackedMedicationData {
-  id: object;
-  medicineName: string;
-  medicineQuantity: number;
-  medicationDate: string;
-  medicationTime: string;
-}
 
 export interface inventoryData {
   id: object;

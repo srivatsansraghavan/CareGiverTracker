@@ -16,11 +16,11 @@ export async function saveTrackedMedications(req, res, next) {
       _id: req.body.medicineId,
     });
     const insertQuery = {
-      care_giver: req.body.careGiver,
+      care_giver: req.user.user_email,
       care_taken_of_name: req.body.careTakenOf.name,
       care_taken_of_id: req.body.careTakenOf.id,
-      medicine_name: invMedDetails[0].inventory_brand,
-      medicine_form: invMedDetails[0].inventory_form,
+      medicine_name: invMedDetails[0].inventoryBrand,
+      medicine_form: invMedDetails[0].inventoryForm,
       medicine_quantity: req.body.medicineQuantity,
       medicine_id: req.body.medicineId,
       medication_time: medTime,
@@ -97,14 +97,14 @@ export async function getMedForId(req, res, next) {
 
 export async function getMedForm(req, res, next) {
   try {
-    const getInvForMed = await getMedicationModel({
+    const getInvForMed = await getInventoriesModel({
       _id: req.params.medId,
     });
-    if (getInvForMed && Object.keys(getInvForMed).length > 0) {
-      res.status(200).send(getInvForMed.medicine_form);
+    if (getInvForMed.length) {
+      res.status(200).send(getInvForMed[0].inventoryForm);
     } else {
       res.status(404).send({
-        message: "Unable to get medicine form. Please try again later!",
+        message: "Unable to get inventory form. Please try again later!",
       });
     }
   } catch (err) {

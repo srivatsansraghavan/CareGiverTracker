@@ -1,10 +1,9 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, skip, Subscription } from 'rxjs';
+import { filter, Observable, Subscription, take } from 'rxjs';
 import {
   CommonService,
   inventoryData,
-  trackedMedicationData,
 } from 'src/app/shared/common.service';
 import { ToastService } from 'src/app/shared/toast/toast.service';
 import { MedicationTrackerService } from './medication-tracker.service';
@@ -15,6 +14,7 @@ import * as selectors from 'src/app/store/care-taken-details/care-taken-details.
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth.service';
 import { HttpResponse } from '@angular/common/http';
+import { MedicationGroupedBydate, trackedMedicationData } from './medication-tracker.model';
 
 @Component({
   selector: 'app-medication-tracker',
@@ -27,7 +27,7 @@ export class MedicationTrackerComponent implements OnInit {
   careTakenName: string;
   careGiver: string;
   subscription: Subscription;
-  trackedMedications: Record<string, trackedMedicationData[]>;
+  trackedMedications: { date: string; items: trackedMedicationData[] }[];
   medicineNames: inventoryData[];
   chosenMedicineName: string;
   medicineForm: string;
@@ -50,31 +50,29 @@ export class MedicationTrackerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe({
-      next: () => {
-        this.showSpinner = true;
-        this.store.pipe(
-          select(selectors.selectCareTakenDetail),
-          skip(1)
-        ).subscribe((activeCtd) => {
-          if (!activeCtd) {
-            this.router.navigate(['']);
-            return;
-          }
-          this.selCareTaken = activeCtd;
-          this.getTrackedMedications();
-        });
-      }, error: () => {
-        this.router.navigate(['login'], { state: { sessionExpired: true } });
-      },
+    this.store.pipe(
+      select(selectors.selectCareTakenDetail),
+      filter(data => !!data),
+      take(1)
+    ).subscribe((activeCtd) => {
+      if (!activeCtd) {
+        this.router.navigate(['']);
+        return;
+      }
+      this.selCareTaken = activeCtd;
+      this.getTrackedMedications();
     });
   }
 
   getTrackedMedications() {
     this.subscription = this.mtService
       .getMedicationDetails(this.selCareTaken._id, 10)
-      .subscribe((medicationDetailsResponse) => {
-        this.trackedMedications = medicationDetailsResponse;
+      .subscribe((medicationDetailsResponse: MedicationGroupedBydate) => {
+        const medicationDetails = Object.entries(medicationDetailsResponse).map(([date, items]) => ({
+          date,
+          items
+        }));
+        this.trackedMedications = medicationDetails;
       });
     this.commonService
       .getAvailableInventory(this.selCareTaken._id, 'Medicine')

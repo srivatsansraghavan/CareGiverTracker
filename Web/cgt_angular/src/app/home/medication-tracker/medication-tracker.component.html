@@ -7,52 +7,48 @@
   </button>
 
   <ul class="med-timeline">
-    <li
-      class="med-per-date"
-      *ngFor="
-        let trackMedication of trackedMedications | trackItems : 'getKeyValue'
-      "
-    >
-      <time dateTime="{{ trackMedication[0].key }}" class="med-date"
-        >{{ trackMedication[0].key | dateDiff }}
-      </time>
-      <ul
-        class="med-date-timeline"
-        *ngFor="
-          let eachMedication of trackMedication[0].value
-            | trackItems : 'getValueArray'
-        "
+    @for(trackedMedication of trackedMedications; track trackedMedication.date) {
+      <li
+        class="med-per-date"
       >
-        <li
-          *ngIf="eachMedication.hasOwnProperty('medicineName')"
-          class="tracked-med-timeline"
-        >
-          <span class="tracked-med">
-            {{ eachMedication.medicineName }} -
-            {{ eachMedication.medicineQuantity }}
-            <span
-              *ngIf="
-                eachMedication.medicineForm === 'Drops' ||
-                eachMedication.medicineForm === 'Syrup'
-              "
-              >ml</span
+        <time dateTime="{{ trackedMedication.date }}" class="med-date"
+          >{{ trackedMedication.date | dateDiff }}
+        </time>
+        @for(eachMedication of trackedMedication.items; track eachMedication.id) {
+          <ul
+            class="med-date-timeline"
+          >
+          @if(eachMedication.medicineName){
+            <li
+              class="tracked-med-timeline"
             >
-            ({{ eachMedication.medicationTime }})
-          </span>
-
-          <button
-            class="bi bi-pencil btn-edit-tracked-med"
-            aria-label="Edit Tracked Medication"
-            (click)="editTrackedMedModal(editMedModal, eachMedication.id)"
-          ></button>
-          <button
-            class="bi bi-trash btn-delete-tracked-med"
-            aria-label="Delete Tracked Medication"
-            (click)="deleteTrackedMedModal(deleteMedModal, eachMedication.id)"
-          ></button>
-        </li>
-      </ul>
-    </li>
+              <span class="tracked-med">
+                {{ eachMedication.medicineName }} -
+                {{ eachMedication.medicineQuantity }}
+                @if(eachMedication.medicineForm === 'Drops' || eachMedication.medicineForm === 'Syrup') {
+                <span
+                  >ml</span
+                >
+                }
+                ({{ eachMedication.medicationTime }})
+              </span>
+    
+              <button
+                class="bi bi-pencil btn-edit-tracked-med"
+                aria-label="Edit Tracked Medication"
+                (click)="editTrackedMedModal(editMedModal, eachMedication.id)"
+              ></button>
+              <button
+                class="bi bi-trash btn-delete-tracked-med"
+                aria-label="Delete Tracked Medication"
+                (click)="deleteTrackedMedModal(deleteMedModal, eachMedication.id)"
+              ></button>
+            </li>
+          }
+          </ul>
+        }
+      </li>
+    }
   </ul>
 
   <!-- Modal for adding medication starts -->
@@ -74,13 +70,14 @@
             [(ngModel)]="chosenMedicineName"
             (change)="medicineChosen()"
           >
+          @for(medicineName of medicineNames; track medicineName.id) {
             <option
-              *ngFor="let medicineName of medicineNames"
               [value]="medicineName.id"
             >
               {{ medicineName.inventoryBrand }} (Added on
               {{ medicineName.addedTime }})
             </option>
+          }
           </select>
         </div>
       </div>
@@ -101,9 +98,11 @@
               step="1"
               size="4"
             />
-            <span *ngIf="medicineForm === 'Drops' || medicineForm === 'Syrup'"
+            @if(medicineForm === 'Drops' || medicineForm === 'Syrup') {
+            <span
               >ml</span
             >
+            }
           </div>
         </div>
       </div>
