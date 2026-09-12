@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/shared/auth.service';
 import { FirstLoginService } from './first-login.service';
@@ -10,7 +10,7 @@ import { FirstLoginService } from './first-login.service';
   providers: [FirstLoginService],
   standalone: false,
 })
-export class FirstLoginComponent {
+export class FirstLoginComponent implements AfterViewInit {
   @ViewChild('firstloginmodal') firstLoginModal: TemplateRef<null>;
 
   careTakenOf: string;

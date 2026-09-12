@@ -1,11 +1,10 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NgbNavModule } from '@ng-bootstrap/ng-bootstrap';
 import { FeedingTrackerComponent } from './feeding-tracker/feeding-tracker.component';
 
 import { HomeComponent } from './home.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideRouter, Router, Routes } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { FirstLoginComponent } from './first-login/first-login.component';
 
 describe('HomeComponent', () => {

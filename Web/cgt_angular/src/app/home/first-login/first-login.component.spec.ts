@@ -10,7 +10,6 @@ describe('FirstLoginComponent', () => {
   let component: FirstLoginComponent;
   let fixture: ComponentFixture<FirstLoginComponent>;
   let authService: AuthService;
-  let flService: FirstLoginService;
   const mockModalService = {
     open: jasmine.createSpy('open'),
     dismissAll: jasmine.createSpy('dismissAll'),
@@ -26,7 +25,6 @@ describe('FirstLoginComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(FirstLoginComponent);
-    flService = TestBed.inject(FirstLoginService);
     authService = TestBed.inject(AuthService);
     component = fixture.componentInstance;
     component.careTakenDOB = { year: 2026, month: 12, day: 28 };

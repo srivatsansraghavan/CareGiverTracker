@@ -10,7 +10,7 @@
     "build:dev": "ng build --configuration development",
     "build:test": "ng build --configuration test",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --code-coverage --no-watch",
+    "test": "ng test --code-coverage --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint"
   },
   "private": true,
