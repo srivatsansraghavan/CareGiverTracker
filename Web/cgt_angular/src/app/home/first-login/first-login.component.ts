@@ -32,9 +32,10 @@ export class FirstLoginComponent {
     private flService: FirstLoginService,
     public authService: AuthService,
   ) {
-    setTimeout(() => {
-      this.showFirstLoginModal();
-    }, 500);
+  }
+
+  ngAfterViewInit() {
+    this.showFirstLoginModal();
   }
 
   showFirstLoginModal(): void {

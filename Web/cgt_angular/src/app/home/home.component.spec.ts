@@ -5,17 +5,29 @@ import { FeedingTrackerComponent } from './feeding-tracker/feeding-tracker.compo
 
 import { HomeComponent } from './home.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideRouter, Router, Routes } from '@angular/router';
+import { FirstLoginComponent } from './first-login/first-login.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
+  const mockRouter = {
+    get lastSuccessfulNavigation() {
+      return {
+        extras: { state: { isFirstLogin: true } }
+      };
+    },
+    navigate: jasmine.createSpy('navigate') // Keep other methods if needed
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [HomeComponent, FeedingTrackerComponent],
-    imports: [NgbNavModule],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      declarations: [HomeComponent, FeedingTrackerComponent, FirstLoginComponent],
+      imports: [NgbNavModule],
+      providers: [
+        { provide: Router, useValue: mockRouter },
+        provideHttpClient()]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

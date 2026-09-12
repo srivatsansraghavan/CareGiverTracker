@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.router.lastSuccessfulNavigation.extras.state) {
+      console.log("router", this.router.lastSuccessfulNavigation.extras.state);
       this.isFirstLogin = this.router.lastSuccessfulNavigation.extras.state["isFirstLogin"];
     }
     this.envName = this.commonService.getEnvironment();

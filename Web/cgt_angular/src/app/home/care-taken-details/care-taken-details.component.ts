@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal, TemplateRef, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, TemplateRef, WritableSignal } from '@angular/core';
 import { NgbModal, NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { Store, select } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -10,11 +10,9 @@ import {
   changeCareTakenPerson,
   changeCareTakenPersonSuccess,
 } from 'src/app/store/care-taken-details/care-taken-details.actions';
-import { CareTakenDetailsService } from 'src/app/store/care-taken-details/care-taken-details.service';
 import { careTakenDetail } from 'src/app/store/care-taken-details/care-taken-details.model';
 import * as selectors from 'src/app/store/care-taken-details/care-taken-details.selector';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/shared/auth.service';
 
 @Component({
   selector: 'app-care-taken-details',
@@ -43,12 +41,9 @@ export class CareTakenDetailsComponent implements OnInit {
   selectedCareTaken$: Observable<careTakenDetail>;
   constructor(
     private modal: NgbModal,
-    private careTakenDetailService: CareTakenDetailsService,
     private store: Store<{ caretakendetails: careTakenDetail[] }>,
     private actions$: Actions,
     private router: Router,
-    private cd: ChangeDetectorRef,
-    private authService: AuthService,
   ) { }
 
   ngOnInit() {
@@ -56,7 +51,6 @@ export class CareTakenDetailsComponent implements OnInit {
   }
 
   loadLatestCareTaken(): void {
-    // this.careTakenDetails$ = this.careTakenDetailService.getCareTakenDetails();
     this.store.dispatch(
       getCareTaken()
     );

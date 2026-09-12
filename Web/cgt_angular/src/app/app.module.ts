@@ -23,6 +23,7 @@ import { environment } from 'src/environments/environment';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { MainModule } from './main/main.module';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { MainModule } from './main/main.module';
         ReactiveFormsModule,
         AppRoutingModule,
         FormsModule,
+        RouterModule,
         StoreModule.forRoot({ caretakendetail: careTakenDetailReducer, caretakendetails: careTakenDetailsReducer, experiencedetail: showExperienceReducer }),
         EffectsModule.forRoot([CareTakenDetailsEffects]),
         StoreDevtoolsModule.instrument({ logOnly: environment.production }),

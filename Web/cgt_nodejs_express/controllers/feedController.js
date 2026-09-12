@@ -64,9 +64,9 @@ export async function savePumpingFeed(req, res, next) {
       .subtract(req.body.feedTime, "seconds")
       .format("MM/DD/YYYY HH:mm:ss");
     let insertQuery = {
-      pumped_by: req.body.feedGiver,
-      pumped_for_name: req.body.feedTaker.name,
-      pumped_for_id: req.body.feedTaker.id,
+      pumped_by: req.user.user_email,
+      pumped_for_name: req.body.feedTaker.care_taken_name,
+      pumped_for_id: req.body.feedTaker._id,
       pumped_mode: req.body.feedMode,
       pumped_side: req.body.feedSide,
       pumped_time: req.body.feedTime,

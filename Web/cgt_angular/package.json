@@ -10,7 +10,7 @@
     "build:dev": "ng build --configuration development",
     "build:test": "ng build --configuration test",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --code-coverage --no-watch",
     "lint": "ng lint"
   },
   "private": true,
@@ -44,6 +44,7 @@
     "@angular/compiler-cli": "^18.2.13",
     "@ngrx/store-devtools": "^18.0.0",
     "@types/jasmine": "~4.0.0",
+    "@types/jest": "^30.0.0",
     "angular-eslint": "18.0.0",
     "eslint": "^9.3.0",
     "jasmine-core": "~4.1.0",
