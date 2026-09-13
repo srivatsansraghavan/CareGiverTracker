@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExcretionTrackerComponent } from './excretion-tracker.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('ExcretionTrackerComponent', () => {
   let component: ExcretionTrackerComponent;
@@ -8,9 +10,10 @@ describe('ExcretionTrackerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ExcretionTrackerComponent ]
+      declarations: [ExcretionTrackerComponent],
+      providers: [provideHttpClient(), provideMockStore()],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ExcretionTrackerComponent);
     component = fixture.componentInstance;

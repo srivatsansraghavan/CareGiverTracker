@@ -16,7 +16,7 @@ describe('HomeComponent', () => {
         extras: { state: { isFirstLogin: true } }
       };
     },
-    navigate: jasmine.createSpy('navigate') // Keep other methods if needed
+    navigate: jasmine.createSpy('navigate'),
   };
 
   beforeEach(async () => {

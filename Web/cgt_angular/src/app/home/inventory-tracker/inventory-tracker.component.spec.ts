@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InventoryTrackerComponent } from './inventory-tracker.component';
+import { provideHttpClient } from '@angular/common/http';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('InventoryTrackerComponent', () => {
   let component: InventoryTrackerComponent;
@@ -8,9 +10,10 @@ describe('InventoryTrackerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InventoryTrackerComponent ]
+      declarations: [InventoryTrackerComponent],
+      providers: [provideHttpClient(), provideMockStore()],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(InventoryTrackerComponent);
     component = fixture.componentInstance;

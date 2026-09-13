@@ -1,8 +1,8 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FeedingTrackerComponent } from './feeding-tracker.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { provideMockStore } from '@ngrx/store/testing';
 
 describe('FeedingTrackerComponent', () => {
   let component: FeedingTrackerComponent;
@@ -10,10 +10,10 @@ describe('FeedingTrackerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [FeedingTrackerComponent],
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      declarations: [FeedingTrackerComponent],
+      imports: [],
+      providers: [provideHttpClient(), provideMockStore()]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FeedingTrackerComponent);
     component = fixture.componentInstance;

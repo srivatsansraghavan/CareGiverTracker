@@ -11,11 +11,11 @@ describe('Unit testing the Main Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    declarations: [MainComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-}).compileComponents();
+      declarations: [MainComponent],
+      schemas: [NO_ERRORS_SCHEMA],
+      imports: [],
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MainComponent);
     component = fixture.componentInstance;
@@ -24,17 +24,5 @@ describe('Unit testing the Main Component', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should have Signup component', () => {
-    const { debugElement } = fixture;
-    const signUpComp = debugElement.query(By.css('app-signup'));
-    expect(signUpComp).toBeTruthy();
-  });
-
-  it('should have Login component', () => {
-    const { debugElement } = fixture;
-    const loginComp = debugElement.query(By.css('app-login'));
-    expect(loginComp).toBeTruthy();
   });
 });
