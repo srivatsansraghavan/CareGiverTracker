@@ -12,28 +12,38 @@ import { userModel } from "./models/userModel.js"
 import { RedisStore } from "connect-redis";
 import { createClient } from "redis";
 
-
+app.listen(process.env.NODE_PORT, '::', () => {
+  console.log(`Caregiver tracker listening on port ${process.env.NODE_PORT}!`);
+});
 const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 const redisClient = createClient({
-  url: redisUrl
+  url: redisUrl,
 });
 
-redisClient.connect().catch(console.error)
-
-
+await redisClient.connect().catch(console.error)
+app.set("trust proxy", 1);
 app.use(cors({
-  origin: 'http://localhost:4200',
+  origin: process.env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
-app.use(express.json());  
+app.use(express.json());
 app.use(cookieParser())
 app.use(session({ store: new RedisStore({
-  client: redisClient,
-  prefix: 'session:',
-}),
-name: 'sessionId', 
-secret: 'secret', resave: false, saveUninitialized: false, rolling: false, cookie: { secure: false, maxAge: 3600000 }}))
+    client: redisClient,
+    prefix: 'session:',
+  }),
+  name: 'sessionId',
+  secret: 'secret', 
+  resave: false, 
+  saveUninitialized: false, 
+  rolling: false, 
+  cookie: { 
+    secure: true, 
+    maxAge: 3600000, 
+    sameSite: 'none',
+  }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -67,6 +77,3 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message })
 });
 
-app.listen(process.env.NODE_PORT, () => {
-  console.log(`Caregiver tracker listening on port ${process.env.NODE_PORT}!`);
-});

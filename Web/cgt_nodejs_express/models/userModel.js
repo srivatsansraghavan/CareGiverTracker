@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose"
-import { cgtdbEnv } from "../config.js";
-const uri = `mongodb://${process.env.MONGO_DB_URI}:27017`
-
-export function getUserSchema() {
-  mongoose.connect(`${uri}/${cgtdbEnv[process.env.NODE_ENV]}`)
-  if(mongoose.models["tbl_users"]){
-    return mongoose.models["tbl_users"];
+import { cgtdbEnv, connectToMongoDB } from "../config.js";
+export async function getUserSchema() {
+  const userTable = await connectToMongoDB(cgtdbEnv[process.env.NODE_ENV]);
+  
+  if(userTable.models["tbl_users"]){
+    return userTable.models["tbl_users"];
   }
-  const userSchema = new mongoose.Schema({
+  const userSchema = new userTable.Schema({
     user_email: {
       type: String,
       required: [true, "Email id is required"],
@@ -22,7 +21,7 @@ export function getUserSchema() {
   return userSchema;
 }
 
-  export const userModel = mongoose.model('tbl_users', getUserSchema());
+export const userModel = mongoose.model('tbl_users', await getUserSchema());
 
 export const addUserModel = async function (query) {
   const addedUser = await new userModel(query).save();

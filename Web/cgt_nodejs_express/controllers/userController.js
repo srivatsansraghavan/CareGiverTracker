@@ -1,4 +1,5 @@
 import { userModel } from "../models/userModel.js";
+import { firstLoginModel } from "../models/caretakenModel.js";
 
 export async function addUser(req, res, next) {
   try {
@@ -19,7 +20,15 @@ export async function addUser(req, res, next) {
 
 export async function loginUser(req, res, next) {
   try {
-      res.redirect("/caretaken/is-first-login")
+      const hasUserCareTaken = await firstLoginModel(req.user.user_email);
+      res.json({
+        firstLogin: hasUserCareTaken === 0,
+        user: {
+          userEmail: req.user.user_email,
+          userFullname: req.user.user_fullname,
+          userName: req.user.username,
+        }
+      });
   } catch (err) {
     return next(err);
   }
