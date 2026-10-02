@@ -67,7 +67,7 @@ export class AuthService {
         { observe: 'response', withCredentials: true }
       )
       .subscribe({
-        next: (response: HttpResponse<{ firstLogin: boolean; user: any }>) => {
+        next: (response: HttpResponse<{ firstLogin: boolean; user: { userEmail: string; userFullname: string; userName: string } }>) => {
           if (response.body.firstLogin) {
             this.firstLogin.next(response.body.firstLogin);
             this.router.navigate(['home'], { state: { isFirstLogin: true } })
