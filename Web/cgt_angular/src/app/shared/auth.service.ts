@@ -67,18 +67,21 @@ export class AuthService {
         { observe: 'response', withCredentials: true }
       )
       .subscribe({
-        next: (response: HttpResponse<boolean>) => {
-          if (response.status === 200) {
+        next: (response: HttpResponse<{ firstLogin: boolean; user: any }>) => {
+          if (response.body.firstLogin) {
+            this.firstLogin.next(response.body.firstLogin);
+            this.router.navigate(['home'], { state: { isFirstLogin: true } })
+          } else {
             this.loggedIn$.next(true);
             this.loggedInUser = email_id;
-            this.router.navigate(['home'], { state: { isFirstLogin: response.body } })
+            this.router.navigate(['home'], { state: { isFirstLogin: false } })
             this.toastService.show(
               'Login message',
               'Logged in successfully',
               'bg-success text-light login-toast',
               true
             );
-          }
+          };
         },
         error: (response: HttpErrorResponse) => {
           this.toastService.show(
@@ -98,18 +101,6 @@ export class AuthService {
 
   loggedInUserEmail(): string {
     return this.loggedInUser;
-  }
-
-  isFirstLogin(): Observable<boolean> {
-    this.httpClient
-      .get(
-        `${environment.expressURL}/caretaken/is-first-login`,
-        { withCredentials: true }
-      )
-      .subscribe((firstLogin: boolean) => {
-        this.firstLogin.next(firstLogin);
-      });
-    return this.firstLogin.asObservable();
   }
 
   doLogOut() {

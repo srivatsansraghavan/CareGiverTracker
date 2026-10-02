@@ -6,9 +6,11 @@
     "ng": "ng",
     "start": "ng serve",
     "start:local": "ng serve --configuration local",
+    "start:prod": "serve -s dist/cgt_angular",
     "build": "ng build",
     "build:dev": "ng build --configuration development",
     "build:test": "ng build --configuration test",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test --code-coverage --no-watch --browsers=ChromeHeadless",
     "lint": "ng lint"
@@ -35,6 +37,7 @@
     "faker": "^6.6.6",
     "ngx-cookie-service": "^18.0.0",
     "rxjs": "~7.5.0",
+    "serve": "^14.2.6",
     "tslib": "^2.3.0",
     "zone.js": "^0.14.10"
   },

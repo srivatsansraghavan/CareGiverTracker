@@ -30,7 +30,7 @@
           },
           "configurations": {
             "production": {
-              "baseHref": "/cgtangular/",
+              "baseHref": "./",
               "budgets": [
                 {
                   "type": "initial",
