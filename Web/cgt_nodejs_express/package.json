@@ -4,14 +4,11 @@
   "description": "Backend for caregiver tracker",
   "main": "app.js",
   "scripts": {
-    "start:local": "set NODE_ENV=local&& set NODE_PORT=3000&& set MONGO_DB_URI=localhost:27017 && set FRONTEND_URL=http://localhost:4200 && nodemon app.js",
-    "debug:local": "set NODE_ENV=local&& set NODE_PORT=3000&& set MONGO_DB_URI=localhost:27017 && node --inspect-brk app.js",
-    "start:dev": "export NODE_ENV=dev&& export NODE_PORT=3001&& node app.js",
-    "start:test": "export NODE_ENV=test&& export NODE_PORT=3002&& node app.js",
-    "start:prod": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:local": "nodemon --exec tsx app.ts",
+    "debug:local": "node --inspect-brk app.ts",
+    "start:prod": "node app.ts"
   },
-  "author": "Srivatsan S",
+  "author": "Srivatsan Srinivasa Raghavan",
   "license": "ISC",
   "type": "module",
   "dependencies": {
@@ -19,6 +16,7 @@
     "body-parser": "^1.20.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dotenv": "^18.0.5",
     "express": "^5.1.0",
     "express-flash": "^0.0.2",
     "express-session": "^1.18.2",
@@ -33,7 +31,17 @@
   },
   "homepage": "http://srivatsanssr.com/",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/express-flash": "^0.0.5",
+    "@types/express-session": "^1.19.0",
+    "@types/node": "^26.6.4",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "connect-redis": "^9.0.0",
-    "redis": "^5.10.0"
+    "redis": "^5.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }

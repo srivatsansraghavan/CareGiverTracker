@@ -1,28 +1,17 @@
 import moment from "moment";
 import {
-  firstLoginModel,
   addCareTakenModel,
   getCareTakenDetailsModel,
   changeCareTakenModel,
 } from "../models/caretakenModel.js";
+import type { NextFunction, Request, Response } from "express";
+import type { IUser } from "../models/userModel.js";
 
-export async function firstLogin(req, res, next) {
+export async function addCareTaken(req: Request, res: Response, next: NextFunction) {
   try {
-    const firstLogin = await firstLoginModel(req.user.user_email);
-    if (firstLogin > 0) {
-      res.send(false);
-    } else {
-      res.send(true);
-    }
-  } catch (err) {
-    return next(err);
-  }
-}
-
-export async function addCareTaken(req, res, next) {
-  try {
+    const user = req.user as IUser;
     const addCareTaken = await addCareTakenModel({
-      care_giver: req.user.user_email,
+      care_giver: user.user_email,
       care_taken_of: req.body.care_taken_of,
       care_taken_name: req.body.care_taken_name,
       care_taken_dob: moment(req.body.care_taken_dob, "DD/MM/YYYY HH:mm:ss").format(
@@ -47,10 +36,11 @@ export async function addCareTaken(req, res, next) {
   }
 }
 
-export async function getCareTakenDetails(req, res, next) {
+export async function getCareTakenDetails(req: Request, res: Response, next: NextFunction) {
   try {
+    const user = req.user as IUser;
     const careTakenDetails = await getCareTakenDetailsModel(
-      req.user.user_email
+      user.user_email
     );
     res.status(200).json(careTakenDetails);
   } catch (err) {
@@ -58,11 +48,12 @@ export async function getCareTakenDetails(req, res, next) {
   }
 }
 
-export async function changeCareTaken(req, res, next) {
+export async function changeCareTaken(req: Request<IUser>, res: Response, next: NextFunction) {
   try {
+    const user = req.user as IUser;
     const changeCareTaken = await changeCareTakenModel(
       req.body.care_taken_id,
-      req.user.user_email
+      user.user_email
     );
     res.status(200).json(changeCareTaken);
   } catch (err) {

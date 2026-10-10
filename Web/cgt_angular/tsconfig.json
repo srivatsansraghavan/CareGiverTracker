@@ -19,12 +19,15 @@
     "target": "ES2022",
     "module": "es2020",
     "lib": [
-      "es2020",
+      "esnext",
       "dom"
     ],
     "useDefineForClassFields": false,
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": [
+      "jest"
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

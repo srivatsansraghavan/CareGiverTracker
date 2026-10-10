@@ -6,12 +6,15 @@ import {
   getExcretionModel,
 } from "../models/excModel.js";
 import { updateInventoryModel } from "../models/inventoryModel.js";
+import type { IUser } from "../models/userModel.js";
+import type { Request, Response, NextFunction } from "express";
 
-export async function saveTrackedExcretion(req, res, next) {
+export async function saveTrackedExcretion(req: Request, res: Response, next: NextFunction) {
   try {
+    const user = req.user as IUser;
     let excTime = moment().format("MM/DD/YYYY HH:mm:ss");
     const insertQuery = {
-      care_giver: req.user.user_email,
+      care_giver: user.user_email,
       care_taken_of_name: req.body.careTakenOf.name,
       care_taken_of_id: req.body.careTakenOf.id,
       excretion_type: req.body.excretionType,
@@ -33,10 +36,11 @@ export async function saveTrackedExcretion(req, res, next) {
   }
 }
 
-export async function getExcretionDetails(req, res, next) {
+export async function getExcretionDetails(req: Request, res: Response, next: NextFunction) {
+  const user = req.user as IUser;
   try {
     const getTrackedExcretion = await getExcDetailsModel({
-      care_giver: req.user.user_email,
+      care_giver: user.user_email,
       care_taken_of_id: req.query.careTakenId,
     });
     res.status(200).json(getTrackedExcretion);
@@ -45,7 +49,7 @@ export async function getExcretionDetails(req, res, next) {
   }
 }
 
-export async function deleteExcretion(req, res, next) {
+export async function deleteExcretion(req: Request, res: Response, next: NextFunction) {
   try {
     const getDiaperDetails = await getExcretionModel({
       _id: req.params.excId,
@@ -69,7 +73,7 @@ export async function deleteExcretion(req, res, next) {
   }
 }
 
-export async function getExcretionForId(req, res, next) {
+export async function getExcretionForId(req: Request, res: Response, next: NextFunction) {
   try {
     const getExcForId = await getExcretionModel({
       _id: req.params.excId,
